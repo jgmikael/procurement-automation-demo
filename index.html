@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automaattinen Hankintaprosessi - Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+        
+        .process-flow {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+        }
+        
+        .phase-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .phase-btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            background: #e0e7ff;
+            color: #4c51bf;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            position: relative;
+        }
+        
+        .phase-btn:hover {
+            background: #c7d2fe;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .phase-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .phase-btn.completed::after {
+            content: "✓";
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #10b981;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .phase-content {
+            display: none;
+        }
+        
+        .phase-content.active {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .phase-header {
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .phase-header h2 {
+            color: #1f2937;
+            font-size: 1.8em;
+            margin-bottom: 8px;
+        }
+        
+        .phase-header .role {
+            display: inline-block;
+            padding: 5px 15px;
+            background: #fef3c7;
+            color: #92400e;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+        
+        .role.procurer { background: #dbeafe; color: #1e40af; }
+        .role.supplier { background: #dcfce7; color: #166534; }
+        .role.system { background: #fce7f3; color: #9f1239; }
+        
+        .card {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .card h3 {
+            color: #374151;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-icon {
+            font-size: 1.5em;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            color: #4b5563;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 15px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+        
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+        
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .info-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .info-box.success {
+            background: #f0fdf4;
+            border-color: #10b981;
+        }
+        
+        .info-box.warning {
+            background: #fffbeb;
+            border-color: #f59e0b;
+        }
+        
+        .info-box h4 {
+            margin-bottom: 8px;
+            color: #1f2937;
+        }
+        
+        .credential-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+        
+        .credential-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid #e5e7eb;
+        }
+        
+        .credential-item.verified {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+        
+        .credential-info {
+            flex: 1;
+        }
+        
+        .credential-info strong {
+            display: block;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+        
+        .credential-info small {
+            color: #6b7280;
+        }
+        
+        .credential-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-valid {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .agent-activity {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .agent-activity h4 {
+            color: #92400e;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .agent-log {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #78350f;
+            line-height: 1.6;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            margin-top: 20px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e5e7eb;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+            padding-left: 10px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -24px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #667eea;
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px #667eea;
+        }
+        
+        .timeline-item.completed::before {
+            background: #10b981;
+            box-shadow: 0 0 0 2px #10b981;
+        }
+        
+        .timeline-content {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .timeline-content strong {
+            display: block;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+        
+        .timeline-content small {
+            color: #6b7280;
+        }
+        
+        .audit-log {
+            background: #1f2937;
+            color: #10b981;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+        
+        .audit-log-entry {
+            margin-bottom: 8px;
+            padding: 5px;
+            border-bottom: 1px solid #374151;
+        }
+        
+        .audit-log-entry .timestamp {
+            color: #9ca3af;
+        }
+        
+        .audit-log-entry .action {
+            color: #60a5fa;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            .phase-selector {
+                flex-direction: column;
+            }
+        }
+        
+        .wallet-preview {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        
+        .wallet-preview h4 {
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .wallet-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .wallet-card strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+        
+        .mandate-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: #10b981;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 Automaattinen Hankintaprosessi</h1>
+            <p>Tavoitetila: Tarpeesta maksuun ilman manuaalista työtä</p>
+        </header>
+        
+        <div class="process-flow">
+            <div class="phase-selector">
+                <button class="phase-btn active" data-phase="1">1. Hankinnan valmistelu</button>
+                <button class="phase-btn" data-phase="2">2. Tarjouspyyntö</button>
+                <button class="phase-btn" data-phase="3">3. Tarjoajan tunnistus</button>
+                <button class="phase-btn" data-phase="4">4. Todisteiden esitys</button>
+                <button class="phase-btn" data-phase="5">5. Koneellinen tarkastus</button>
+                <button class="phase-btn" data-phase="6">6. Tarjousten vertailu</button>
+                <button class="phase-btn" data-phase="7">7. Hankintapäätös</button>
+                <button class="phase-btn" data-phase="8">8. Sopimus</button>
+                <button class="phase-btn" data-phase="9">9. Toteutus & Lasku</button>
+                <button class="phase-btn" data-phase="10">10. Audit Trail</button>
+            </div>
+            
+            <!-- PHASE 1: Hankinnan valmistelu -->
+            <div class="phase-content active" data-phase="1">
+                <div class="phase-header">
+                    <h2>1. Hankinnan valmistelu</h2>
+                    <span class="role procurer">🏛️ Hankintayksikkö + AI-agentti</span>
+                </div>
+                
+                <div class="card">
+                    <h3><span class="card-icon">📋</span> Hankinnan perustiedot</h3>
+                    <div class="form-group">
+                        <label>Hankinnan kohde</label>
+                        <input type="text" id="procurement-title" value="IT-tukipalvelut 2026-2028">
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Arvioitu arvo (€)</label>
+                            <input type="number" value="250000">
+                        </div>
+                        <div class="form-group">
+                            <label>CPV-koodi</label>
+                            <select>
+                                <option>72000000-5 - IT-palvelut</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Kuvaus</label>
+                        <textarea>IT-tukipalvelut käyttäjille, sisältäen helpdeskiä, laitehallintaa ja tietoturvapäivityksiä</textarea>
+                    </div>
+                </div>
+                
+                <div class="agent-activity">
+                    <h4>🤖 Valmisteluagentin toiminta</h4>
+                    <div class="agent-log">
+                        > Analysoidaan aiempia vastaavia hankintoja...<br>
+                        > Löydetty 3 vastaavaa hankintaa (2023-2025)<br>
+                        > Keskiarvoinen toteutuneen hinta: 245 000 €<br>
+                        > Suositus: Avoin menettely, kynnysarvo ylittyy<br>
+                        > Generoitu luonnos tarjouspyynnöstä perusteella: "HankintaTemplate_IT_2024"<br>
+                        > Ehdotetut vaatimukset: ISO 27001, vähintään 5 hlö tiimi, 24/7 päivystys
+                    </div>
+                </div>
+                
+                <div class="info-box">
+                    <h4>💡 Automaatio</h4>
+                    <p>Agentti hakee historiasta vastaavia hankintoja, ehdottaa menettelyä ja generoi rakenteisen tarjouspyyntöluonnoksen. Ihminen tarkastaa ja hyväksyy.</p>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-secondary">💾 Tallenna luonnos</button>
+                    <button class="btn btn-primary" onclick="nextPhase(2)">✅ Hyväksy ja siirry tarjouspyyntöön →</button>
+                </div>
+            </div>
+            
+            <!-- PHASE 2: Tarjouspyyntö -->
+            <div class="phase-content" data-phase="2">
+                <div class="phase-header">
+                    <h2>2. Rakenteinen tarjouspyyntö</h2>
+                    <span class="role procurer">🏛️ Hankintayksikkö</span>
+                </div>
+                
+                <div class="card">
+                    <h3><span class="card-icon">📐</span> Soveltuvuusvaatimukset (koneellisesti tulkittavat)</h3>
+                    
+                    <div class="credential-list">
+                        <div class="credential-item">
+                            <div class="credential-info">
+                                <strong>Yrityksen rekisteröinti</strong>
+                                <small>Todiste: PRH/BRIS Company Certificate | Voimassa: hankintahetki</small>
+                            </div>
+                            <span class="credential-status status-pending">Vaaditaan</span>
+                        </div>
+                        
+                        <div class="credential-item">
+                            <div class="credential-info">
+                                <strong>Verovelvoitteiden hoito</strong>
+                                <small>Todiste: Verohallinnon todistus | Max 30 pv vanha</small>
+                            </div>
+                            <span class="credential-status status-pending">Vaaditaan</span>
+                        </div>
+                        
+                        <div class="credential-item">
+                            <div class="credential-info">
+                                <strong>ISO 27001 -sertifikaatti</strong>
+                                <small>Todiste: Akkreditoitu sertifioija | Voimassa koko sopimus</small>
+                            </div>
+                            <span class="credential-status status-pending">Vaaditaan</span>
+                        </div>
+                        
+                        <div class="credential-item">
+                            <div class="credential-info">
+                                <strong>Liikevaihto</strong>
+                                <small>Sääntö: >= 500 000 € (viimeiset 3 tilikaudet)</small>
+                            </div>
+                            <span class="credential-status status-pending">Vaaditaan</span>
+                        </div>
+                        
+                        <div class="credential-item">
+                            <div class="credential-info">
+                                <strong>Vastuuvakuutus</strong>
+                                <small>Sääntö: Vähintään 1 000 000 € | Voimassa sopimuskaudella</small>
+                            </div>
+                            <span class="credential-status status-pending">Vaaditaan</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3><span class="card-icon">⚖️</span> Vertailuperusteet</h3>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <strong>Hinta (60 %)</strong>
+                                <small>Automaattinen laskenta: halvin saa 60 pistettä, muut suhteessa</small>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <strong>Vasteaika (20 %)</strong>
+                                <small>Sääntö: <= 15 min kriittinen, <= 1 h normaali | Max 20 pistettä</small>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <strong>Referenssit (20 %)</strong>
+                                <small>Vähintään 2 vastaavaa kohdetta viimeisen 3v aikana | 10 p/kpl</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-box success">
+                    <h4>✅ Rakenteinen data valmis</h4>
+                    <p>Kaikki vaatimukset on määritetty koneluettavassa muodossa. ESPD-kysymykset ja lompakon todistuspyyntö voidaan generoida automaattisesti.</p>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="nextPhase(1)">← Takaisin</button>
+                    <button class="btn btn-primary" onclick="nextPhase(3)">📤 Julkaise HILMAan →</button>
+                </div>
+            </div>
+            
+            <!-- PHASE 3: Tarjoajan tunnistus -->
+            <div class="phase-content" data-phase="3">
+                <div class="phase-header">
+                    <h2>3. Tarjoajan tunnistus ja lompakko</h2>
+                    <span class="role supplier">🏢 Tarjoaja + EU Business Wallet</span>
+                </div>
+                
+                <div class="card">
+                    <h3><span class="card-icon">🔍</span> Hankinnan löytäminen</h3>
+                    <div class="agent-activity">
+                        <h4>🤖 Tarjoajan tarjousagentin toiminta</h4>
+                        <div class="agent-log">
+                            > Haetaan HILMA API:sta CPV 72000000-5 hankintoja...<br>
+                            > Löydetty 1 sopiva hankinta: "IT-tukipalvelut 2026-2028"<br>
+                            > Ladataan rakenteinen tarjouspyyntö...<br>
+                            > Analysoidaan soveltuvuusvaatimukset...<br>
+                            > Tarkastetaan yrityksen lompakko todistuksille...<br>
+                            ✅ Yritys täyttää 5/5 pakolliset vaatimukset<br>
+                            > Ehdotetaan tarjouksen jättämistä
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="wallet-preview">
+                    <h4>🎫 EU Business Wallet - TechSupport Oy</h4>
+                    
+                    <div class="wallet-card">
+                        <strong>🏢 Organisaation identiteetti</strong>
+                        <small>Y-tunnus: 1234567-8 | Myöntäjä: PRH<br>
+                        Voimassa: rekisterissä | Tarkastettu: 2026-08-25 14:32</small>
+                    </div>
+                    
+                    <div class="wallet-card">
+                        <strong>💰 Verotodistus</strong>
+                        <small>Myöntäjä: Verohallinto | Myönnetty: 2026-08-20<br>
+                        Status: Verot maksettu ajallaan | Max 30 pv vanha ✓</small>
+                    </div>
+                    
+                    <div class="wallet-card">
+                        <strong>🔒 ISO 27001 -sertifikaatti</strong>
+                        <small>Sertifioija: Bureau Veritas (akkreditoitu)<br>
+                        Voimassa: 2025-03-01 - 2028-02-28 ✓</small>
+                    </div>
+                    
+                    <div class="wallet-card">
+                        <strong>👤 Edustamisoikeus</strong>
+                        <small>Mandaatti: Matti Virtanen saa toimia TechSupport Oy:n puolesta<br>
+                        Käyttötarkoitus: Julkiset hankinnat | Voimassa: 2026-12-31 asti
+                        <span class="mandate-badge">Mandaatti OK</span>
+                        </small>
+                    </div>
+                </div>
+                
+                <div class="info-box">
+                    <h4>💡 Lompakon toiminta</h4>
+                    <p>Tarjoaja näkee hankintajärjestelmän todistuspyynnön, tarkastaa mitä tietoja pyydetään, ja antaa suostumuksen. Lompakko kokoaa todisteet eri myöntäjiltä (PRH, Verohallinto, sertifioija) ja esittää ne yhtenä kokonaisuutena.</p>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="nextPhase(2)">← Takaisin</button>
+                    <button class="btn btn-success" onclick="nextPhase(4)">🎫 Anna suostumus ja esitä todisteet →</button>
+                </div>
+            </div>
+            
+            <!-- PHASE 4: Todisteiden esitys -->
+            <div class="phase-content" data-phase="4">
+                <div class="phase-header">
+                    <h2>4. Todisteiden esitys ja vastaanotto</h2>
+                    <span class="role system">⚙️ Järjestelmä</span>
+                </div>
+                
+                <div class="card">
+                    <h3><span class="card-icon">📨</span> Esitetyt W3C Verifiable Credentials</h3>
+                    
+                    <div class="credential-list">
+                        <div class="credential-item verified">
+                            <div class="credential-info">
+                                <strong>CompanyCertificate_1234567-8.vc.json</strong>
+                                <small>Myöntäjä: did:web:prh.fi | Allekirjoitus vahvistettu ✓</small>
+                            </div>
+                            <span class="credential-status status-valid">Vahvistettu</span>
+                        </div>
+                        
+                        <div class="credential-item verified">
+                            <div class="credential-info">
+                                <strong>TaxComplianceCertificate_2026-08-20.vc.json</strong>
+                                <small>Myöntäjä: did:web:vero.fi | Voimassa 30 pv ✓</small>
+                            </div>
+                            <span class="credential-status status-valid">Vahvistettu</span>
+                        </div>
+                        
+                        <div class="credential-item verified">
+                            <div class="credential-info">
+                                <strong>ISO27001Certificate_BV20250301.vc.json</strong>
+                                <small>Myöntäjä: Bureau Veritas | Akkreditoitu ✓</small>
+                            </div>
+                            <span class="credential-status status-valid">Vahvistettu</span>
+                        </div>
+                        
+                        <div class="credential-item verified">
+                            <div class="credential-info">
+                                <strong>Mandate_MattiVirtanen_TechSupport.vc.json</strong>
+                                <small>Mandaatti: Henkilö→Yritys→Hankinta | Voimassa ✓</small>
+                            </div>
+                            <span class="credential-status status-valid">Vahvistettu</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3><span class="card-icon">🔐</span> Kryptografinen tarkastus</h3>
+                    <div class="audit-log">
+                        <div class="audit-log-entry">
+                            <span class="timestamp">[2026-08-25 14:35:12]</span> 
+                            <span class="action">SIGNATURE_VERIFY</span> 
+                            CompanyCertificate: ed25519 signature VALID
+                        </div>
+                        <div class="audit-log-entry">
+                            <span class="timestamp">[2026-08-25 14:35:13]</span> 
+                            <span class="action">ISSUER_CHECK</span> 
+                            Issuer DID resolved: did:web:prh.fi → TRUSTED
+                        </div>
+                        <div class="audit-log-entry">
+                            <span class="timestamp">[2026-08-25 14:35:14]</span> 
+                            <span class="action">REVOCATION_CHECK</span> 
+                            Status List 2021: credential NOT revoked
+                        </div>
+                        <div class="audit-log-entry">
+                            <span class="timestamp">[2026-08-25 14:35:15]</span> 
+                            <span class="action">VALIDITY_CHECK</span> 
+                            validFrom: 2026-01-01, validUntil: 2027-12-31 → VALID
+                        </div>
+                        <div class="audit-log-entry">
+                            <span class="timestamp">[2026-08-25 14:35:16]</span> 
+                            <span class="action">MANDATE_CHAIN</span> 
+                            Person→Company→Procurement: AUTHORIZED
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-box success">
+                    <h4>✅ Todisteet vastaanotettu</h4>
+                    <p>Allekirjoitettu vastaanottokuitti palautettu lompakolle. Todisteiden eheys, alkuperä ja voimassaolo tarkastettu. Siirretään automaattiseen kelpoisuustarkastukseen.</p>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="nextPhase(3)">← Takaisin</button>
+                    <button class="btn btn-primary" onclick="nextPhase(5)">🤖 Siirry koneelliseen tarkastukseen →</button>
+                </div>
+            </div>
+            
+            <!-- PHASE 5: Koneellinen tarkastus -->
+            <div class="phase-content" data-phase="5">
+                <div class="phase-header">
+                    <h2>5. Koneellinen kelpoisuustarkastus</h2>
+                    <span class="role system">⚙️ Sääntökone + validointiagentti</span>
+                </div>
+                
+                <div class="card">
+                    <h3><span class="card-icon">⚙️</span> Deterministinen sääntökone</h3>
+                    <div class="agent-activity">
+                        <h4>🤖 Validointiagentin toiminta</h4>
+                        <div class="agent-log">
+                            > Ladataan hankintasääntöversio: ProcurementRules_v2.4.1<br>
+                            > Ladataan tarjouspyynnön vaatimukset: ITSupport_2026_Requirements.json<br>
+                            <br>
+                            <strong>TARKASTUS 1: Organisaation rekisteröinti</strong><br>
+                            Sääntö: credentialSubject.businessId EXISTS AND status="active"<br>
+                            Tulos: Y-tunnus 1234567-8, PRH-rekisterissä, aktiivinen ✅<br>
+                            <br>
+                            <strong>TARKASTUS 2: Verovelvoitteet</strong><br>
+                            Sääntö: issuanceDate >= (NOW - 30 days) AND taxCompliance=true<br>
+                            Tulos: Myönnetty 2026-08-20 (5 pv), verot OK ✅<br>
+                            <br>
+                            <strong>TARKASTUS 3: ISO 27001</strong><br>
+                            Sääntö: certificateType="ISO27001" AND validUntil > contractEnd<br>
+                            Tulos: Voimassa 2028-02-28, sopimus päättyy 2028-12-31 ✅<br>
+                            <br>
+                            <strong>TARKASTUS 4: Liikevaihto</strong><br>
+                            Sääntö: AVG(revenue[last3years]) >= 500000<br>
+                            Tulos: (580k + 620k + 710k) / 3 = 636 666 € ✅<br>
+                            <br>
+                            <strong>TARKASTUS 5: Vastuuvakuutus</strong><br>
+                            Sääntö: coverage >= 1000000 AND validDuring=contractPeriod<br>
+                            Tulos: 2 000 000 €, voimassa 2026-2029 ✅<br>
+                            <br>
+                            <strong>YHTEENVETO: 5/5 vaatimusta täyttynyt</strong><br>
+                            > Tarjoaja KELPAA jatkokäsittelyyn
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3><span class="card-icon">📊</span> Tarkastusraportti</h3>
+                    <div class="timeline">
+                        <div class="timeline-item completed">
+                            <div class="timeline-content">
+                                <strong>Poissulkuperusteet</strong>
+                                <small>Ei konkurssissa, ei rikostuomiota, ei pakotelistalla → HYVÄKSYTTY</small>
+                            </div>
+                        </div>
+                        <div class="timeline-item completed">
+                            <div class="timeline-content">
+                                <strong>Soveltuvuusvaatimukset</strong>
+                                <small>Rekisteröinti, verot, sertifikaatti, liikevaihto, vakuutus → HYVÄKSYTTY</small>
+                            </div>
+                        </div>
+                        <div class="timeline-item completed">
+                            <div class="timeline-content">
+                                <strong>Toimivaltuus</strong>
+                                <small>Digitaalinen mandaatti vahvistettu, henkilö valtuutettu → HYVÄKSYTTY</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-box success">
+                    <h4>✅ Koneellinen tarkastus valmis</h4>
+                    <p>Kaikki ehdottomat vaatimukset tarkastettu deterministisesti. Sama syöte tuottaa aina saman tuloksen. Tulos on auditoitavissa ilman AI-mallia. Ei ihmisen päätösharkintaa tarvittu.</p>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="nextPhase(4)">← Takaisin</button>
+                    <button class="btn btn-primary" onclick="nextPhase(6)">🔢 Siirry tarjousten vertailuun →</button>
+                </div>
+            </div>
+            
+            <!-- PHASE 6: Tarjousten vertailu -->
+            <div class="phase-content" data-phase="6">
+                <div class="phase-header">
+                    <h2>6. Tarjousten automaattinen vertailu</h2>
+                    <span class="role system">⚙️ Vertailuagentti</span>
+                </div>
+                
+                <div class="card">
+                    <h3><span class="card-icon">📊</span> Vertailulaskelma</h3>
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                        <thead style="background: #f3f4f6;">
+                            <tr>
+                                <th style="padding: 12px; text-align: left; border: 1px solid #e5e7eb;">Tarjoaja</th>
+                                <th style="padding: 12px; text-align: right; border: 1px solid #e5e7eb;">Hinta (60%)</th>
+                                <th style="padding: 12px; text-align: right; border: 1px solid #e5e7eb;">Vasteaika (20%)</th>
+                                <th style="padding: 12px; text-align: right; border: 1px solid #e5e7eb;">Referenssit (20%)</th>
+                                <th style="padding: 12px; text-align: right; border: 1px solid #e5e7eb; font-weight: bold;">Yhteensä</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="background: #f0fdf4;">
+                                <td style="padding: 12px; border: 1px solid #e5e7eb;"><strong>TechSupport Oy</strong></td>
+                                <td style="padding: 12px; text-align: right; border: 1px solid #e5e7eb;">
+                                    220 000 € → <strong>60 p</strong>
+                                </td>
+                                <td style="padding: 12px; text-align: right; border: 1px solid #e5e7eb;">
+                                    10 min → <strong>20 p</strong>
+                                </td>
+                                <td style="padding: 12px; text-align: right; border: 1px solid #e5e7eb;">
+                                    3 ref → <strong>20 p</strong>
+                                </td>
+                                <td style="padding: 12px; text-align: right; border: 1px solid #e5e7eb; font-weight: bold; background: #d1fae5;">
+                                    <strong>100 p</strong> 🥇
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 12px; border: 1px solid #e5e7eb;">IT-Palvelut Ky</td>
+                                <td style="padding: 12px; text-align: right; border: 1px solid #e5e7eb;">
+                                    240 000 € → <strong>55 p</strong>
+                                </td>
+                                <td style="padding: 12px; text-align: right; border: 1px solid #e5e7eb;">
+                                    30 min → <strong>15 p</strong>
+                                </td>
+                                <td style="padding: 12px; text-align: right; border: 1px solid #e5e7eb;">
+                                    2 ref → <strong>20 p</strong>
+                                </td>
+                                <td style="padding: 12px; text-align: right; border: 1px solid #e5e7eb; font-weight: bold;">
+                                    90 p
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 12px; border: 1px solid #e5e7eb;">Nordic Tech AB</td>
+                                <td style="padding: 12px; text-align: right; border: 1px solid #e5e7eb;">
+                                    260 000 € → <strong>50.8 p</strong>
+                                </td>
+                                <td style="padding: 12px; text-align: right; border: 1px solid #e5e7eb;">
+                                    15 min → <strong>20 p</strong>
+                                </td>
+                                <td style="padding: 12px; text-align: right; border: 1px solid #e5e7eb;">
+                                    2 ref → <strong>20 p</strong>
+                                </td>
+                                <td style="padding: 12px; text-align: right; border: 1px solid #e5e7eb; font-weight: bold;">
+                                    90.8 p
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="agent-activity">
+                    <h4>🤖 Vertailuagentin laskelma</h4>
+                    <div class="agent-log">
+                        > Käytetty kaava: ProcurementRules_v2.4.1/ScoringFormula<br>
+                        <br>
+                        <strong>Hintavertailu (60 pistettä):</strong><br>
+                        Halvin tarjous: 220 000 € (TechSupport Oy)<br>
+                        Pisteet = (halvin / tarjous) × 60<br>
+                        • TechSupport: (220k / 220k) × 60 = 60.0 p<br>
+                        • IT-Palvelut: (220k / 240k) × 60 = 55.0 p<br>
+                        • Nordic Tech: (220k / 260k) × 60 = 50.8 p<br>
+                        <br>
+                        <strong>Vasteaika (20 pistettä):</strong><br>
+                        <= 15 min = 20 p, <= 30 min = 15 p, <= 60 min = 10 p<br>
+                        • TechSupport: 10 min → 20 p<br>
+                        • IT-Palvelut: 30 min → 15 p<br>
+                        • Nordic Tech: 15 min → 20 p<br>
+                        <br>
+                        <strong>Referenssit (20 pistettä):</strong><br>
+                        10 p per kelvollinen referenssi (max 2)<br>
+                        • TechSupport: 3 ref → 20 p (katto)<br>
+                        • IT-Palvelut: 2 ref → 20 p<br>
+                        • Nordic Tech: 2 ref → 20 p<br>
+                        <br>
+                        ✅ <strong>Voittaja: TechSupport Oy (100 pistettä)</strong>
+                    </div>
+                </div>
+                
+                <div class="info-box success">
+                    <h4>✅ Vertailu valmis - siirtyy ihmisen hyväksyttäväksi</h4>
+                    <p>Numeeriset kriteerit laskettu automaattisesti. Kaikki kolme tarjoajaa kelpoisia. Selkeä voittaja. Generoidaan hankintapäätösluonnos.</p>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="nextPhase(5)">← Takaisin</button>
+                    <button class="btn btn-primary" onclick="nextPhase(7)">📋 Siirry hankintapäätökseen →</button>
+                </div>
+            </div>
+            
+            <!-- PHASE 7: Hankintapäätös -->
+            <div class="phase-content" data-phase="7">
+                <div class="phase-header">
+                    <h2>7. Hankintapäätös</h2>
+                    <span class="role procurer">🏛️ Hankintayksikkö (ihminen)</span>
+                </div>
+                
+                <div class="card">
+                    <h3><span class="card-icon">📄</span> Generoitu päätösluonnos</h3>
+                    <div style="background: white; padding: 20px; border: 2px solid #e5e7eb; border-radius: 10px; margin-top: 15px;">
+                        <h4 style="margin-bottom: 15px;">HANKINTAPÄÄTÖS</h4>
+                        <p style="margin-bottom: 10px;"><strong>Hankinnan kohde:</strong> IT-tukipalvelut 2026-2028</p>
+                        <p style="margin-bottom: 10px;"><strong>Diaarinumero:</strong> PRO-2026-00342</p>
+                        <p style="margin-bottom: 10px;"><strong>Hankintamenettely:</strong> Avoin menettely (EU-kynnysarvo ylittyy)</p>
+                        <p style="margin-bottom: 20px;"><strong>Päätöspäivä:</strong> 2026-08-25</p>
+                        
+                        <h4 style="margin: 20px 0 10px 0;">TARJOUSKILPAILU</h4>
+                        <p style="margin-bottom: 10px;">Tarjouksia saapui määräaikaan mennessä: <strong>3 kpl</strong></p>
+                        <ul style="margin-left: 20px; margin-bottom: 15px;">
+                            <li>TechSupport Oy (1234567-8)</li>
+                            <li>IT-Palvelut Ky (2345678-9)</li>
+                            <li>Nordic Tech AB (SE556789-0123)</li>
+                        </ul>
+                        
+                        <h4 style="margin: 20px 0 10px 0;">KELPOISUUS</h4>
+                        <p style="margin-bottom: 10px;">Kaikki tarjoajat täyttivät soveltuvuusvaatimukset:</p>
+                        <ul style="margin-left: 20px; margin-bottom: 15px;">
+                            <li>✅ Rekisteröinti: Vahvistettu PRH/BRIS-todistuksella</li>
+                            <li>✅ Verovelvoitteet: Verohallinnon todistus alle 30 pv</li>
+                            <li>✅ ISO 27001: Akkreditoitu sertifikaatti voimassa</li>
+                            <li>✅ Liikevaihto: >= 500 000 € (3v keskiarvo)</li>
+                            <li>✅ Vastuuvakuutus: >= 1 000 000 €</li>
+                        </ul>
+                        
+                        <h4 style="margin: 20px 0 10px 0;">VERTAILU</h4>
+                        <p style="margin-bottom: 10px;">Vertailuperusteet ja painotukset:</p>
+                        <ul style="margin-left: 20px; margin-bottom: 15px;">
+                            <li>Hinta: 60 % (automaattinen halvin/tarjous -laskenta)</li>
+                            <li>Vasteaika: 20 % (kiinteät raja-arvot)</li>
+                            <li>Referenssit: 20 % (vähintään 2 vastaavaa kohdetta)</li>
+                        </ul>
+                        
+                        <p style="margin-bottom: 10px;"><strong>Vertailun tulos:</strong></p>
+                        <ol style="margin-left: 20px; margin-bottom: 15px;">
+                            <li>TechSupport Oy: <strong>100 pistettä</strong></li>
+                            <li>Nordic Tech AB: 90.8 pistettä</li>
+                            <li>IT-Palvelut Ky: 90 pistettä</li>
+                        </ol>
+                        
+                        <h4 style="margin: 20px 0 10px 0;">PÄÄTÖS</h4>
+                        <p style="background: #f0fdf4; padding: 15px; border-left: 4px solid #10b981; margin-bottom: 15px;">
+                            Hankintasopimus tehdään <strong>TechSupport Oy:n (Y-tunnus 1234567-8)</strong> kanssa.<br>
+                            Sopimushinta: <strong>220 000 € (alv 0 %)</strong><br>
+                            Sopimuskausi: <strong>1.1.2026 - 31.12.2028</strong>
+                        </p>
+                        
+                        <p style="font-size: 0.9em; color: #6b7280; margin-top: 20px;">
+                            <em>Kelpoisuustarkastus ja vertailulaskelma suoritettu automaattisesti sääntökoneversiolla ProcurementRules_v2.4.1. 
+                            Tarkastuslokit ja tietopohja säilytetty.</em>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="info-box warning">
+                    <h4>⚠️ Ihmisen päätöspiste</h4>
+                    <p>Vaikka vertailu on automaattinen, hankintapäätös vaatii aina ihmisen hyväksynnän. Tarkasta laskelma, perustelut ja päätösluonnos ennen allekirjoitusta.</p>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="nextPhase(6)">← Takaisin vertailuun</button>
+                    <button class="btn btn-secondary">📝 Muokkaa päätöstä</button>
+                    <button class="btn btn-primary" onclick="nextPhase(8)">✍️ Hyväksy ja allekirjoita →</button>
+                </div>
+            </div>
+            
+            <!-- PHASE 8: Sopimus -->
+            <div class="phase-content" data-phase="8">
+                <div class="phase-header">
+                    <h2>8. Sopimuksen muodostaminen</h2>
+                    <span class="role system">⚙️ Sopimusagentti</span>
+                </div>
+                
+                <div class="agent-activity">
+                    <h4>🤖 Sopimusagentin toiminta</h4>
+                    <div class="agent-log">
+                        > Ladataan hankintapäätös: PRO-2026-00342<br>
+                        > Voittaja: TechSupport Oy (1234567-8)<br>
+                        > Ladataan tarjousaineisto: Tender_TechSupport_20260820.json<br>
+                        > Ladataan sopimusmalli: ITServiceContract_v3.2<br>
+                        <br>
+                        > Täytetään sopimuskohdat automaattisesti:<br>
+                        &nbsp;&nbsp;• Osapuolet: Kunta X ↔ TechSupport Oy<br>
+                        &nbsp;&nbsp;• Sopimushinta: 220 000 € (ALV 0 %)<br>
+                        &nbsp;&nbsp;• Sopimuskausi: 1.1.2026 - 31.12.2028<br>
+                        &nbsp;&nbsp;• Palvelutasositoumukset: Tarjouksesta kohdasta "SLA"<br>
+                        &nbsp;&nbsp;• Vasteajat: Kriittinen 10 min, Normaali 1 h<br>
+                        &nbsp;&nbsp;• Saatavuus: 99.5 % (virka-aika)<br>
+                        <br>
+                        > Muodostetaan rakenteinen sopimusdata (JSON-LD)<br>
+                        > Luodaan seurattavat velvoitteet (trackable obligations)<br>
+                        ✅ Sopimusluonnos valmis allekirjoitettavaksi
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3><span class="card-icon">📜</span> Rakenteinen sopimusdata</h3>
+                    <div style="background: #1f2937; color: #10b981; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 12px; overflow-x: auto; max-height: 300px; overflow-y: auto;">
+{
+  "@context": "https://schema.yhteentoimivuusalusta.fi/contract/v1",
+  "id": "urn:contract:PRO-2026-00342",
+  "type": "ProcurementContract",
+  "parties": {
+    "buyer": {
+      "id": "did:web:kunta-x.fi",
+      "name": "Kunta X"
+    },
+    "supplier": {
+      "id": "did:web:prh.fi:1234567-8",
+      "name": "TechSupport Oy",
+      "businessId": "1234567-8"
+    }
+  },
+  "contractValue": {
+    "amount": 220000,
+    "currency": "EUR",
+    "vatRate": 0
+  },
+  "contractPeriod": {
+    "startDate": "2026-01-01",
+    "endDate": "2028-12-31"
+  },
+  "serviceLevel": {
+    "responseTime": {
+      "critical": "PT10M",
+      "normal": "PT1H"
+    },
+    "availability": {
+      "target": 0.995,
+      "measurementPeriod": "businessHours"
+    }
+  },
+  "obligations": [
+    {
+      "id": "OBL-001",
+      "type": "ServiceDelivery",
+      "description": "24/7 helpdesk",
+      "measurable": true,
+      "metric": "responseTime",
+      "target": "PT10M"
+    }
+  ],
+  "basedOn": {
+    "procurement": "urn:procurement:PRO-2026-00342",
+    "award": "urn:award:PRO-2026-00342-001",
+    "tender": "urn:tender:TechSupport-20260820"
+  }
+}
+                    </div>
+                </div>
+                
+                <div class="info-box success">
+                    <h4>✅ Sopimus linkitetty hankintaketjuun</h4>
+                    <p>Sopimus sisältää viitteet hankintailmoitukseen, tarjouspyyntöön, tarjoukseen ja päätökseen. Velvoitteet muutettu seurattaviksi mittareiksi. Valmis sähköiseen sinetöintiin.</p>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="nextPhase(7)">← Takaisin</button>
+                    <button class="btn btn-primary" onclick="nextPhase(9)">🔏 Allekirjoita ja siirry toteutukseen →</button>
+                </div>
+            </div>
+            
+            <!-- PHASE 9: Toteutus & Lasku -->
+            <div class="phase-content" data-phase="9">
+                <div class="phase-header">
+                    <h2>9. Toteutus, lasku ja maksu</h2>
+                    <span class="role system">⚙️ Toteumaseuranta-agentti</span>
+                </div>
+                
+                <div class="card">
+                    <h3><span class="card-icon">📦</span> Jäljitettävä ketju</h3>
+                    <div class="timeline">
+                        <div class="timeline-item completed">
+                            <div class="timeline-content">
+                                <strong>Sopimus allekirjoitettu</strong>
+                                <small>2026-09-01 | Sopimus: PRO-2026-00342 | Molemmat osapuolet</small>
+                            </div>
+                        </div>
+                        <div class="timeline-item completed">
+                            <div class="timeline-content">
+                                <strong>Tilaus lähetetty (Peppol)</strong>
+                                <small>2026-09-15 | Tilaus: ORD-2026-1523 | IT-tuki lokakuu 2026</small>
+                            </div>
+                        </div>
+                        <div class="timeline-item completed">
+                            <div class="timeline-content">
+                                <strong>Toimitus vahvistettu</strong>
+                                <small>2026-10-31 | Palvelu toimitettu | SLA täyttynyt: 99.8 %</small>
+                            </div>
+                        </div>
+                        <div class="timeline-item completed">
+                            <div class="timeline-content">
+                                <strong>Lasku vastaanotettu (EN 16931)</strong>
+                                <small>2026-11-05 | Lasku: INV-2026-4421 | 8 000 € | Viite: ORD-2026-1523</small>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <strong>Automaattinen tarkastus käynnissä...</strong>
+                                <small>Vertaillaan tilausta, toimitusta ja laskua</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="agent-activity">
+                    <h4>🤖 Toteumaseuranta-agentin tarkastus</h4>
+                    <div class="agent-log">
+                        > Laskunumero: INV-2026-4421<br>
+                        > Ladataan linkitetyt asiakirjat:<br>
+                        &nbsp;&nbsp;• Sopimus: PRO-2026-00342<br>
+                        &nbsp;&nbsp;• Tilaus: ORD-2026-1523<br>
+                        &nbsp;&nbsp;• Toimitusvahvistus: DEL-2026-1523<br>
+                        <br>
+                        <strong>TARKASTUS 1: Sopimushinta</strong><br>
+                        Sopimuksen yksikköhinta: 8 000 €/kk ✓<br>
+                        Laskun summa: 8 000 € ✓<br>
+                        ✅ Hinta vastaa sopimusta<br>
+                        <br>
+                        <strong>TARKASTUS 2: Tilausmäärä</strong><br>
+                        Tilattu: 1 kk IT-tuki (lokakuu 2026) ✓<br>
+                        Laskutettu: 1 kk IT-tuki (lokakuu 2026) ✓<br>
+                        ✅ Määrä vastaa tilausta<br>
+                        <br>
+                        <strong>TARKASTUS 3: Toimitus</strong><br>
+                        Toimitusvahvistus: 2026-10-31 ✓<br>
+                        SLA-raportti: Saatavuus 99.8 % (tavoite 99.5 %) ✓<br>
+                        Vasteajat: Kriittinen 8 min avg (tavoite 10 min) ✓<br>
+                        ✅ Palvelutaso täyttynyt<br>
+                        <br>
+                        <strong>TARKASTUS 4: Sopimusviitteet</strong><br>
+                        Lasku sisältää: contractId, orderId, deliveryId ✓<br>
+                        ✅ Kaikki linkitykset kunnossa<br>
+                        <br>
+                        ✅ <strong>LASKU HYVÄKSYTTY AUTOMAATTISESTI</strong><br>
+                        > Siirretään maksuun (toleranssirajan sisällä)
+                    </div>
+                </div>
+                
+                <div class="info-box success">
+                    <h4>✅ Tarpeesta maksuun ilman manuaalista työtä</h4>
+                    <p>Sopimus, tilaus, toimitus ja lasku linkitetty samaan ketjuun. Automaattinen kolmitäsmäytys (3-way match) onnistui. Lasku hyväksytty ja maksettu mandaatin puitteissa. Ei ihmisen interventiota tarvittu.</p>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="nextPhase(8)">← Takaisin</button>
+                    <button class="btn btn-success" onclick="nextPhase(10)">✅ Näytä audit trail →</button>
+                </div>
+            </div>
+            
+            <!-- PHASE 10: Audit Trail -->
+            <div class="phase-content" data-phase="10">
+                <div class="phase-header">
+                    <h2>10. Täydellinen audit trail</h2>
+                    <span class="role system">⚙️ Valvonta- ja auditointiagentti</span>
+                </div>
+                
+                <div class="card">
+                    <h3><span class="card-icon">🔍</span> Jäljitettävä tapahtumaketju</h3>
+                    <div class="audit-log">
+                        <div class="audit-log-entry">
+                            <span class="timestamp">[2026-08-10 09:15:00]</span>
+                            <span class="action">ProcurementPlanned</span>
+                            actor=did:person:hankintatoimi:user123 | procurementId=PRO-2026-00342
+                        </div>
+                        <div class="audit-log-entry">
+                            <span class="timestamp">[2026-08-10 10:30:00]</span>
+                            <span class="action">AgentDraftGenerated</span>
+                            agent=PreparationAgent:v2.1 | template=ITServiceTemplate_2024 | mandate=urn:mandate:prepare
+                        </div>
+                        <div class="audit-log-entry">
+                            <span class="timestamp">[2026-08-12 14:00:00]</span>
+                            <span class="action">TenderRequirementsApproved</span>
+                            actor=did:person:hankintatoimi:manager456 | rulesVersion=ProcurementRules_v2.4.1
+                        </div>
+                        <div class="audit-log-entry">
+                            <span class="timestamp">[2026-08-15 08:00:00]</span>
+                            <span class="action">NoticePublished</span>
+                            platform=HILMA | noticeId=2026/S-158-123456 | format=eForms
+                        </div>
+                        <div class="audit-log-entry">
+                            <span class="timestamp">[2026-08-20 14:35:00]</span>
+                            <span class="action">EvidenceRequested</span>
+                            to=did:wallet:techsupport-oy | credentials=[CompanyCert,TaxCert,ISO27001,Mandate]
+                        </div>
+                        <div class="audit-log-entry">
+                            <span class="timestamp">[2026-08-20 14:40:00]</span>
+                            <span class="action">EvidencePresented</span>
+                            from=did:web:prh.fi:1234567-8 | walletId=urn:eudi:wallet:fi:abc123 | credentialsCount=4
+                        </div>
+                        <div class="audit-log-entry">
+                            <span class="timestamp">[2026-08-20 14:40:15]</span>
+                            <span class="action">CredentialVerified</span>
+                            issuer=did:web:prh.fi | signatureValid=true | revocationStatus=notRevoked
+                        </div>
+                        <div class="audit-log-entry">
+                            <span class="timestamp">[2026-08-20 14:41:00]</span>
+                            <span class="action">EligibilityValidated</span>
+                            agent=ValidationAgent:v3.0 | rulesVersion=ProcurementRules_v2.4.1 | result=PASS (5/5)
+                        </div>
+                        <div class="audit-log-entry">
+                            <span class="timestamp">[2026-08-20 15:00:00]</span>
+                            <span class="action">TenderSubmitted</span>
+                            tenderer=TechSupport Oy | amount=220000 EUR | receiptHash=sha256:a3f2...
+                        </div>
+                        <div class="audit-log-entry">
+                            <span class="timestamp">[2026-08-22 10:00:00]</span>
+                            <span class="action">TenderOpened</span>
+                            totalTenders=3 | timestamp=2026-08-22T10:00:00Z | witnesses=[sys,observer]
+                        </div>
+                        <div class="audit-log-entry">
+                            <span class="timestamp">[2026-08-23 11:00:00]</span>
+                            <span class="action">TendersEvaluated</span>
+                            agent=ComparisonAgent:v1.5 | formula=ProcurementRules_v2.4.1/Scoring
+                        </div>
+                        <div class="audit-log-entry">
+                            <span class="timestamp">[2026-08-25 09:00:00]</span>
+                            <span class="action">AwardDecisionMade</span>
+                            actor=did:person:hankintatoimi:manager456 | winner=TechSupport Oy | score=100
+                        </div>
+                        <div class="audit-log-entry">
+                            <span class="timestamp">[2026-09-01 10:00:00]</span>
+                            <span class="action">ContractSigned</span>
+                            parties=[KuntaX,TechSupportOy] | electronicSeal=true | contractId=PRO-2026-00342
+                        </div>
+                        <div class="audit-log-entry">
+                            <span class="timestamp">[2026-09-15 08:30:00]</span>
+                            <span class="action">OrderIssued</span>
+                            orderId=ORD-2026-1523 | network=Peppol | format=UBL-Order | contractRef=PRO-2026-00342
+                        </div>
+                        <div class="audit-log-entry">
+                            <span class="timestamp">[2026-10-31 23:59:00]</span>
+                            <span class="action">DeliveryAccepted</span>
+                            deliveryId=DEL-2026-1523 | slaCompliance=99.8% | orderRef=ORD-2026-1523
+                        </div>
+                        <div class="audit-log-entry">
+                            <span class="timestamp">[2026-11-05 14:00:00]</span>
+                            <span class="action">InvoiceReceived</span>
+                            invoiceId=INV-2026-4421 | format=EN16931 | network=Peppol | refs=[contract,order,delivery]
+                        </div>
+                        <div class="audit-log-entry">
+                            <span class="timestamp">[2026-11-05 14:00:30]</span>
+                            <span class="action">InvoiceValidated</span>
+                            agent=PerformanceAgent:v2.0 | 3wayMatch=PASS | mandate=urn:mandate:approve-payment
+                        </div>
+                        <div class="audit-log-entry">
+                            <span class="timestamp">[2026-11-05 14:01:00]</span>
+                            <span class="action">PaymentCompleted</span>
+                            amount=8000 EUR | paymentRef=PAY-2026-8821 | invoiceRef=INV-2026-4421
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3><span class="card-icon">📊</span> Audit-raportti</h3>
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 10px; border: 1px solid #e5e7eb; font-weight: bold;">Prosessin kokonaiskesto</td>
+                            <td style="padding: 10px; border: 1px solid #e5e7eb;">87 päivää (valmistelusta maksuun)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #e5e7eb; font-weight: bold;">Manuaalisia vaiheita</td>
+                            <td style="padding: 10px; border: 1px solid #e5e7eb;">3 kpl (vaatimusten hyväksyntä, päätös, sopimuksen allekirjoitus)</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 10px; border: 1px solid #e5e7eb; font-weight: bold;">Automaattisia tarkastuksia</td>
+                            <td style="padding: 10px; border: 1px solid #e5e7eb;">18 kpl (todisteet, kelpoisuus, vertailu, lasku)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #e5e7eb; font-weight: bold;">Käytetyt agentit</td>
+                            <td style="padding: 10px; border: 1px solid #e5e7eb;">5 kpl (valmistelu, tarjous, validointi, vertailu, sopimus, toteutuma)</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 10px; border: 1px solid #e5e7eb; font-weight: bold;">W3C VC -todistuksia</td>
+                            <td style="padding: 10px; border: 1px solid #e5e7eb;">4 kpl (kaikki vahvistettu)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #e5e7eb; font-weight: bold;">Mandaattitarkastuksia</td>
+                            <td style="padding: 10px; border: 1px solid #e5e7eb;">7 kpl (kaikki valtuutettu)</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 10px; border: 1px solid #e5e7eb; font-weight: bold;">Jäljitettävyys</td>
+                            <td style="padding: 10px; border: 1px solid #e5e7eb;">100 % - jokainen toimenpide loggilla</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #e5e7eb; font-weight: bold;">Sääntöversiot</td>
+                            <td style="padding: 10px; border: 1px solid #e5e7eb;">Tallennettu (ProcurementRules_v2.4.1)</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="info-box success">
+                    <h4>✅ Tavoitetila saavutettu</h4>
+                    <p><strong>Ostolasku jäljitetty kokonaan:</strong> hankintailmoitus → tarjouspyyntö → todisteet → tarjous → päätös → sopimus → tilaus → toimitus → lasku → maksu</p>
+                    <p style="margin-top: 10px;">Jokainen vaihe on auditoitavissa: kuka teki, millä mandaatilla, minkä tiedon perusteella, millä säännöllä.</p>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="nextPhase(1)">🔄 Aloita uusi hankinta</button>
+                    <button class="btn btn-primary" onclick="alert('Demo valmis! Koko prosessi suoritettu tavoitetilan mukaisesti.')">📋 Lataa audit-raportti</button>
+                </div>
+            </div>
+            
+        </div>
+        
+        <footer style="text-align: center; color: white; margin-top: 40px; opacity: 0.9;">
+            <p>🤖 Automaattinen hankintaprosessi - Tavoitetilan demo</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">Rakennettu EBWV-semantiikan, W3C VC:n, mandaattien ja deterministisen sääntökoneen päälle</p>
+        </footer>
+    </div>
+    
+    <script>
+        // Phase navigation
+        const phaseButtons = document.querySelectorAll('.phase-btn');
+        const phaseContents = document.querySelectorAll('.phase-content');
+        
+        phaseButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const phase = btn.dataset.phase;
+                activatePhase(phase);
+            });
+        });
+        
+        function activatePhase(phaseNum) {
+            // Update buttons
+            phaseButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (parseInt(btn.dataset.phase) < parseInt(phaseNum)) {
+                    btn.classList.add('completed');
+                }
+                if (btn.dataset.phase === phaseNum) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Update content
+            phaseContents.forEach(content => {
+                content.classList.remove('active');
+                if (content.dataset.phase === phaseNum) {
+                    content.classList.add('active');
+                }
+            });
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function nextPhase(phaseNum) {
+            activatePhase(phaseNum.toString());
+        }
+        
+        // Simulate typing in agent logs (optional enhancement)
+        document.querySelectorAll('.agent-log').forEach(log => {
+            log.style.opacity = '0';
+            setTimeout(() => {
+                log.style.transition = 'opacity 0.6s';
+                log.style.opacity = '1';
+            }, 300);
+        });
+    </script>
+</body>
+</html>
