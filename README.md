@@ -6,6 +6,11 @@ Interaktiivinen visualisointi täysin automatisoitavasta julkisten hankintojen p
 
 ## 🎯 Mitä tämä on?
 
+**Interaktiivinen demo + teoreettinen pohja** automaattisesta hankintaprosessista.
+
+- **[📄 White Paper (PDF)](white-paper-hankintojen-digitalisaatio.pdf)** - Toimeenpanomalli EU:n julkisten hankintojen digitalisaatioon
+- **[🌐 Live Demo](https://jgmikael.github.io/procurement-automation-demo/)** - Visuaalinen esitys prosessin toiminnasta
+
 Tämä demo näyttää miten julkiset hankinnat voivat toimia tulevaisuudessa kun yhdistetään:
 
 - **EU Business Wallet** - Yritysten digitaalinen identiteetti ja todisteet
@@ -117,6 +122,41 @@ AI-mallia **ei käytetä** lakisääteisten ehtojen "tulkitsemiseen". Sen sijaan
 ## 📚 Liittyvät projektit
 
 - **[EBWV Semantic Analysis](https://jgmikael.github.io/ebwv-semantic-analysis/)** - Semanttinen analyysi EU Business Wallet Vocabularystä
+
+## 📄 White Paper: EU:n julkisten hankintojen digitaalinen toimeenpano
+
+**[Lataa PDF](white-paper-hankintojen-digitalisaatio.pdf)** (11 sivua)
+
+White Paper käsittelee:
+
+### Keskeinen johtopäätös
+Asetusluonnos antaa oikean suunnan, mutta varsinainen automaatio syntyy toimeenpanoarkkitehtuurista. Digitaalinen ekosysteemi kannattaa toteuttaa **hajautettuna luottamus- ja automaatioarkkitehtuurina** - ei uutena monoliittisena hankintajärjestelmänä.
+
+### 6 kyvykkyyttä Suomessa
+1. **Kansallisesti hallittu semanttinen kerros** - EU eProcurement Ontology + Suomen käsitteet
+2. **Yhteentoimivuusalusta** - Semanttisten määritysten hallinta ja julkaisu
+3. **eIDAS 2.0 lompakot** - Henkilö- ja yrityslompakot W3C VC -pohjaisilla todennettavilla tiedoilla
+4. **Säännöt palveluna** - API-pohjaiset, versionhallitut päätöspalvelut
+5. **Agenttinen AI** - Orkestroi prosessin, mutta toimii sääntöjen ja valtuuksien sisällä
+6. **Hajautettu tietoekosysteemi** - Järjestelmät vaihtavat yhteisesti ymmärrettävää tietoa
+
+### Arkkitehtuurin kerrokset
+```
+1. Tavoitteet ja luottamusrajat
+   ↓
+2. Agenttinen orkestrointi + deterministinen prosessimoottori
+   ↓
+3. Säännöt palveluna (Rule API, versiointi, perustelu)
+   ↓
+4. Todennettavat datatuotteet (W3C VC, lompakot)
+   ↓
+5. Yhteinen semanttinen kerros (SKOS, OWL, SHACL, JSON-LD)
+   ↓
+6. Verkot, alustat ja tietoavaruudet
+```
+
+### Yhteys demoon
+White Paper määrittelee **arkkitehtuurin ja periaatteet**. Tämä demo visualisoi **käytännön toteutuksen** näiden periaatteiden mukaisesti.
 
 ## 🚀 Käyttö
 
