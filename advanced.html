@@ -954,7 +954,7 @@ proc:TarjoajaShape
                                     🔍 Avaa Todiste
                                 </button>
                             </td>
-                            <td style="padding: 12px;">PRH / Kaupparekisteri<br><small style="color: #6b7280;">EBWV:LegalEntity + ePO:Supplier</small></td>
+                            <td style="padding: 12px;">PRH / Kaupparekisteri<br><small style="color: #6b7280;">EBWV:Company + EBWV:EconomicOperator + ePO:Supplier</small></td>
                             <td style="padding: 12px;">Osapuolen yksiselitteinen tunnistus ja perustiedot</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #334155;">
@@ -965,7 +965,7 @@ proc:TarjoajaShape
                                     🔍 Avaa Todiste
                                 </button>
                             </td>
-                            <td style="padding: 12px;">Yritys (itse myönnetty)<br><small style="color: #6b7280;">EBWV:RepresentationPower (NCBV-pohjainen)</small></td>
+                            <td style="padding: 12px;">Yritys (itse myönnetty)<br><small style="color: #6b7280;">EBWV:LegalRepresentative + scopeOfAuthorization</small></td>
                             <td style="padding: 12px;">Kuka saa jakaa todisteita, jättää tarjouksen ja allekirjoittaa</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #334155;">
@@ -1066,8 +1066,12 @@ proc:TarjoajaShape
             <div style="background: #064e3b; padding: 25px; border-radius: 12px; margin-top: 30px; border: 2px solid #10b981;">
                 <h3 style="color: #34d399; margin-bottom: 15px;">🔗 Syvällinen Semanttinen Analyysi</h3>
                 <p style="color: #d1fae5; margin-bottom: 15px;">
-                    Kaikki yllä olevat todisteet perustuvat <strong>EU Business Wallet Vocabulary (EBWV)</strong> 
-                    ja <strong>eProcurement Ontology (ePO)</strong> -malleihin.
+                    Kaikki yllä olevat todisteet perustuvat <strong>EU Business Wallet Vocabulary (EBWV v0.1)</strong> 
+                    ja <strong>eProcurement Ontology (ePO v3.1.0)</strong> -malleihin.
+                </p>
+                <p style="color: #d1fae5; margin-bottom: 15px;">
+                    <strong>✓ Verifioitu EBWV:n virallisista määrityksistä:</strong> 
+                    <a href="https://w3id.org/ebwv/" target="_blank" style="color: #34d399; text-decoration: underline;">https://w3id.org/ebwv/</a>
                 </p>
                 <p style="color: #d1fae5; margin-bottom: 15px;">
                     Semanttinen analyysi EBWV:stä (sisältäen vertailun PowerOfAttorney-, Proxy- ja Mandate-malleihin) 
