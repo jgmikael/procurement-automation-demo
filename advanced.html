@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EU Hankinnat - Tekninen Arkkitehtuuri</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 1px solid #334155;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            color: #60a5fa;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.1em;
+            color: #94a3b8;
+        }
+        
+        .architecture-layers {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .layer {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .layer:hover {
+            border-color: #60a5fa;
+            transform: translateX(10px);
+            box-shadow: 0 0 30px rgba(96, 165, 250, 0.3);
+        }
+        
+        .layer.active {
+            border-color: #34d399;
+            background: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
+        }
+        
+        .layer-number {
+            position: absolute;
+            top: 20px;
+            left: -20px;
+            width: 50px;
+            height: 50px;
+            background: #60a5fa;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #0f172a;
+        }
+        
+        .layer h2 {
+            color: #60a5fa;
+            margin-bottom: 10px;
+            margin-left: 40px;
+        }
+        
+        .layer-description {
+            color: #94a3b8;
+            margin-left: 40px;
+            margin-bottom: 15px;
+        }
+        
+        .layer-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-left: 40px;
+        }
+        
+        .tech-badge {
+            background: #1e40af;
+            color: #dbeafe;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+        
+        .layer-details {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #0f172a;
+            border-radius: 8px;
+            border-left: 4px solid #34d399;
+        }
+        
+        .layer.active .layer-details {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .code-block {
+            background: #000;
+            color: #10b981;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        .code-comment {
+            color: #6b7280;
+        }
+        
+        .code-key {
+            color: #60a5fa;
+        }
+        
+        .code-value {
+            color: #34d399;
+        }
+        
+        .code-string {
+            color: #fbbf24;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .comparison-card {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #334155;
+        }
+        
+        .comparison-card.winner {
+            border-color: #34d399;
+            background: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
+        }
+        
+        .comparison-card h3 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+        }
+        
+        .comparison-card.winner h3 {
+            color: #34d399;
+        }
+        
+        .comparison-card ul {
+            list-style: none;
+            margin-left: 0;
+        }
+        
+        .comparison-card li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .comparison-card li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #34d399;
+            font-weight: bold;
+        }
+        
+        .comparison-card.traditional li::before {
+            content: "−";
+            color: #94a3b8;
+        }
+        
+        .flow-diagram {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #334155;
+        }
+        
+        .flow-step {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #60a5fa;
+            position: relative;
+        }
+        
+        .flow-step::after {
+            content: "↓";
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            color: #60a5fa;
+        }
+        
+        .flow-step:last-child::after {
+            display: none;
+        }
+        
+        .flow-step h4 {
+            color: #60a5fa;
+            margin-bottom: 8px;
+        }
+        
+        .data-structure {
+            background: #000;
+            color: #f3f4f6;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            margin: 15px 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .vc-badge {
+            display: inline-block;
+            background: #059669;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin-left: 10px;
+            font-weight: 600;
+        }
+        
+        .rule-api-demo {
+            background: #1e293b;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #334155;
+        }
+        
+        .rule-input {
+            background: #0f172a;
+            border: 2px solid #334155;
+            color: #e2e8f0;
+            padding: 12px;
+            border-radius: 8px;
+            width: 100%;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 10px 0;
+        }
+        
+        .rule-button {
+            background: #2563eb;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .rule-button:hover {
+            background: #1e40af;
+            transform: translateY(-2px);
+        }
+        
+        .rule-result {
+            background: #064e3b;
+            border: 2px solid #10b981;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .rule-result.show {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+        
+        .timeline-viz {
+            position: relative;
+            padding: 30px 0;
+            margin: 30px 0;
+        }
+        
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #60a5fa 0%, #34d399 100%);
+        }
+        
+        .timeline-event {
+            position: relative;
+            padding: 20px;
+            background: #1e293b;
+            border-radius: 10px;
+            margin: 30px 0;
+            width: 45%;
+            border: 2px solid #334155;
+        }
+        
+        .timeline-event:nth-child(odd) {
+            margin-left: 0;
+        }
+        
+        .timeline-event:nth-child(even) {
+            margin-left: 55%;
+        }
+        
+        .timeline-event::before {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #60a5fa;
+            border-radius: 50%;
+            top: 25px;
+        }
+        
+        .timeline-event:nth-child(odd)::before {
+            right: -62px;
+        }
+        
+        .timeline-event:nth-child(even)::before {
+            left: -62px;
+        }
+        
+        .timeline-event h4 {
+            color: #60a5fa;
+            margin-bottom: 8px;
+        }
+        
+        .timeline-event .timestamp {
+            color: #6b7280;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+        
+        .nppds-flow {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            padding: 30px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #334155;
+        }
+        
+        .data-point {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #34d399;
+        }
+        
+        .data-point strong {
+            color: #60a5fa;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .semantic-layer-viz {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .semantic-card {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #334155;
+        }
+        
+        .semantic-card h4 {
+            color: #60a5fa;
+            margin-bottom: 12px;
+        }
+        
+        .semantic-example {
+            background: #0f172a;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        
+        @media (max-width: 1024px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .timeline-event {
+                width: 100%;
+                margin-left: 0 !important;
+            }
+            
+            .timeline-line {
+                left: 20px;
+            }
+            
+            .timeline-event::before {
+                left: -42px !important;
+                right: auto !important;
+            }
+        }
+        
+        .interactive-toggle {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .toggle-btn {
+            background: #334155;
+            color: #e2e8f0;
+            padding: 12px 25px;
+            border: 2px solid #475569;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 0 10px;
+            transition: all 0.3s;
+        }
+        
+        .toggle-btn.active {
+            background: #2563eb;
+            border-color: #2563eb;
+            color: white;
+        }
+        
+        .toggle-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3);
+        }
+        
+        .view-section {
+            display: none;
+        }
+        
+        .view-section.active {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏗️ EU Julkisten Hankintojen Digitaalinen Arkkitehtuuri</h1>
+            <p>Tekninen toimeenpanomalli: semantiikasta automaatioon</p>
+        </header>
+        
+        <div class="interactive-toggle">
+            <button class="toggle-btn active" onclick="switchView('architecture')">Arkkitehtuuri</button>
+            <button class="toggle-btn" onclick="switchView('semantic')">Semanttinen Kerros</button>
+            <button class="toggle-btn" onclick="switchView('dataproducts')">Datatuotteet</button>
+            <button class="toggle-btn" onclick="switchView('rules')">Rule API</button>
+            <button class="toggle-btn" onclick="switchView('agents')">Agentit</button>
+            <button class="toggle-btn" onclick="switchView('lifecycle')">Elinkaari</button>
+        </div>
+        
+        <!-- ARCHITECTURE VIEW -->
+        <div class="view-section active" id="view-architecture">
+            <h2 style="text-align: center; color: #60a5fa; margin: 30px 0;">6-Kerroksinen Kyvykkyysarkkitehtuuri</h2>
+            <p style="text-align: center; color: #94a3b8; margin-bottom: 30px;">
+                Jokainen kerros on itsenäisesti korvattava. Klikkaa kerrosta nähdäksesi lisätietoja.
+            </p>
+            
+            <div class="architecture-layers">
+                <div class="layer" onclick="toggleLayer(this)">
+                    <div class="layer-number">1</div>
+                    <h2>Tavoitteet ja Luottamusrajat</h2>
+                    <div class="layer-description">
+                        Laki, hankintakohtaiset ehdot, toimivaltuudet ja tietosuoja
+                    </div>
+                    <div class="layer-tech">
+                        <span class="tech-badge">Laki</span>
+                        <span class="tech-badge">Hankintaehdot</span>
+                        <span class="tech-badge">Mandaatit</span>
+                        <span class="tech-badge">GDPR</span>
+                    </div>
+                    <div class="layer-details">
+                        <h3 style="color: #34d399; margin-bottom: 15px;">Kontrollit ja Rajat</h3>
+                        <ul style="color: #94a3b8; list-style: none;">
+                            <li>✓ Hankintalaki ja EU-asetus määrittävät pakolliset vaiheet</li>
+                            <li>✓ Hankintayksikkö määrittää menettelykohaiset ehdot ja kriteerit</li>
+                            <li>✓ Digitaaliset mandaatit rajaavat kenen toimivallalla mitäkin tehdään</li>
+                            <li>✓ Tietosuoja ja salassapito määrittävät mihin tietoa saa käyttää</li>
+                        </ul>
+                        <p style="margin-top: 15px; color: #fbbf24; font-style: italic;">
+                            Tämä kerros ei ole teknologia vaan oikeudellinen ja eettinen rajapinta.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="layer" onclick="toggleLayer(this)">
+                    <div class="layer-number">2</div>
+                    <h2>Agenttinen Orkestrointi + Deterministinen Prosessimoottori</h2>
+                    <div class="layer-description">
+                        AI suunnittelee ja sovittaa; sääntömoottori tarkistaa ja hyväksyy
+                    </div>
+                    <div class="layer-tech">
+                        <span class="tech-badge">LLM Agents</span>
+                        <span class="tech-badge">BPMN/DMN</span>
+                        <span class="tech-badge">Event-driven</span>
+                        <span class="tech-badge">Audit Trail</span>
+                    </div>
+                    <div class="layer-details">
+                        <h3 style="color: #34d399; margin-bottom: 15px;">Hybridi: Älykäs + Deterministinen</h3>
+                        <div class="comparison-grid">
+                            <div class="comparison-card traditional">
+                                <h3>❌ Perinteinen BPEL</h3>
+                                <ul>
+                                    <li>Ennalta mallinnettu prosessipolku</li>
+                                    <li>Määritetyt sanomat</li>
+                                    <li>Ohjelmoitu poikkeamakäsittely</li>
+                                    <li>Suoritusloki</li>
+                                </ul>
+                            </div>
+                            <div class="comparison-card winner">
+                                <h3>✅ Agenttinen Orkestrointi</h3>
+                                <ul>
+                                    <li>Tilanteen mukaan suunniteltu</li>
+                                    <li>Useita tietolähteitä ja kontekstia</li>
+                                    <li>Ehdottaa uuden toimintatavan</li>
+                                    <li>Päätösloki + sääntöversio + todiste</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <p style="margin-top: 15px; color: #fbbf24;">
+                            <strong>Agentti ehdottaa → Sääntömoottori rajaa → Ihminen hyväksyy</strong>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="layer" onclick="toggleLayer(this)">
+                    <div class="layer-number">3</div>
+                    <h2>Säännöt Palveluna</h2>
+                    <div class="layer-description">
+                        Rule API: versio, voimassaolo, perustelu
+                    </div>
+                    <div class="layer-tech">
+                        <span class="tech-badge">REST API</span>
+                        <span class="tech-badge">DMN</span>
+                        <span class="tech-badge">Versioning</span>
+                        <span class="tech-badge">Explainability</span>
+                    </div>
+                    <div class="layer-details">
+                        <h3 style="color: #34d399; margin-bottom: 15px;">Koneluettavat Säännöt</h3>
+                        <p style="color: #94a3b8; margin-bottom: 15px;">
+                            Laki-, menettely-, kelpoisuus-, arviointi- ja valvontasäännöt julkaistaan versionhallittuina API:na.
+                        </p>
+                        <div class="code-block">
+<span class="code-comment">// POST /api/rules/eligibility/check</span>
+{
+  "<span class="code-key">ruleId</span>": "<span class="code-string">procurement.eligibility.tax-compliance</span>",
+  "<span class="code-key">version</span>": "<span class="code-string">2.4.1</span>",
+  "<span class="code-key">input</span>": {
+    "<span class="code-key">issuanceDate</span>": "<span class="code-string">2026-08-20</span>",
+    "<span class="code-key">taxCompliance</span>": <span class="code-value">true</span>
+  }
+}
+
+<span class="code-comment">// Response</span>
+{
+  "<span class="code-key">result</span>": "<span class="code-value">PASS</span>",
+  "<span class="code-key">rule</span>": {
+    "<span class="code-key">expression</span>": "<span class="code-string">issuanceDate >= (NOW - 30 days) AND taxCompliance = true</span>",
+    "<span class="code-key">version</span>": "<span class="code-string">2.4.1</span>",
+    "<span class="code-key">effectiveFrom</span>": "<span class="code-string">2026-01-01</span>"
+  },
+  "<span class="code-key">explanation</span>": "<span class="code-string">Todistus myönnetty 5 päivää sitten (alle 30 pv), verot OK</span>",
+  "<span class="code-key">evidence</span>": ["<span class="code-string">urn:credential:tax:2026-08-20</span>"]
+}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="layer" onclick="toggleLayer(this)">
+                    <div class="layer-number">4</div>
+                    <h2>Todennettavat Datatuotteet</h2>
+                    <div class="layer-description">
+                        Henkilö- ja yrityslompakot, W3C Verifiable Credentials
+                    </div>
+                    <div class="layer-tech">
+                        <span class="tech-badge">W3C VC</span>
+                        <span class="tech-badge">eIDAS 2.0</span>
+                        <span class="tech-badge">DID</span>
+                        <span class="tech-badge">JSON-LD</span>
+                    </div>
+                    <div class="layer-details">
+                        <h3 style="color: #34d399; margin-bottom: 15px;">Todennettavat Todisteet</h3>
+                        <p style="color: #94a3b8; margin-bottom: 15px;">
+                            Jokainen todiste sisältää myöntäjän, kryptografisen allekirjoituksen, voimassaolon ja peruutustarkistuksen.
+                        </p>
+                        <div class="data-structure">
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1",
+    "https://procurement.europa.eu/contexts/v1"
+  ],
+  "<span class="code-key">type</span>": ["<span class="code-string">VerifiableCredential</span>", "<span class="code-string">TaxComplianceCertificate</span>"],
+  "<span class="code-key">issuer</span>": {
+    "<span class="code-key">id</span>": "<span class="code-string">did:web:vero.fi</span>",
+    "<span class="code-key">name</span>": "<span class="code-string">Verohallinto</span>"
+  },
+  "<span class="code-key">issuanceDate</span>": "<span class="code-string">2026-08-20T10:30:00Z</span>",
+  "<span class="code-key">expirationDate</span>": "<span class="code-string">2026-09-19T10:30:00Z</span>",
+  "<span class="code-key">credentialSubject</span>": {
+    "<span class="code-key">id</span>": "<span class="code-string">did:web:prh.fi:1234567-8</span>",
+    "<span class="code-key">businessId</span>": "<span class="code-string">1234567-8</span>",
+    "<span class="code-key">taxesCompliant</span>": <span class="code-value">true</span>,
+    "<span class="code-key">socialSecurityCompliant</span>": <span class="code-value">true</span>,
+    "<span class="code-key">validFrom</span>": "<span class="code-string">2023-01-01</span>",
+    "<span class="code-key">validUntil</span>": "<span class="code-string">2026-08-20</span>"
+  },
+  "<span class="code-key">credentialStatus</span>": {
+    "<span class="code-key">type</span>": "<span class="code-string">StatusList2021Entry</span>",
+    "<span class="code-key">statusListIndex</span>": "<span class="code-string">94567</span>",
+    "<span class="code-key">statusListCredential</span>": "<span class="code-string">https://vero.fi/credentials/status/2026</span>"
+  },
+  "<span class="code-key">proof</span>": {
+    "<span class="code-key">type</span>": "<span class="code-string">Ed25519Signature2020</span>",
+    "<span class="code-key">created</span>": "<span class="code-string">2026-08-20T10:30:05Z</span>",
+    "<span class="code-key">verificationMethod</span>": "<span class="code-string">did:web:vero.fi#key-1</span>",
+    "<span class="code-key">proofPurpose</span>": "<span class="code-string">assertionMethod</span>",
+    "<span class="code-key">proofValue</span>": "<span class="code-string">z5a3...x7f9</span>"
+  }
+}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="layer" onclick="toggleLayer(this)">
+                    <div class="layer-number">5</div>
+                    <h2>Yhteinen Semanttinen Kerros</h2>
+                    <div class="layer-description">
+                        SKOS, OWL/RDF, SHACL, JSON-LD, koodistot, pysyvät URI-tunnisteet
+                    </div>
+                    <div class="layer-tech">
+                        <span class="tech-badge">SKOS</span>
+                        <span class="tech-badge">OWL/RDF</span>
+                        <span class="tech-badge">SHACL</span>
+                        <span class="tech-badge">JSON-LD</span>
+                        <span class="tech-badge">URI</span>
+                    </div>
+                    <div class="layer-details">
+                        <h3 style="color: #34d399; margin-bottom: 15px;">Yksi Merkitys, Monta Esitysmuotoa</h3>
+                        <p style="color: #94a3b8; margin-bottom: 15px;">
+                            Sama käsite voi esiintyä W3C VC:nä, JSON-sanomana, UBL/XML-asiakirjana tai tietoavaruuden rajapintana.
+                        </p>
+                        <div class="semantic-layer-viz">
+                            <div class="semantic-card">
+                                <h4>SKOS - Käsitteet</h4>
+                                <p style="color: #94a3b8; font-size: 0.9em;">Määritelmät, synonyymit, kieliversiot</p>
+                                <div class="semantic-example">
+procurement:Supplier
+  skos:prefLabel "Tarjoaja"@fi
+  skos:altLabel "Toimittaja"@fi
+  skos:prefLabel "Supplier"@en
+  skos:definition "Yritys joka..."
+                                </div>
+                            </div>
+                            
+                            <div class="semantic-card">
+                                <h4>OWL - Suhteet</h4>
+                                <p style="color: #94a3b8; font-size: 0.9em;">Koneluettavat luokka- ja ominaisuussuhteet</p>
+                                <div class="semantic-example">
+procurement:Supplier
+  rdf:type owl:Class
+  rdfs:subClassOf org:Organization
+procurement:submits
+  rdfs:domain procurement:Supplier
+  rdfs:range procurement:Tender
+                                </div>
+                            </div>
+                            
+                            <div class="semantic-card">
+                                <h4>SHACL - Validointi</h4>
+                                <p style="color: #94a3b8; font-size: 0.9em;">Pakolliset kentät, datatyypit, rajoitteet</p>
+                                <div class="semantic-example">
+sh:property [
+  sh:path procurement:businessId ;
+  sh:minCount 1 ;
+  sh:pattern "^[0-9]{7}-[0-9]$"
+]
+                                </div>
+                            </div>
+                            
+                            <div class="semantic-card">
+                                <h4>JSON-LD Context</h4>
+                                <p style="color: #94a3b8; font-size: 0.9em;">Kytkee JSON-avaimet URI-tunnisteisiin</p>
+                                <div class="semantic-example">
+{
+  "@context": {
+    "businessId": {
+      "@id": "procurement:businessId",
+      "@type": "xsd:string"
+    }
+  }
+}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="layer" onclick="toggleLayer(this)">
+                    <div class="layer-number">6</div>
+                    <h2>Verkot, Alustat ja Tietoavaruudet</h2>
+                    <div class="layer-description">
+                        Hankintajärjestelmät, yhteentoimivuusverkko, NPPDS/PPDS, lähderekisterit
+                    </div>
+                    <div class="layer-tech">
+                        <span class="tech-badge">HILMA</span>
+                        <span class="tech-badge">Peppol</span>
+                        <span class="tech-badge">NPPDS</span>
+                        <span class="tech-badge">PPDS</span>
+                        <span class="tech-badge">Registers</span>
+                    </div>
+                    <div class="layer-details">
+                        <h3 style="color: #34d399; margin-bottom: 15px;">Hajautettu Toteutus, Yhteinen Hallinta</h3>
+                        <p style="color: #94a3b8; margin-bottom: 15px;">
+                            Tieto pysyy lähteessä aina kun mahdollista. Lompakko välittää varmennetun väitteen; 
+                            tietoavaruus tarjoaa hallitun pääsyn eikä tarpeetonta kopiovarastoa.
+                        </p>
+                        
+                        <div class="nppds-flow">
+                            <h4 style="color: #60a5fa; margin-bottom: 15px;">NPPDS/PPDS Tietovirta</h4>
+                            
+                            <div class="data-point">
+                                <strong>Hankintajärjestelmä</strong>
+                                Julkaisee rakenteisen hankintailmoituksen, tarjouspyynnön ja kriteerit
+                            </div>
+                            
+                            <div class="data-point">
+                                <strong>Lähderekisterit (PRH, Verohallinto)</strong>
+                                Myöntävät todennettavat yritystodisteet lompakolle
+                            </div>
+                            
+                            <div class="data-point">
+                                <strong>EU Business Wallet</strong>
+                                Yritys jakaa vain tarpeelliset, ajantasaiset attribuutit
+                            </div>
+                            
+                            <div class="data-point">
+                                <strong>Sääntöpalvelu</strong>
+                                Validoi todisteet ja kelpoisuuden koneellisesti
+                            </div>
+                            
+                            <div class="data-point">
+                                <strong>NPPDS (Kansallinen Tietoavaruus)</strong>
+                                Kerää validoidut elinkaaritiedot: ilmoitus → tarjous → päätös → sopimus → lasku
+                            </div>
+                            
+                            <div class="data-point">
+                                <strong>PPDS (EU Tietoavaruus)</strong>
+                                Aggregoi kansallisia tietoja EU-laajuiseen valvontaan ja analytiikkaan
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SEMANTIC VIEW -->
+        <div class="view-section" id="view-semantic">
+            <h2 style="text-align: center; color: #60a5fa; margin: 30px 0;">Semanttinen Kerros: Automaation Yhteinen Kieli</h2>
+            
+            <p style="text-align: center; color: #94a3b8; max-width: 800px; margin: 0 auto 30px;">
+                Tekninen yhteys siirtää bittejä; semanttinen yhteentoimivuus tekee niistä samoja faktoja kaikille osapuolille.
+            </p>
+            
+            <div class="semantic-layer-viz">
+                <div class="semantic-card">
+                    <h4>📚 SKOS Sanasto</h4>
+                    <p style="color: #94a3b8;">Käsitteet, määritelmät, synonyymit ja kieliversiot</p>
+                    <div class="code-block" style="margin-top: 10px;">
+@prefix skos: &lt;http://www.w3.org/2004/02/skos/core#&gt; .
+@prefix proc: &lt;https://procurement.fi/vocab#&gt; .
+
+proc:Tarjoaja
+  a skos:Concept ;
+  skos:prefLabel "Tarjoaja"@fi ;
+  skos:altLabel "Toimittaja"@fi ;
+  skos:prefLabel "Supplier"@en ;
+  skos:definition "Yritys tai yhteenliittymä, joka jättää tarjouksen julkisessa hankinnassa"@fi ;
+  skos:broader proc:Toimija ;
+  skos:related proc:Alihankkija ;
+  skos:exactMatch epo:Supplier .
+                    </div>
+                </div>
+                
+                <div class="semantic-card">
+                    <h4>🔗 OWL/RDF Vocabulary</h4>
+                    <p style="color: #94a3b8;">Koneluettavat luokka- ja ominaisuussuhteet</p>
+                    <div class="code-block" style="margin-top: 10px;">
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix proc: &lt;https://procurement.fi/vocab#&gt; .
+
+proc:Tarjoaja
+  a owl:Class ;
+  rdfs:subClassOf org:Organization ;
+  rdfs:label "Tarjoaja"@fi .
+
+proc:jättääTarjouksen
+  a owl:ObjectProperty ;
+  rdfs:domain proc:Tarjoaja ;
+  rdfs:range proc:Tarjous ;
+  rdfs:label "jättää tarjouksen"@fi .
+                    </div>
+                </div>
+                
+                <div class="semantic-card">
+                    <h4>✓ SHACL Profiili</h4>
+                    <p style="color: #94a3b8;">Käyttötapauksen validointisäännöt</p>
+                    <div class="code-block" style="margin-top: 10px;">
+@prefix sh: &lt;http://www.w3.org/ns/shacl#&gt; .
+
+proc:TarjoajaShape
+  a sh:NodeShape ;
+  sh:targetClass proc:Tarjoaja ;
+  sh:property [
+    sh:path proc:ytunnus ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:pattern "^[0-9]{7}-[0-9]$" ;
+    sh:message "Y-tunnus pakollinen ja muodossa 1234567-8"@fi
+  ] ;
+  sh:property [
+    sh:path proc:verotodistus ;
+    sh:minCount 1 ;
+    sh:class proc:Verotodistus ;
+    sh:message "Verotodistus vaaditaan"@fi
+  ] .
+                    </div>
+                </div>
+                
+                <div class="semantic-card">
+                    <h4>🔑 JSON-LD @context</h4>
+                    <p style="color: #94a3b8;">Kytkee JSON-avaimet semanttisiin URI:hin</p>
+                    <div class="code-block" style="margin-top: 10px;">
+{
+  "@context": {
+    "proc": "https://procurement.fi/vocab#",
+    "businessId": {
+      "@id": "proc:ytunnus",
+      "@type": "xsd:string"
+    },
+    "taxCertificate": {
+      "@id": "proc:verotodistus",
+      "@type": "@id"
+    },
+    "submittedDate": {
+      "@id": "proc:jättöpäivä",
+      "@type": "xsd:dateTime"
+    }
+  }
+}
+                    </div>
+                </div>
+            </div>
+            
+            <div style="background: #1e293b; padding: 30px; border-radius: 12px; margin-top: 30px; border: 2px solid #334155;">
+                <h3 style="color: #60a5fa; margin-bottom: 15px;">💡 Semanttinen Perusta On Formaattiriippumaton</h3>
+                <p style="color: #94a3b8;">
+                    W3C VC + JSON-LD tekee semanttisen linkityksen erityisen suoraan, mutta myös XML- ja 
+                    tavalliset JSON-sanomat voidaan liittää samaan perustaan ulkoisilla määrityksillä.
+                </p>
+                <p style="color: #fbbf24; margin-top: 15px; font-style: italic;">
+                    <strong>Ratkaiseva linjaus:</strong> Suomen ei pidä rakentaa EU-vaatimusta varten erillistä semanttista saareketta. 
+                    Hankintojen semantiikka on liitettävä kansalliseen yhteiseen semanttiseen perustaan ja yritystiedon 
+                    laajempaan eurooppalaiseen perustaan.
+                </p>
+            </div>
+        </div>
+        
+        <!-- DATAPRODUCTS VIEW -->
+        <div class="view-section" id="view-dataproducts">
+            <h2 style="text-align: center; color: #60a5fa; margin: 30px 0;">Todennettavat Datatuotteet</h2>
+            
+            <p style="text-align: center; color: #94a3b8; max-width: 800px; margin: 0 auto 30px;">
+                Kelpoisuus ei ole lomake vaan joukko ajantasaisia, tarkoitussidonnaisesti jaettavia väitteitä.
+            </p>
+            
+            <div style="background: #1e293b; padding: 25px; border-radius: 12px; margin-bottom: 30px; border: 2px solid #334155;">
+                <h3 style="color: #60a5fa; margin-bottom: 15px;">Keskeiset Datatuotteet Hankinnassa</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid #334155;">
+                            <th style="text-align: left; padding: 12px; color: #60a5fa;">Datatuote</th>
+                            <th style="text-align: left; padding: 12px; color: #60a5fa;">Auktoritatiivinen Lähde</th>
+                            <th style="text-align: left; padding: 12px; color: #60a5fa;">Koneellinen Käyttö</th>
+                        </tr>
+                    </thead>
+                    <tbody style="color: #94a3b8;">
+                        <tr style="border-bottom: 1px solid #334155;">
+                            <td style="padding: 12px;">Yrityksen identiteetti<span class="vc-badge">W3C VC</span></td>
+                            <td style="padding: 12px;">Kauppa-/yritysrekisteri</td>
+                            <td style="padding: 12px;">Osapuolen yksiselitteinen tunnistus</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #334155;">
+                            <td style="padding: 12px;">Edustus ja valtuutus<span class="vc-badge">W3C VC</span></td>
+                            <td style="padding: 12px;">Rekisteri tai mandaattipalvelu</td>
+                            <td style="padding: 12px;">Kuka saa jakaa todisteita ja allekirjoittaa</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #334155;">
+                            <td style="padding: 12px;">Vero- ja sosiaaliturvavelvoitteet<span class="vc-badge">W3C VC</span></td>
+                            <td style="padding: 12px;">Verohallinto</td>
+                            <td style="padding: 12px;">Poissulkemisperusteen tarkistus</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #334155;">
+                            <td style="padding: 12px;">Taloudellinen asema<span class="vc-badge">W3C VC</span></td>
+                            <td style="padding: 12px;">Tilinpäätösraportointi</td>
+                            <td style="padding: 12px;">Suhteellisten kriteerien tarkistus</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #334155;">
+                            <td style="padding: 12px;">Ammatillinen lupa<span class="vc-badge">W3C VC</span></td>
+                            <td style="padding: 12px;">Viranomainen tai sertifioija</td>
+                            <td style="padding: 12px;">Soveltuvuuden osoittaminen</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px;">Vastuullisuustieto<span class="vc-badge">W3C VC</span></td>
+                            <td style="padding: 12px;">DPP tai raportointilähde</td>
+                            <td style="padding: 12px;">Vihreiden kriteerien todentaminen</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div style="background: #1e293b; padding: 25px; border-radius: 12px; border: 2px solid #334155;">
+                <h3 style="color: #60a5fa; margin-bottom: 15px;">Esimerkkitodiste: ISO 27001 Sertifikaatti</h3>
+                <div class="data-structure">
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1",
+    "https://procurement.europa.eu/contexts/v1"
+  ],
+  "<span style="color: #60a5fa;">type</span>": [
+    "VerifiableCredential",
+    "ISO27001Certificate"
+  ],
+  
+  <span style="color: #6b7280;">/* Myöntäjä */</span>
+  "<span style="color: #60a5fa;">issuer</span>": {
+    "<span style="color: #60a5fa;">id</span>": "did:web:bureauveritas.com",
+    "<span style="color: #60a5fa;">name</span>": "Bureau Veritas",
+    "<span style="color: #60a5fa;">accreditation</span>": "urn:finas:accreditation:T001"
+  },
+  
+  <span style="color: #6b7280;">/* Voimassaolo */</span>
+  "<span style="color: #60a5fa;">issuanceDate</span>": "2025-03-01T00:00:00Z",
+  "<span style="color: #60a5fa;">expirationDate</span>": "2028-02-28T23:59:59Z",
+  
+  <span style="color: #6b7280;">/* Väite */</span>
+  "<span style="color: #60a5fa;">credentialSubject</span>": {
+    "<span style="color: #60a5fa;">id</span>": "did:web:prh.fi:1234567-8",
+    "<span style="color: #60a5fa;">businessId</span>": "1234567-8",
+    "<span style="color: #60a5fa;">companyName</span>": "TechSupport Oy",
+    "<span style="color: #60a5fa;">certificateType</span>": "ISO27001",
+    "<span style="color: #60a5fa;">certificateNumber</span>": "FI-ISO27001-2025-00123",
+    "<span style="color: #60a5fa;">scope</span>": "IT support services and infrastructure management",
+    "<span style="color: #60a5fa;">validFrom</span>": "2025-03-01",
+    "<span style="color: #60a5fa;">validUntil</span>": "2028-02-28",
+    "<span style="color: #60a5fa;">certificationBody</span>": "Bureau Veritas Finland"
+  },
+  
+  <span style="color: #6b7280;">/* Tilan tarkistus */</span>
+  "<span style="color: #60a5fa;">credentialStatus</span>": {
+    "<span style="color: #60a5fa;">type</span>": "StatusList2021Entry",
+    "<span style="color: #60a5fa;">statusListIndex</span>": "12345",
+    "<span style="color: #60a5fa;">statusListCredential</span>": "https://bureauveritas.com/credentials/status/2025"
+  },
+  
+  <span style="color: #6b7280;">/* Kryptografinen todiste */</span>
+  "<span style="color: #60a5fa;">proof</span>": {
+    "<span style="color: #60a5fa;">type</span>": "Ed25519Signature2020",
+    "<span style="color: #60a5fa;">created</span>": "2025-03-01T10:00:00Z",
+    "<span style="color: #60a5fa;">verificationMethod</span>": "did:web:bureauveritas.com#key-1",
+    "<span style="color: #60a5fa;">proofPurpose</span>": "assertionMethod",
+    "<span style="color: #60a5fa;">proofValue</span>": "z5a3b2c1...x7f8e9d0"
+  }
+}
+                </div>
+            </div>
+        </div>
+        
+        <!-- RULES VIEW -->
+        <div class="view-section" id="view-rules">
+            <h2 style="text-align: center; color: #60a5fa; margin: 30px 0;">Säännöt Palveluna (Rule API)</h2>
+            
+            <p style="text-align: center; color: #94a3b8; max-width: 800px; margin: 0 auto 30px;">
+                Laki-, menettely-, kelpoisuus-, arviointi- ja valvontasäännöt julkaistaan versionhallittuina, 
+                API-pohjaisesti saavutettavina päätöspalveluina.
+            </p>
+            
+            <div class="rule-api-demo">
+                <h3 style="color: #60a5fa; margin-bottom: 15px;">Interaktiivinen Rule API -demo</h3>
+                <p style="color: #94a3b8; margin-bottom: 20px;">
+                    Kokeile kelpoisuussääntöä: Verotodistuksen on oltava alle 30 päivää vanha ja verojen maksettuna.
+                </p>
+                
+                <label style="display: block; margin-bottom: 10px; color: #94a3b8;">Verotodistuksen myöntämispäivä:</label>
+                <input type="date" class="rule-input" id="rule-tax-date" value="2026-08-20">
+                
+                <label style="display: block; margin: 15px 0 10px; color: #94a3b8;">Verojen tilanne:</label>
+                <select class="rule-input" id="rule-tax-status">
+                    <option value="true">✅ Maksettu</option>
+                    <option value="false">❌ Maksamatta</option>
+                </select>
+                
+                <button class="rule-button" style="margin-top: 20px;" onclick="checkRule()">
+                    Tarkista Sääntö
+                </button>
+                
+                <div class="rule-result" id="rule-result"></div>
+            </div>
+            
+            <div style="background: #1e293b; padding: 25px; border-radius: 12px; margin-top: 30px; border: 2px solid #334155;">
+                <h3 style="color: #60a5fa; margin-bottom: 15px;">Sääntöjen Kategoriat</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <div style="background: #0f172a; padding: 15px; border-radius: 8px; border-left: 4px solid #3b82f6;">
+                        <h4 style="color: #60a5fa; margin-bottom: 10px;">⚖️ Oikeussäännöt</h4>
+                        <ul style="color: #94a3b8; list-style: none; padding: 0;">
+                            <li>✓ Poissulkemisperusteet</li>
+                            <li>✓ Valintakriteerien rajat</li>
+                            <li>✓ Alkuperäsäännöt</li>
+                            <li>✓ Määräajat</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: #0f172a; padding: 15px; border-radius: 8px; border-left: 4px solid #8b5cf6;">
+                        <h4 style="color: #60a5fa; margin-bottom: 10px;">📋 Hankintakohtaiset</h4>
+                        <ul style="color: #94a3b8; list-style: none; padding: 0;">
+                            <li>✓ Vähimmäisvaatimukset</li>
+                            <li>✓ Vertailumalli</li>
+                            <li>✓ Laatupainot</li>
+                            <li>✓ Sopimusehdot</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: #0f172a; padding: 15px; border-radius: 8px; border-left: 4px solid #ec4899;">
+                        <h4 style="color: #60a5fa; margin-bottom: 10px;">🔍 Prosessi & Valvonta</h4>
+                        <ul style="color: #94a3b8; list-style: none; padding: 0;">
+                            <li>✓ Roolit ja käyttöoikeudet</li>
+                            <li>✓ Esteellisyys</li>
+                            <li>✓ Validointi</li>
+                            <li>✓ Raportointi</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <p style="margin-top: 20px; color: #fbbf24; font-style: italic;">
+                    <strong>Tärkeää:</strong> Säännön julkaiseminen rajapintana ei tee kaikesta harkinnasta automaattista. 
+                    Se tekee automaatiokelpoisen osan näkyväksi, testattavaksi ja uudelleenkäytettäväksi - 
+                    ja rajaa harkinnan tietoisesti ihmisen vastuulle.
+                </p>
+            </div>
+        </div>
+        
+        <!-- AGENTS VIEW -->
+        <div class="view-section" id="view-agents">
+            <h2 style="text-align: center; color: #60a5fa; margin: 30px 0;">Agenttinen AI Prosessin Ajajana</h2>
+            
+            <p style="text-align: center; color: #94a3b8; max-width: 800px; margin: 0 auto 30px;">
+                Agentti ei korvaa oikeudellista prosessia; se käyttää yhteisiä faktoja ja sääntöjä 
+                prosessin turvalliseen orkestrointiin.
+            </p>
+            
+            <div class="comparison-grid" style="margin-bottom: 30px;">
+                <div class="comparison-card traditional">
+                    <h3>🔧 Perinteinen BPEL-moottori</h3>
+                    <ul>
+                        <li>Ennalta mallinnettu prosessipolku</li>
+                        <li>Määritetyt sanomat</li>
+                        <li>Ohjelmoitu poikkeamakäsittely</li>
+                        <li>Suoritusloki</li>
+                    </ul>
+                    <p style="margin-top: 15px; color: #f87171;">
+                        ❌ Ei sopeudu muutoksiin<br>
+                        ❌ Ei ymmärrä kontekstia<br>
+                        ❌ Ei selitä päätöksiä
+                    </p>
+                </div>
+                
+                <div class="comparison-card winner">
+                    <h3>🤖 Agenttinen Orkestrointi</h3>
+                    <ul>
+                        <li>Tilanteen mukaan suunniteltu</li>
+                        <li>Useita tietolähteitä ja kontekstia</li>
+                        <li>Ehdottaa uuden toimintatavan</li>
+                        <li>Päätösloki + sääntö + todiste + mandaatti</li>
+                    </ul>
+                    <p style="margin-top: 15px; color: #34d399;">
+                        ✅ Sopeutuu tilanteeseen<br>
+                        ✅ Ymmärtää kontekstin<br>
+                        ✅ Selittää päätökset
+                    </p>
+                </div>
+            </div>
+            
+            <div style="background: #7f1d1d; padding: 25px; border-radius: 12px; margin: 30px 0; border: 2px solid #dc2626;">
+                <h3 style="color: #fca5a5; margin-bottom: 15px;">🛑 Agentin Kovat Rajat</h3>
+                <div style="color: #fecaca;">
+                    <p style="margin-bottom: 12px;">
+                        <strong>1. Mandaatti:</strong> Toimii varmennetulla organisaatio- tai henkilömandaatilla; 
+                        valtuus on tarkistettavissa ennen jokaista sitovaa toimintoa.
+                    </p>
+                    <p style="margin-bottom: 12px;">
+                        <strong>2. Ei keksi faktaa:</strong> Ei keksi oikeusperustaa, arviointikriteeriä tai puuttuvaa faktaa; 
+                        epävarmuus johtaa lisätiedon pyyntöön tai eskalointiin.
+                    </p>
+                    <p style="margin-bottom: 12px;">
+                        <strong>3. Versionhallitut säännöt:</strong> Käyttää versionhallittuja sääntöpalveluja ja 
+                        validoituja datatuotteita; generatiivinen malli ei yksin tee kelpoisuus- tai vertailupäätöstä.
+                    </p>
+                    <p style="margin-bottom: 12px;">
+                        <strong>4. Audit trail:</strong> Säilyttää tapahtuma-, päätös-, tietolähde- ja 
+                        hyväksyntäketjun jäljitettävyyden tukemiseksi.
+                    </p>
+                    <p>
+                        <strong>5. Ihminen vastuussa:</strong> Ihminen säilyy vastuullisena erityisesti harkinnassa, 
+                        neuvottelussa, poikkeamisessa ja oikeusvaikutteisessa lopullisessa päätöksessä.
+                    </p>
+                </div>
+            </div>
+            
+            <div style="background: #1e293b; padding: 25px; border-radius: 12px; border: 2px solid #334155;">
+                <h3 style="color: #60a5fa; margin-bottom: 15px;">Agentti → Sääntö → Ihminen -malli</h3>
+                
+                <div class="flow-diagram">
+                    <div class="flow-step">
+                        <h4>1. Agentti Ehdottaa</h4>
+                        <p style="color: #94a3b8;">"Tarjoaja täyttää kaikki 5 vaatimusta. Ehdotan siirtymistä tarjousten vertailuun."</p>
+                        <div style="background: #0f172a; padding: 10px; border-radius: 6px; margin-top: 10px; font-family: monospace; font-size: 12px;">
+                            agent.propose("PROCEED_TO_EVALUATION", reasoning="All eligibility checks passed")
+                        </div>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <h4>2. Sääntömoottori Rajaa</h4>
+                        <p style="color: #94a3b8;">Tarkistaa että ehdotus noudattaa sääntöjä ja agentilla on mandaatti</p>
+                        <div style="background: #0f172a; padding: 10px; border-radius: 6px; margin-top: 10px; font-family: monospace; font-size: 12px;">
+                            ruleEngine.validate("procurement.rules.v2.4.1", action="PROCEED_TO_EVALUATION")
+                            mandateService.check(agent.id, action="PROCEED_TO_EVALUATION") → AUTHORIZED
+                        </div>
+                    </div>
+                    
+                    <div class="flow-step" style="margin-bottom: 0;">
+                        <h4>3. Ihminen Hyväksyy (tai Hylkää)</h4>
+                        <p style="color: #94a3b8;">Ihminen tarkistaa perustelut ja hyväksyy tai pyytää lisäselvitystä</p>
+                        <div style="background: #064e3b; padding: 10px; border-radius: 6px; margin-top: 10px; font-family: monospace; font-size: 12px; color: #10b981;">
+                            human.approve() → PROCEED
+                            // Audit trail: agent proposal + rule validation + human approval → recorded
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- LIFECYCLE VIEW -->
+        <div class="view-section" id="view-lifecycle">
+            <h2 style="text-align: center; color: #60a5fa; margin: 30px 0;">Elinkaaren Jäljitettävyys: Tarpeesta Maksuun</h2>
+            
+            <p style="text-align: center; color: #94a3b8; max-width: 800px; margin: 0 auto 30px;">
+                Yksittäinen ostolasku voidaan jäljittää sitä edeltäneeseen hankintailmoitukseen, 
+                tarjouspyyntöön, tarjoukseen, päätökseen, sopimukseen ja toimitukseen.
+            </p>
+            
+            <div class="timeline-viz">
+                <div class="timeline-line"></div>
+                
+                <div class="timeline-event">
+                    <h4>📋 Tarve Tunnistettu</h4>
+                    <div class="timestamp">2026-08-10 09:15:00</div>
+                    <p style="color: #94a3b8;">Budjetti- ja kulutustapahtuma synnyttää tarpeen IT-tukipalveluille</p>
+                    <div style="background: #0f172a; padding: 10px; border-radius: 6px; margin-top: 8px; font-family: monospace; font-size: 11px;">
+ProcurementNeedIdentified(id: "PRO-2026-00342", category: "IT-services", estimatedValue: 250000)
+                    </div>
+                </div>
+                
+                <div class="timeline-event">
+                    <h4>🤖 Agentti Valmisteli</h4>
+                    <div class="timestamp">2026-08-10 10:30:00</div>
+                    <p style="color: #94a3b8;">AI-agentti analysoi aiemmat hankinnat ja generoi luonnoksen</p>
+                    <div style="background: #0f172a; padding: 10px; border-radius: 6px; margin-top: 8px; font-family: monospace; font-size: 11px;">
+AgentDraftGenerated(agent: "PreparationAgent:v2.1", template: "ITServiceTemplate_2024", mandate: "urn:mandate:prepare")
+                    </div>
+                </div>
+                
+                <div class="timeline-event">
+                    <h4>✅ Tarjouspyyntö Hyväksytty</h4>
+                    <div class="timestamp">2026-08-12 14:00:00</div>
+                    <p style="color: #94a3b8;">Hankintayksikkö hyväksyi rakenteisen tarjouspyynnön</p>
+                    <div style="background: #0f172a; padding: 10px; border-radius: 6px; margin-top: 8px; font-family: monospace; font-size: 11px;">
+TenderRequirementsApproved(actor: "did:person:procurement:manager456", rulesVersion: "ProcurementRules_v2.4.1")
+                    </div>
+                </div>
+                
+                <div class="timeline-event">
+                    <h4>📢 Ilmoitus Julkaistu</h4>
+                    <div class="timestamp">2026-08-15 08:00:00</div>
+                    <p style="color: #94a3b8;">Rakenteinen hankintailmoitus julkaistu HILMAan</p>
+                    <div style="background: #0f172a; padding: 10px; border-radius: 6px; margin-top: 8px; font-family: monospace; font-size: 11px;">
+NoticePublished(platform: "HILMA", noticeId: "2026/S-158-123456", format: "eForms")
+                    </div>
+                </div>
+                
+                <div class="timeline-event">
+                    <h4>🎫 Todisteet Esitetty</h4>
+                    <div class="timestamp">2026-08-20 14:40:00</div>
+                    <p style="color: #94a3b8;">Tarjoaja esitti todisteet EU Business Walletista</p>
+                    <div style="background: #0f172a; padding: 10px; border-radius: 6px; margin-top: 8px; font-family: monospace; font-size: 11px;">
+EvidencePresented(from: "did:web:prh.fi:1234567-8", wallet: "urn:eudi:wallet:fi:abc123", credentials: 4)
+                    </div>
+                </div>
+                
+                <div class="timeline-event">
+                    <h4>✓ Kelpoisuus Vahvistettu</h4>
+                    <div class="timestamp">2026-08-20 14:41:00</div>
+                    <p style="color: #94a3b8;">Sääntömoottori tarkisti kelpoisuuden automaattisesti</p>
+                    <div style="background: #0f172a; padding: 10px; border-radius: 6px; margin-top: 8px; font-family: monospace; font-size: 11px;">
+EligibilityValidated(agent: "ValidationAgent:v3.0", rules: "ProcurementRules_v2.4.1", result: "PASS (5/5)")
+                    </div>
+                </div>
+                
+                <div class="timeline-event">
+                    <h4>📄 Tarjous Jätetty</h4>
+                    <div class="timestamp">2026-08-20 15:00:00</div>
+                    <p style="color: #94a3b8;">TechSupport Oy jätti tarjouksen 220 000 €</p>
+                    <div style="background: #0f172a; padding: 10px; border-radius: 6px; margin-top: 8px; font-family: monospace; font-size: 11px;">
+TenderSubmitted(tenderer: "TechSupport Oy", amount: 220000, receiptHash: "sha256:a3f2...")
+                    </div>
+                </div>
+                
+                <div class="timeline-event">
+                    <h4>📊 Tarjoukset Vertailtu</h4>
+                    <div class="timestamp">2026-08-23 11:00:00</div>
+                    <p style="color: #94a3b8;">Vertailuagentti laski pisteet kaavalla</p>
+                    <div style="background: #0f172a; padding: 10px; border-radius: 6px; margin-top: 8px; font-family: monospace; font-size: 11px;">
+TendersEvaluated(agent: "ComparisonAgent:v1.5", formula: "ProcurementRules_v2.4.1/Scoring", winner: "TechSupport", score: 100)
+                    </div>
+                </div>
+                
+                <div class="timeline-event">
+                    <h4>🏆 Hankintapäätös</h4>
+                    <div class="timestamp">2026-08-25 09:00:00</div>
+                    <p style="color: #94a3b8;">Hankintayksikkö teki päätöksen</p>
+                    <div style="background: #0f172a; padding: 10px; border-radius: 6px; margin-top: 8px; font-family: monospace; font-size: 11px;">
+AwardDecisionMade(actor: "did:person:procurement:manager456", winner: "TechSupport Oy", amount: 220000)
+                    </div>
+                </div>
+                
+                <div class="timeline-event">
+                    <h4>📜 Sopimus Allekirjoitettu</h4>
+                    <div class="timestamp">2026-09-01 10:00:00</div>
+                    <p style="color: #94a3b8;">Rakenteinen sopimus sähköisellä sinetillä</p>
+                    <div style="background: #0f172a; padding: 10px; border-radius: 6px; margin-top: 8px; font-family: monospace; font-size: 11px;">
+ContractSigned(parties: ["KuntaX", "TechSupportOy"], electronicSeal: true, contractId: "PRO-2026-00342")
+                    </div>
+                </div>
+                
+                <div class="timeline-event">
+                    <h4>🛒 Tilaus Lähetetty</h4>
+                    <div class="timestamp">2026-09-15 08:30:00</div>
+                    <p style="color: #94a3b8;">Peppol-verkossa UBL-Order</p>
+                    <div style="background: #0f172a; padding: 10px; border-radius: 6px; margin-top: 8px; font-family: monospace; font-size: 11px;">
+OrderIssued(orderId: "ORD-2026-1523", network: "Peppol", format: "UBL-Order", contractRef: "PRO-2026-00342")
+                    </div>
+                </div>
+                
+                <div class="timeline-event">
+                    <h4>✅ Toimitus Hyväksytty</h4>
+                    <div class="timestamp">2026-10-31 23:59:00</div>
+                    <p style="color: #94a3b8;">Palvelu toimitettu, SLA täyttynyt 99.8%</p>
+                    <div style="background: #0f172a; padding: 10px; border-radius: 6px; margin-top: 8px; font-family: monospace; font-size: 11px;">
+DeliveryAccepted(deliveryId: "DEL-2026-1523", slaCompliance: 99.8%, orderRef: "ORD-2026-1523")
+                    </div>
+                </div>
+                
+                <div class="timeline-event">
+                    <h4>💸 Lasku Käsitelty</h4>
+                    <div class="timestamp">2026-11-05 14:00:00</div>
+                    <p style="color: #94a3b8;">EN 16931 -lasku vastaanotettu Peppol-verkosta</p>
+                    <div style="background: #0f172a; padding: 10px; border-radius: 6px; margin-top: 8px; font-family: monospace; font-size: 11px;">
+InvoiceReceived(invoiceId: "INV-2026-4421", format: "EN16931", refs: ["contract", "order", "delivery"])
+                    </div>
+                </div>
+                
+                <div class="timeline-event">
+                    <h4>🤖 Automaattinen Tarkistus</h4>
+                    <div class="timestamp">2026-11-05 14:00:30</div>
+                    <p style="color: #94a3b8;">3-way match: sopimus, tilaus, toimitus vs. lasku</p>
+                    <div style="background: #064e3b; padding: 10px; border-radius: 6px; margin-top: 8px; font-family: monospace; font-size: 11px; color: #10b981;">
+InvoiceValidated(agent: "PerformanceAgent:v2.0", 3wayMatch: "PASS", mandate: "urn:mandate:approve-payment")
+                    </div>
+                </div>
+                
+                <div class="timeline-event">
+                    <h4>✅ Maksu Suoritettu</h4>
+                    <div class="timestamp">2026-11-05 14:01:00</div>
+                    <p style="color: #94a3b8;">Lasku maksettu automaattisesti mandaatin rajoissa</p>
+                    <div style="background: #064e3b; padding: 10px; border-radius: 6px; margin-top: 8px; font-family: monospace; font-size: 11px; color: #10b981;">
+PaymentCompleted(amount: 8000, paymentRef: "PAY-2026-8821", invoiceRef: "INV-2026-4421")
+                    </div>
+                </div>
+                
+                <div class="timeline-event">
+                    <h4>📊 NPPDS/PPDS Raportointi</h4>
+                    <div class="timestamp">2026-11-05 14:05:00</div>
+                    <p style="color: #94a3b8;">Koko elinkaari tallennettu tietoavaruuteen</p>
+                    <div style="background: #0f172a; padding: 10px; border-radius: 6px; margin-top: 8px; font-family: monospace; font-size: 11px;">
+LifecycleDataPublished(dataspace: "NPPDS", events: 16, contracts: 1, invoices: 1, compliance: "FULL_AUDIT_TRAIL")
+                    </div>
+                </div>
+            </div>
+            
+            <div style="background: #064e3b; padding: 25px; border-radius: 12px; margin-top: 30px; border: 2px solid #10b981;">
+                <h3 style="color: #34d399; margin-bottom: 15px;">✅ Tavoitetila Saavutettu</h3>
+                <p style="color: #d1fae5; margin-bottom: 15px;">
+                    Ostolasku jäljitetty kokonaan: hankintailmoitus → tarjouspyyntö → todisteet → tarjous → 
+                    päätös → sopimus → tilaus → toimitus → lasku → maksu
+                </p>
+                <p style="color: #d1fae5;">
+                    Jokainen vaihe on auditoitavissa: <strong>kuka teki, milloin, millä mandaatilla, 
+                    minkä tiedon perusteella, millä säännöllä.</strong>
+                </p>
+            </div>
+        </div>
+        
+        <footer style="text-align: center; padding: 40px 20px; margin-top: 50px; border-top: 2px solid #334155;">
+            <p style="color: #94a3b8; margin-bottom: 10px;">
+                🏗️ EU Julkisten Hankintojen Digitaalinen Arkkitehtuuri
+            </p>
+            <p style="color: #6b7280; font-size: 0.9em;">
+                Hajautettu luottamus- ja automaatioarkkitehtuuri - ei uusi monoliittinen järjestelmä
+            </p>
+            <p style="color: #6b7280; font-size: 0.9em; margin-top: 15px;">
+                <a href="white-paper-hankintojen-digitalisaatio.pdf" style="color: #60a5fa; text-decoration: none;">📄 Lataa White Paper (PDF)</a>
+            </p>
+        </footer>
+    </div>
+    
+    <script>
+        function toggleLayer(element) {
+            const layers = document.querySelectorAll('.layer');
+            layers.forEach(layer => {
+                if (layer === element) {
+                    layer.classList.toggle('active');
+                } else {
+                    layer.classList.remove('active');
+                }
+            });
+        }
+        
+        function switchView(viewName) {
+            // Update buttons
+            const buttons = document.querySelectorAll('.toggle-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update views
+            const views = document.querySelectorAll('.view-section');
+            views.forEach(view => {
+                view.classList.remove('active');
+            });
+            document.getElementById('view-' + viewName).classList.add('active');
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function checkRule() {
+            const dateInput = document.getElementById('rule-tax-date').value;
+            const statusInput = document.getElementById('rule-tax-status').value;
+            
+            const issueDate = new Date(dateInput);
+            const now = new Date();
+            const daysDiff = Math.floor((now - issueDate) / (1000 * 60 * 60 * 24));
+            
+            const taxPaid = statusInput === 'true';
+            const dateOk = daysDiff <= 30;
+            
+            const result = document.getElementById('rule-result');
+            result.classList.add('show');
+            
+            let resultHTML = `
+                <h4 style="color: ${dateOk && taxPaid ? '#34d399' : '#f87171'}; margin-bottom: 15px;">
+                    ${dateOk && taxPaid ? '✅ PASS' : '❌ FAIL'}
+                </h4>
+                <div style="background: #0f172a; padding: 15px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; margin-bottom: 15px;">
+                    <div style="color: #6b7280;">// Sääntö: ProcurementRules_v2.4.1/TaxCompliance</div>
+                    <div style="margin-top: 10px;">
+                        <span style="color: #60a5fa;">issuanceDate</span> &gt;= (NOW - 30 days) AND <span style="color: #60a5fa;">taxCompliance</span> = true
+                    </div>
+                </div>
+                <div style="color: #d1fae5;">
+                    <p style="margin-bottom: 8px;"><strong>Tarkistus 1: Voimassaolo</strong></p>
+                    <p style="margin-bottom: 15px;">
+                        Todistus myönnetty ${daysDiff} päivää sitten 
+                        ${dateOk ? '<span style="color: #34d399;">✓ (alle 30 pv)</span>' : '<span style="color: #f87171;">✗ (yli 30 pv)</span>'}
+                    </p>
+                    <p style="margin-bottom: 8px;"><strong>Tarkistus 2: Verot Maksettu</strong></p>
+                    <p style="margin-bottom: 15px;">
+                        ${taxPaid ? '<span style="color: #34d399;">✓ Verot maksettu</span>' : '<span style="color: #f87171;">✗ Verovelkaa</span>'}
+                    </p>
+                    <p style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #334155;">
+                        <strong>Perustelu:</strong> ${dateOk && taxPaid ? 
+                            'Todistus on voimassa ja verot maksettu. Kelpoisuus hyväksytty.' : 
+                            'Ei täytä vaatimuksia. ' + (!dateOk ? 'Todistus vanhentunut. ' : '') + (!taxPaid ? 'Verovelkaa. ' : '')}
+                    </p>
+                </div>
+            `;
+            
+            result.innerHTML = resultHTML;
+        }
+        
+        // Animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.layer, .timeline-event, .semantic-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'all 0.6s ease-out';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

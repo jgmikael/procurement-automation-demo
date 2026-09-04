@@ -8,8 +8,9 @@ Interaktiivinen visualisointi täysin automatisoitavasta julkisten hankintojen p
 
 **Interaktiivinen demo + teoreettinen pohja** automaattisesta hankintaprosessista.
 
-- **[📄 White Paper (PDF)](white-paper-hankintojen-digitalisaatio.pdf)** - Toimeenpanomalli EU:n julkisten hankintojen digitalisaatioon
-- **[🌐 Live Demo](https://jgmikael.github.io/procurement-automation-demo/)** - Visuaalinen esitys prosessin toiminnasta
+- - **[📄 White Paper (PDF)](white-paper-hankintojen-digitalisaatio.pdf)** - Toimeenpanomalli EU:n julkisten hankintojen digitalisaatioon
+- **[🌐 Perus Demo](https://jgmikael.github.io/procurement-automation-demo/)** - Visuaalinen esitys prosessin toiminnasta
+- **[🏗️ Tekninen Arkkitehtuuri](https://jgmikael.github.io/procurement-automation-demo/advanced.html)** - Syvällinen interaktiivinen demo (UUSI!)
 
 Tämä demo näyttää miten julkiset hankinnat voivat toimia tulevaisuudessa kun yhdistetään:
 
@@ -160,9 +161,23 @@ White Paper määrittelee **arkkitehtuurin ja periaatteet**. Tämä demo visuali
 
 ## 🚀 Käyttö
 
-**Suora linkki:** https://jgmikael.github.io/procurement-automation-demo/
+### Kaksi Demoa
 
-Demo toimii täysin selaimessa ilman asennuksia. Navigoi 10 vaiheen läpi painikkeilla ja katso miten automaatio toimii käytännössä.
+**1. Perus Demo (Prosessiläpikäynti)**  
+https://jgmikael.github.io/procurement-automation-demo/  
+10-vaiheinen interaktiivinen läpikäynti hankintaprosessista AI-agenttien, lompakoiden ja sääntömoottorin kanssa.
+
+**2. Tekninen Arkkitehtuuri (Syväsukellus)**  
+https://jgmikael.github.io/procurement-automation-demo/advanced.html  
+Interaktiivinen tutkielma 6-kerroksisesta arkkitehtuurista:
+- **Arkkitehtuuri**: Klikkaa kerroksia nähdäksesi teknisen toteutuksen
+- **Semanttinen Kerros**: SKOS, OWL, SHACL, JSON-LD -esimerkit
+- **Datatuotteet**: W3C Verifiable Credentials -rakenteet
+- **Rule API**: Interaktiivinen sääntömoottoridemo (kokeile!)
+- **Agentit**: Agenttinen vs. perinteinen orkestrointi
+- **Elinkaari**: Täydellinen audit trail tarpeesta maksuun
+
+Molemmat demot toimivat täysin selaimessa ilman asennuksia.
 
 ## 📄 Lisenssi
 
