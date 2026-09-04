@@ -910,6 +910,39 @@ proc:TarjoajaShape
 }
                     </div>
                 </div>
+                
+                <div class="semantic-card">
+                    <h4>💰 XBRL-JSON (Tilinpäätösraportointi)</h4>
+                    <p style="color: #94a3b8;">Standardoitu taloudellinen raportointi</p>
+                    <div class="code-block" style="margin-top: 10px;">
+{
+  "documentInfo": {
+    "documentType": "https://xbrl.org/2021/xbrl-json",
+    "namespaces": {
+      "fas": "http://www.xbrl.org/fi/fr/gaap/2024"
+    }
+  },
+  "facts": {
+    "fas:Revenue": {
+      "value": 3250000,
+      "decimals": 0,
+      "dimensions": {
+        "period": "2025-01-01/2025-12-31",
+        "entity": "1234567-8"
+      }
+    },
+    "fas:OperatingProfit": {
+      "value": 130000,
+      "decimals": 0
+    }
+  }
+}
+                    </div>
+                    <p style="color: #6b7280; margin-top: 10px; font-size: 0.9em;">
+                        XBRL (eXtensible Business Reporting Language) - kansainvälinen standardi 
+                        taloudelliselle raportoinnille. Käytössä SEC, ESMA, PRH.
+                    </p>
+                </div>
             </div>
             
             <div style="background: #1e293b; padding: 30px; border-radius: 12px; margin-top: 30px; border: 2px solid #334155;">
@@ -974,9 +1007,15 @@ proc:TarjoajaShape
                             <td style="padding: 12px;">Poissulkemisperusteen tarkistus</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #334155;">
-                            <td style="padding: 12px;">Taloudellinen asema<span class="vc-badge">W3C VC</span></td>
-                            <td style="padding: 12px;">Tilinpäätösraportointi</td>
-                            <td style="padding: 12px;">Suhteellisten kriteerien tarkistus</td>
+                            <td style="padding: 12px;">
+                                Taloudellinen asema<span class="vc-badge">W3C VC</span><span class="vc-badge">XBRL-JSON</span><br>
+                                <button onclick="window.open('credentials/financial-statement.html', '_blank', 'width=1200,height=800')" 
+                                    style="margin-top: 8px; padding: 6px 12px; background: #f59e0b; color: #000; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold;">
+                                    🔍 Avaa Todiste
+                                </button>
+                            </td>
+                            <td style="padding: 12px;">Yritys (itse todistettu, tilintarkastettu)<br><small style="color: #6b7280;">XBRL-JSON (Finnish Accounting Standards)</small></td>
+                            <td style="padding: 12px;">Suhteelliset kriteerit: liikevaihto, liikevoitto, maksuvalmius</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #334155;">
                             <td style="padding: 12px;">Ammatillinen lupa<span class="vc-badge">W3C VC</span></td>
