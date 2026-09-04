@@ -18,6 +18,7 @@ Tämä demo näyttää miten julkiset hankinnat voivat toimia tulevaisuudessa ku
 - **W3C Verifiable Credentials** - Luotettavat, kryptografisesti vahvistetut todistukset
 - **Digitaaliset mandaatit** - Selkeät toimivaltuudet ihmisille ja AI-agenteille
 - **Semanttiset tietomallit** - Yhteinen kieli hankintojen kaikille osapuolille
+- **Vastuullisuuspassit (UNTP DPP)** - Tuotteiden ympäristö- ja sosiaalinen vastuullisuus
 - **Deterministiset sääntökoneet** - Läpinäkyvät, auditoitavat automaattiset tarkastukset
 - **AI-agentit** - Älykäs orkestrointi ja päätöstuki
 
@@ -116,6 +117,7 @@ AI-mallia **ei käytetä** lakisääteisten ehtojen "tulkitsemiseen". Sen sijaan
 - **DID** - Decentralized Identifiers (myöntäjien tunnistus)
 - **JSON-LD** - Linkitetty data (semanttinen yhteentoimivuus)
 - **XBRL-JSON** - Standardoitu taloudellinen raportointi (tilinpäätökset)
+- **UNTP DPP** - UN/CEFACT Digital Product Passport (vastuullisuustieto)
 - **SHACL** - Shapes Constraint Language (validointi)
 - **eForms** - EU:n hankintatietojen standardi
 - **Peppol** - Eurooppalainen e-laskutusverkko
@@ -177,6 +179,7 @@ Interaktiivinen tutkielma 6-kerroksisesta arkkitehtuurista:
   - 🏢 EU Company Certificate (EBWV + ePO)
   - 📜 Legal Representative (EBWV LegalRepresentative)
   - 💰 Financial Statement (XBRL-JSON income statement)
+  - 🌱 Sustainability Passport (UNTP DPP - carbon, circularity, certifications)
   - 📨 Tender Receipt (ePO TenderSubmission)
 - **Rule API**: Interaktiivinen sääntömoottoridemo (kokeile!)
 - **Agentit**: Agenttinen vs. perinteinen orkestrointi
