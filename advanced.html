@@ -931,7 +931,8 @@ proc:TarjoajaShape
             <h2 style="text-align: center; color: #60a5fa; margin: 30px 0;">Todennettavat Datatuotteet</h2>
             
             <p style="text-align: center; color: #94a3b8; max-width: 800px; margin: 0 auto 30px;">
-                Kelpoisuus ei ole lomake vaan joukko ajantasaisia, tarkoitussidonnaisesti jaettavia väitteitä.
+                Kelpoisuus ei ole lomake vaan joukko ajantasaisia, tarkoitussidonnaisesti jaettavia väitteitä.<br>
+                <strong style="color: #60a5fa;">Klikkaa "Avaa Todiste" nähdäksesi täyden W3C VC -rakenteen EBWV:n ja ePO:n mukaisesti.</strong>
             </p>
             
             <div style="background: #1e293b; padding: 25px; border-radius: 12px; margin-bottom: 30px; border: 2px solid #334155;">
@@ -946,14 +947,26 @@ proc:TarjoajaShape
                     </thead>
                     <tbody style="color: #94a3b8;">
                         <tr style="border-bottom: 1px solid #334155;">
-                            <td style="padding: 12px;">Yrityksen identiteetti<span class="vc-badge">W3C VC</span></td>
-                            <td style="padding: 12px;">Kauppa-/yritysrekisteri</td>
-                            <td style="padding: 12px;">Osapuolen yksiselitteinen tunnistus</td>
+                            <td style="padding: 12px;">
+                                Yrityksen identiteetti<span class="vc-badge">W3C VC</span><br>
+                                <button onclick="window.open('credentials/company-certificate.html', '_blank', 'width=1200,height=800')" 
+                                    style="margin-top: 8px; padding: 6px 12px; background: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                                    🔍 Avaa Todiste
+                                </button>
+                            </td>
+                            <td style="padding: 12px;">PRH / Kaupparekisteri<br><small style="color: #6b7280;">EBWV:LegalEntity + ePO:Supplier</small></td>
+                            <td style="padding: 12px;">Osapuolen yksiselitteinen tunnistus ja perustiedot</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #334155;">
-                            <td style="padding: 12px;">Edustus ja valtuutus<span class="vc-badge">W3C VC</span></td>
-                            <td style="padding: 12px;">Rekisteri tai mandaattipalvelu</td>
-                            <td style="padding: 12px;">Kuka saa jakaa todisteita ja allekirjoittaa</td>
+                            <td style="padding: 12px;">
+                                Edustus ja valtuutus<span class="vc-badge">W3C VC</span><br>
+                                <button onclick="window.open('credentials/mandate.html', '_blank', 'width=1200,height=800')" 
+                                    style="margin-top: 8px; padding: 6px 12px; background: #7c3aed; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                                    🔍 Avaa Todiste
+                                </button>
+                            </td>
+                            <td style="padding: 12px;">Yritys (itse myönnetty)<br><small style="color: #6b7280;">EBWV:RepresentationPower (NCBV-pohjainen)</small></td>
+                            <td style="padding: 12px;">Kuka saa jakaa todisteita, jättää tarjouksen ja allekirjoittaa</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #334155;">
                             <td style="padding: 12px;">Vero- ja sosiaaliturvavelvoitteet<span class="vc-badge">W3C VC</span></td>
@@ -970,17 +983,32 @@ proc:TarjoajaShape
                             <td style="padding: 12px;">Viranomainen tai sertifioija</td>
                             <td style="padding: 12px;">Soveltuvuuden osoittaminen</td>
                         </tr>
-                        <tr>
+                        <tr style="border-bottom: 1px solid #334155;">
                             <td style="padding: 12px;">Vastuullisuustieto<span class="vc-badge">W3C VC</span></td>
                             <td style="padding: 12px;">DPP tai raportointilähde</td>
                             <td style="padding: 12px;">Vihreiden kriteerien todentaminen</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px;">
+                                Tarjouksen vastaanotto<span class="vc-badge">W3C VC</span><br>
+                                <button onclick="window.open('credentials/tender-receipt.html', '_blank', 'width=1200,height=800')" 
+                                    style="margin-top: 8px; padding: 6px 12px; background: #be123c; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                                    🔍 Avaa Todiste
+                                </button>
+                            </td>
+                            <td style="padding: 12px;">Hankintajärjestelmä<br><small style="color: #6b7280;">ePO:TenderSubmissionReceipt</small></td>
+                            <td style="padding: 12px;">Todistus tarjouksen vastaanottamisesta ennen määräaikaa</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             
-            <div style="background: #1e293b; padding: 25px; border-radius: 12px; border: 2px solid #334155;">
-                <h3 style="color: #60a5fa; margin-bottom: 15px;">Esimerkkitodiste: ISO 27001 Sertifikaatti</h3>
+            <div style="background: #1e293b; padding: 25px; border-radius: 12px; border: 2px solid #334155; margin-top: 30px;">
+                <h3 style="color: #60a5fa; margin-bottom: 15px;">📋 Konkreettinen Esimerkki: ISO 27001 Sertifikaatti (W3C VC)</h3>
+                <p style="color: #94a3b8; margin-bottom: 15px;">
+                    Alla täydellinen W3C Verifiable Credential ISO 27001 -sertifikaatille. 
+                    Huomaa EBWV:n ja ePO:n semanttiset viitteet JSON-LD @context-osiossa.
+                </p>
                 <div class="data-structure">
 {
   "@context": [
@@ -1033,6 +1061,29 @@ proc:TarjoajaShape
   }
 }
                 </div>
+            </div>
+            
+            <div style="background: #064e3b; padding: 25px; border-radius: 12px; margin-top: 30px; border: 2px solid #10b981;">
+                <h3 style="color: #34d399; margin-bottom: 15px;">🔗 Syvällinen Semanttinen Analyysi</h3>
+                <p style="color: #d1fae5; margin-bottom: 15px;">
+                    Kaikki yllä olevat todisteet perustuvat <strong>EU Business Wallet Vocabulary (EBWV)</strong> 
+                    ja <strong>eProcurement Ontology (ePO)</strong> -malleihin.
+                </p>
+                <p style="color: #d1fae5; margin-bottom: 15px;">
+                    Semanttinen analyysi EBWV:stä (sisältäen vertailun PowerOfAttorney-, Proxy- ja Mandate-malleihin) 
+                    löytyy erillisestä projektista:
+                </p>
+                <div style="text-align: center; margin-top: 20px;">
+                    <a href="https://jgmikael.github.io/ebwv-semantic-analysis/" 
+                       target="_blank"
+                       style="display: inline-block; padding: 12px 30px; background: #10b981; color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">
+                        📊 EBWV Semantic Analysis →
+                    </a>
+                </div>
+                <p style="color: #6b7280; margin-top: 20px; font-size: 0.9em;">
+                    Analyysi sisältää 24 käsitettä, 3 mallia (PoX, PowerOfAttorney, NCBV), 
+                    interaktiiviset vertailutaulukot ja suosituksen Mandate-termin käyttöön.
+                </p>
             </div>
         </div>
         
