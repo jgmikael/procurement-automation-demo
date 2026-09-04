@@ -943,6 +943,41 @@ proc:TarjoajaShape
                         taloudelliselle raportoinnille. Käytössä SEC, ESMA, PRH.
                     </p>
                 </div>
+                
+                <div class="semantic-card">
+                    <h4>🌱 UNTP DPP (Digital Product Passport)</h4>
+                    <p style="color: #94a3b8;">UN/CEFACT vastuullisuusstandardi</p>
+                    <div class="code-block" style="margin-top: 10px;">
+{
+  "@context": "https://test.uncefact.org/vocabulary/untp/dpp/0.5.0",
+  "type": "DigitalProductPassport",
+  "sustainability": {
+    "carbonFootprint": {
+      "value": 285,
+      "unit": "kg CO2e",
+      "scope": "cradle-to-gate",
+      "standard": "ISO 14067:2018"
+    },
+    "circularity": {
+      "materialCircularityIndicator": 0.72,
+      "recycledContent": 35,
+      "repairabilityIndex": 8.5
+    }
+  },
+  "conformityClaims": [
+    {
+      "topic": "environment.ecodesign",
+      "standard": "EU Ecodesign Regulation",
+      "conformance": true
+    }
+  ]
+}
+                    </div>
+                    <p style="color: #6b7280; margin-top: 10px; font-size: 0.9em;">
+                        UNTP (United Nations Transparency Protocol) - YK:n standardi tuotteiden 
+                        vastuullisuudelle. Sisältää CO₂-jalanjäljen, kiertotalousasteen, sertifikaatit.
+                    </p>
+                </div>
             </div>
             
             <div style="background: #1e293b; padding: 30px; border-radius: 12px; margin-top: 30px; border: 2px solid #334155;">
@@ -1023,9 +1058,15 @@ proc:TarjoajaShape
                             <td style="padding: 12px;">Soveltuvuuden osoittaminen</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #334155;">
-                            <td style="padding: 12px;">Vastuullisuustieto<span class="vc-badge">W3C VC</span></td>
-                            <td style="padding: 12px;">DPP tai raportointilähde</td>
-                            <td style="padding: 12px;">Vihreiden kriteerien todentaminen</td>
+                            <td style="padding: 12px;">
+                                Vastuullisuustieto<span class="vc-badge">W3C VC</span><span class="vc-badge">UNTP DPP</span><br>
+                                <button onclick="window.open('credentials/sustainability-dpp.html', '_blank', 'width=1200,height=800')" 
+                                    style="margin-top: 8px; padding: 6px 12px; background: #059669; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold;">
+                                    🔍 Avaa Todiste
+                                </button>
+                            </td>
+                            <td style="padding: 12px;">Valmistaja (itse todistettu, auditoitu)<br><small style="color: #6b7280;">UNTP Digital Product Passport + Sustainability vocabulary</small></td>
+                            <td style="padding: 12px;">Vihreiden kriteerien todentaminen: CO₂, kiertotalous, sertifikaatit</td>
                         </tr>
                         <tr>
                             <td style="padding: 12px;">
