@@ -115,6 +115,7 @@ AI-mallia **ei käytetä** lakisääteisten ehtojen "tulkitsemiseen". Sen sijaan
 - **W3C VC** - Verifiable Credentials (todistukset)
 - **DID** - Decentralized Identifiers (myöntäjien tunnistus)
 - **JSON-LD** - Linkitetty data (semanttinen yhteentoimivuus)
+- **XBRL-JSON** - Standardoitu taloudellinen raportointi (tilinpäätökset)
 - **SHACL** - Shapes Constraint Language (validointi)
 - **eForms** - EU:n hankintatietojen standardi
 - **Peppol** - Eurooppalainen e-laskutusverkko
@@ -171,10 +172,11 @@ https://jgmikael.github.io/procurement-automation-demo/
 https://jgmikael.github.io/procurement-automation-demo/advanced.html  
 Interaktiivinen tutkielma 6-kerroksisesta arkkitehtuurista:
 - **Arkkitehtuuri**: Klikkaa kerroksia nähdäksesi teknisen toteutuksen
-- **Semanttinen Kerros**: SKOS, OWL, SHACL, JSON-LD -esimerkit
+- **Semanttinen Kerros**: SKOS, OWL, SHACL, JSON-LD, XBRL-JSON -esimerkit
 - **Datatuotteet**: W3C Verifiable Credentials -rakenteet + **Klikkaa "Avaa Todiste" -painikkeita!**
   - 🏢 EU Company Certificate (EBWV + ePO)
-  - 📜 Digital Mandate (EBWV RepresentationPower)
+  - 📜 Legal Representative (EBWV LegalRepresentative)
+  - 💰 Financial Statement (XBRL-JSON income statement)
   - 📨 Tender Receipt (ePO TenderSubmission)
 - **Rule API**: Interaktiivinen sääntömoottoridemo (kokeile!)
 - **Agentit**: Agenttinen vs. perinteinen orkestrointi
