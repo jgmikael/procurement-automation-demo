@@ -167,12 +167,15 @@ White Paper määrittelee **arkkitehtuurin ja periaatteet**. Tämä demo visuali
 https://jgmikael.github.io/procurement-automation-demo/  
 10-vaiheinen interaktiivinen läpikäynti hankintaprosessista AI-agenttien, lompakoiden ja sääntömoottorin kanssa.
 
-**2. Tekninen Arkkitehtuuri (Syväsukellus)**  
+**2. Tekninen Arkkitehtuuri (Syväsukellus)** ⭐ PÄIVITETTY  
 https://jgmikael.github.io/procurement-automation-demo/advanced.html  
 Interaktiivinen tutkielma 6-kerroksisesta arkkitehtuurista:
 - **Arkkitehtuuri**: Klikkaa kerroksia nähdäksesi teknisen toteutuksen
 - **Semanttinen Kerros**: SKOS, OWL, SHACL, JSON-LD -esimerkit
-- **Datatuotteet**: W3C Verifiable Credentials -rakenteet
+- **Datatuotteet**: W3C Verifiable Credentials -rakenteet + **Klikkaa "Avaa Todiste" -painikkeita!**
+  - 🏢 EU Company Certificate (EBWV + ePO)
+  - 📜 Digital Mandate (EBWV RepresentationPower)
+  - 📨 Tender Receipt (ePO TenderSubmission)
 - **Rule API**: Interaktiivinen sääntömoottoridemo (kokeile!)
 - **Agentit**: Agenttinen vs. perinteinen orkestrointi
 - **Elinkaari**: Täydellinen audit trail tarpeesta maksuun
