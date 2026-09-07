@@ -4,6 +4,8 @@
 
 Interaktiivinen visualisointi täysin automatisoitavasta julkisten hankintojen prosessista – tarpeesta maksuun ilman manuaalista työtä.
 
+**NEW:** [🏗️ WE BUILD Attestation Examples](https://jgmikael.github.io/procurement-automation-demo/webuild-examples/) - W3C VC implementations with EBWV vocabulary
+
 ## 🎯 Mitä tämä on?
 
 **Interaktiivinen demo + teoreettinen pohja** automaattisesta hankintaprosessista.
@@ -126,6 +128,7 @@ AI-mallia **ei käytetä** lakisääteisten ehtojen "tulkitsemiseen". Sen sijaan
 ## 📚 Liittyvät projektit
 
 - **[EBWV Semantic Analysis](https://jgmikael.github.io/ebwv-semantic-analysis/)** - Semanttinen analyysi EU Business Wallet Vocabularystä
+- **[WE BUILD Attestation Examples](https://jgmikael.github.io/procurement-automation-demo/webuild-examples/)** - W3C VC esimerkit EBWV vocabularyllä
 
 ## 📄 White Paper: EU:n julkisten hankintojen digitaalinen toimeenpano
 
@@ -164,13 +167,13 @@ White Paper määrittelee **arkkitehtuurin ja periaatteet**. Tämä demo visuali
 
 ## 🚀 Käyttö
 
-### Kaksi Demoa
+### Kolme Demoa
 
 **1. Perus Demo (Prosessiläpikäynti)**  
 https://jgmikael.github.io/procurement-automation-demo/  
 10-vaiheinen interaktiivinen läpikäynti hankintaprosessista AI-agenttien, lompakoiden ja sääntömoottorin kanssa.
 
-**2. Tekninen Arkkitehtuuri (Syväsukellus)** ⭐ PÄIVITETTY  
+**2. Tekninen Arkkitehtuuri (Syväsukellus)**  
 https://jgmikael.github.io/procurement-automation-demo/advanced.html  
 Interaktiivinen tutkielma 6-kerroksisesta arkkitehtuurista:
 - **Arkkitehtuuri**: Klikkaa kerroksia nähdäksesi teknisen toteutuksen
@@ -184,6 +187,15 @@ Interaktiivinen tutkielma 6-kerroksisesta arkkitehtuurista:
 - **Rule API**: Interaktiivinen sääntömoottoridemo (kokeile!)
 - **Agentit**: Agenttinen vs. perinteinen orkestrointi
 - **Elinkaari**: Täydellinen audit trail tarpeesta maksuun
+
+**3. WE BUILD Attestation Examples** ⭐ UUSI  
+https://jgmikael.github.io/procurement-automation-demo/webuild-examples/  
+W3C Verifiable Credential -esimerkkejä WE BUILD Large Scale Pilot attestaatioista:
+- **15+ attestation types** - Business identity, representation, financial, ESG, operational
+- **EBWV v0.1 vocabulary** - European Business Wallet Vocabulary
+- **Production-ready examples** - Based on official WE BUILD rulebooks
+- **Interactive browsing** - Category-based navigation
+- **Complete W3C VC structures** - JSON-LD with syntax highlighting
 
 Molemmat demot toimivat täysin selaimessa ilman asennuksia.
 
