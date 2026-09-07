@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WE BUILD Attestation Examples - W3C VC Format</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        h1 {
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 20px;
+        }
+        .intro {
+            color: #4a5568;
+            max-width: 800px;
+            margin: 20px auto;
+            line-height: 1.6;
+        }
+        .badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin: 5px;
+        }
+        .attestations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        .attestation-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .attestation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        .attestation-card.available {
+            border-left: 5px solid #48bb78;
+        }
+        .attestation-card.coming-soon {
+            border-left: 5px solid #ed8936;
+            opacity: 0.7;
+        }
+        .attestation-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+        .attestation-title {
+            color: #2d3748;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .attestation-desc {
+            color: #718096;
+            font-size: 0.95em;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        .attestation-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        .status-available {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        .status-coming {
+            background: #feebc8;
+            color: #7c2d12;
+        }
+        .view-button {
+            background: #667eea;
+            color: white;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9em;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.3s;
+        }
+        .view-button:hover {
+            background: #764ba2;
+        }
+        .view-button:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+        }
+        .category-section {
+            margin-bottom: 60px;
+        }
+        .category-title {
+            color: white;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 30px 0;
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            color: #718096;
+            margin-top: 5px;
+        }
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 60px;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        footer a {
+            color: white;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏗️ WE BUILD Attestation Examples</h1>
+            <p class="subtitle">W3C Verifiable Credentials with EBWV Vocabulary</p>
+            <p class="intro">
+                This repository showcases all WE BUILD Large Scale Pilot attestation types 
+                implemented as W3C Verifiable Credentials using the European Business Wallet 
+                Vocabulary (EBWV) as the semantic foundation.
+            </p>
+            <div>
+                <span class="badge">W3C VC</span>
+                <span class="badge">EBWV v0.1</span>
+                <span class="badge">JSON-LD</span>
+                <span class="badge">SD-JWT VC</span>
+                <span class="badge">eIDAS 2.0</span>
+            </div>
+            
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number">15</div>
+                    <div class="stat-label">Available Examples</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">38+</div>
+                    <div class="stat-label">Total Rulebooks</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">EBWV Compliant</div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="category-section">
+            <h2 class="category-title">🏢 Business Identity & Registration</h2>
+            <div class="attestations-grid">
+                <div class="attestation-card available" onclick="window.location='credentials/eucc.html'">
+                    <div class="attestation-icon">🏛️</div>
+                    <div class="attestation-title">EU Company Certificate (EUCC)</div>
+                    <div class="attestation-desc">
+                        Complete company registration information from Member State business registers. 
+                        Includes EUID, legal form, registered address, and legal representatives.
+                    </div>
+                    <div class="attestation-meta">
+                        <span class="status-badge status-available">✓ Available</span>
+                        <a href="credentials/eucc.html" class="view-button">View Example</a>
+                    </div>
+                </div>
+                
+                <div class="attestation-card available" onclick="window.location='credentials/company-info.html'">
+                    <div class="attestation-icon">🏢</div>
+                    <div class="attestation-title">Company Information</div>
+                    <div class="attestation-desc">
+                        Extended company profile with operational details, trading names, 
+                        branch information, and corporate structure.
+                    </div>
+                    <div class="attestation-meta">
+                        <span class="status-badge status-available">✓ Available</span>
+                        <a href="credentials/company-info.html" class="view-button">View Example</a>
+                    </div>
+                </div>
+                
+                <div class="attestation-card available" onclick="window.location='credentials/lei.html'">
+                    <div class="attestation-icon">🔢</div>
+                    <div class="attestation-title">Legal Entity Identifier (LEI)</div>
+                    <div class="attestation-desc">
+                        Global Legal Entity Identifier issued by accredited Local Operating Units. 
+                        Essential for financial market participants.
+                    </div>
+                    <div class="attestation-meta">
+                        <span class="status-badge status-available">✓ Available</span>
+                        <a href="credentials/lei.html" class="view-button">View Example</a>
+                    </div>
+                </div>
+                
+                <div class="attestation-card available" onclick="window.location='credentials/ebwoid.html'">
+                    <div class="attestation-icon">🆔</div>
+                    <div class="attestation-title">EBW Owner ID (EBWOID)</div>
+                    <div class="attestation-desc">
+                        European Business Wallet Owner Identifier - unique persistent identifier 
+                        for wallet owners across the ecosystem.
+                    </div>
+                    <div class="attestation-meta">
+                        <span class="status-badge status-available">✓ Available</span>
+                        <a href="credentials/ebwoid.html" class="view-button">View Example</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="category-section">
+            <h2 class="category-title">👤 Representation & Authority</h2>
+            <div class="attestations-grid">
+                <div class="attestation-card available" onclick="window.location='credentials/eu-poa.html'">
+                    <div class="attestation-icon">📜</div>
+                    <div class="attestation-title">EU Power of Attorney</div>
+                    <div class="attestation-desc">
+                        Formal authorization for representatives to act on behalf of legal entities. 
+                        Includes scope, constraints, and validity periods.
+                    </div>
+                    <div class="attestation-meta">
+                        <span class="status-badge status-available">✓ Available</span>
+                        <a href="credentials/eu-poa.html" class="view-button">View Example</a>
+                    </div>
+                </div>
+                
+                <div class="attestation-card available" onclick="window.location='credentials/authorised-signatories.html'">
+                    <div class="attestation-icon">✍️</div>
+                    <div class="attestation-title">Authorised Signatories</div>
+                    <div class="attestation-desc">
+                        List of persons authorized to sign on behalf of the organization, 
+                        with signatory rules (alone/jointly) and financial limits.
+                    </div>
+                    <div class="attestation-meta">
+                        <span class="status-badge status-available">✓ Available</span>
+                        <a href="credentials/authorised-signatories.html" class="view-button">View Example</a>
+                    </div>
+                </div>
+                
+                <div class="attestation-card available" onclick="window.location='credentials/ubo.html'">
+                    <div class="attestation-icon">👔</div>
+                    <div class="attestation-title">Ultimate Beneficial Owner (UBO)</div>
+                    <div class="attestation-desc">
+                        Identification of natural persons who ultimately own or control the entity. 
+                        Required for AML/KYC compliance.
+                    </div>
+                    <div class="attestation-meta">
+                        <span class="status-badge status-available">✓ Available</span>
+                        <a href="credentials/ubo.html" class="view-button">View Example</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="category-section">
+            <h2 class="category-title">💰 Financial & Tax</h2>
+            <div class="attestations-grid">
+                <div class="attestation-card available" onclick="window.location='credentials/vat-id.html'">
+                    <div class="attestation-icon">🧾</div>
+                    <div class="attestation-title">VAT Identification</div>
+                    <div class="attestation-desc">
+                        Value Added Tax registration number and status. 
+                        Issued by national tax authorities.
+                    </div>
+                    <div class="attestation-meta">
+                        <span class="status-badge status-available">✓ Available</span>
+                        <a href="credentials/vat-id.html" class="view-button">View Example</a>
+                    </div>
+                </div>
+                
+                <div class="attestation-card available" onclick="window.location='credentials/tax-id.html'">
+                    <div class="attestation-icon">💳</div>
+                    <div class="attestation-title">Tax Identification</div>
+                    <div class="attestation-desc">
+                        National tax identification number for businesses. 
+                        Verifies tax registration and compliance status.
+                    </div>
+                    <div class="attestation-meta">
+                        <span class="status-badge status-available">✓ Available</span>
+                        <a href="credentials/tax-id.html" class="view-button">View Example</a>
+                    </div>
+                </div>
+                
+                <div class="attestation-card available" onclick="window.location='credentials/social-security.html'">
+                    <div class="attestation-icon">🛡️</div>
+                    <div class="attestation-title">Social Security Contribution</div>
+                    <div class="attestation-desc">
+                        Proof of social security payments and compliance. 
+                        Essential for procurement and employment verification.
+                    </div>
+                    <div class="attestation-meta">
+                        <span class="status-badge status-available">✓ Available</span>
+                        <a href="credentials/social-security.html" class="view-button">View Example</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="category-section">
+            <h2 class="category-title">🌱 ESG & Compliance</h2>
+            <div class="attestations-grid">
+                <div class="attestation-card available" onclick="window.location='credentials/esg.html'">
+                    <div class="attestation-icon">🌍</div>
+                    <div class="attestation-title">ESG Certificate</div>
+                    <div class="attestation-desc">
+                        Environmental, Social, and Governance certifications (ISO 9001, 14001, 45001, etc.). 
+                        Verified by accredited certification bodies.
+                    </div>
+                    <div class="attestation-meta">
+                        <span class="status-badge status-available">✓ Available</span>
+                        <a href="credentials/esg.html" class="view-button">View Example</a>
+                    </div>
+                </div>
+                
+                <div class="attestation-card available" onclick="window.location='credentials/approved-supplier.html'">
+                    <div class="attestation-icon">✅</div>
+                    <div class="attestation-title">Approved Supplier</div>
+                    <div class="attestation-desc">
+                        Supplier qualification and approval status. 
+                        Issued by procuring organizations for their vendor networks.
+                    </div>
+                    <div class="attestation-meta">
+                        <span class="status-badge status-available">✓ Available</span>
+                        <a href="credentials/approved-supplier.html" class="view-button">View Example</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="category-section">
+            <h2 class="category-title">🏗️ Operational & Logistics</h2>
+            <div class="attestations-grid">
+                <div class="attestation-card available" onclick="window.location='credentials/site.html'">
+                    <div class="attestation-icon">🏭</div>
+                    <div class="attestation-title">Site Information</div>
+                    <div class="attestation-desc">
+                        Physical site/facility information with GLN, address, operational status, 
+                        and certifications.
+                    </div>
+                    <div class="attestation-meta">
+                        <span class="status-badge status-available">✓ Available</span>
+                        <a href="credentials/site.html" class="view-button">View Example</a>
+                    </div>
+                </div>
+                
+                <div class="attestation-card available" onclick="window.location='credentials/gln.html'">
+                    <div class="attestation-icon">📍</div>
+                    <div class="attestation-title">Global Location Number (GLN)</div>
+                    <div class="attestation-desc">
+                        GS1 Global Location Number for identifying physical locations 
+                        in supply chain and logistics.
+                    </div>
+                    <div class="attestation-meta">
+                        <span class="status-badge status-available">✓ Available</span>
+                        <a href="credentials/gln.html" class="view-button">View Example</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p><strong>WE BUILD Large Scale Pilot</strong> - Co-funded by the European Union</p>
+            <p style="margin-top: 10px;">
+                Source: <a href="https://github.com/webuild-consortium/webuild-attestation-rulebooks-catalog" target="_blank">WE BUILD Attestation Rulebooks Catalog</a><br>
+                Vocabulary: <a href="https://w3id.org/ebwv/" target="_blank">European Business Wallet Vocabulary (EBWV) v0.1</a>
+            </p>
+            <p style="margin-top: 15px; font-size: 0.9em;">
+                All examples are W3C Verifiable Credentials with JSON-LD contexts based on EBWV.<br>
+                Examples follow eIDAS 2.0 framework and SD-JWT VC encoding where applicable.
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
