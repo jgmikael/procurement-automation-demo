@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETSI TS 119 478 Semantic Data Specifications - Interactive Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #667eea;
+            font-size: 1.4em;
+            margin-bottom: 20px;
+        }
+
+        .intro {
+            color: #4a5568;
+            max-width: 900px;
+            margin: 20px auto;
+            line-height: 1.8;
+            text-align: left;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin: 5px;
+        }
+
+        .level-section {
+            background: white;
+            border-radius: 15px;
+            padding: 35px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .level-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #e2e8f0;
+        }
+
+        .level-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .level-title {
+            flex: 1;
+        }
+
+        .level-title h2 {
+            color: #2d3748;
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .level-title .subtitle-small {
+            color: #718096;
+            font-size: 1.1em;
+        }
+
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 25px;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+
+        .json-key {
+            color: #9cdcfe;
+        }
+
+        .json-string {
+            color: #ce9178;
+        }
+
+        .json-comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:hover {
+            background: #f7fafc;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .info-box-title {
+            font-weight: 700;
+            color: #1565c0;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .info-box-content {
+            color: #555;
+            line-height: 1.7;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+        }
+
+        .warning-box .info-box-title {
+            color: #e65100;
+        }
+
+        .success-box {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+        }
+
+        .success-box .info-box-title {
+            color: #2e7d32;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .comparison-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .comparison-card h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .comparison-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .comparison-card li {
+            padding: 8px 0;
+            color: #4a5568;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .comparison-card li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        .uri-display {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            color: #1565c0;
+            font-weight: 600;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+
+        .architecture-diagram {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 25px 0;
+        }
+
+        .diagram-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+            gap: 20px;
+        }
+
+        .diagram-box {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border: 2px solid #2196f3;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            min-width: 200px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+
+        .diagram-arrow {
+            font-size: 30px;
+            color: #667eea;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 60px;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        footer a {
+            color: white;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .diagram-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ETSI TS 119 478 Semantic Data Specifications</h1>
+            <p class="subtitle">Three Approaches to Semantic References in Digital Credentials</p>
+            <p class="intro">
+                <strong>ETSI TS 119 478 V1.1.1</strong> defines how attributes in electronic attestations 
+                should be semantically anchored. This interactive demo shows three levels of semantic 
+                specification, from simple property URIs to comprehensive data specifications with 
+                multiple schema distributions.
+            </p>
+            <div>
+                <span class="badge">ETSI TS 119 478</span>
+                <span class="badge">Semantic References</span>
+                <span class="badge">EBWV Vocabulary</span>
+                <span class="badge">EU Company Certificate</span>
+            </div>
+        </header>
+
+        <!-- Level 1: WE BUILD Approach -->
+        <div class="level-section">
+            <div class="level-header">
+                <div class="level-number">1</div>
+                <div class="level-title">
+                    <h2>WE BUILD Approach: Direct Property URI</h2>
+                    <div class="subtitle-small">Term-level semantic anchoring</div>
+                </div>
+            </div>
+
+            <div class="info-box success-box">
+                <div class="info-box-title">✓ Current WE BUILD WP4 Semantics Implementation</div>
+                <div class="info-box-content">
+                    This approach provides <strong>direct, precise semantic anchoring</strong> by referencing 
+                    individual vocabulary properties. Each attribute points directly to its ontology term.
+                    <br><br>
+                    <strong>Key advantage:</strong> Semantics remain <strong>format-independent</strong>. 
+                    The same EBWV property can underpin SD-JWT VC, W3C VC/JSON-LD, mdoc, XML, or future formats.
+                </div>
+            </div>
+
+            <h3 style="margin: 25px 0 15px 0; color: #2d3748;">Example: EU Company Certificate Attributes</h3>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Attribute</th>
+                            <th>Semantic Reference</th>
+                            <th>Definition</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>legalName</code></td>
+                            <td><a href="https://w3id.org/ebwv#legalName" target="_blank">https://w3id.org/ebwv#legalName</a></td>
+                            <td>Legal name of the undertaking as registered</td>
+                        </tr>
+                        <tr>
+                            <td><code>legalForm</code></td>
+                            <td><a href="https://w3id.org/ebwv#legalForm" target="_blank">https://w3id.org/ebwv#legalForm</a></td>
+                            <td>Legal form type (GmbH, AG, Ltd, etc.)</td>
+                        </tr>
+                        <tr>
+                            <td><code>registeredAddress</code></td>
+                            <td><a href="https://w3id.org/ebwv#registeredAddress" target="_blank">https://w3id.org/ebwv#registeredAddress</a></td>
+                            <td>Postal address where company is registered</td>
+                        </tr>
+                        <tr>
+                            <td><code>legalIdentifier</code></td>
+                            <td><a href="https://w3id.org/ebwv#legalIdentifier" target="_blank">https://w3id.org/ebwv#legalIdentifier</a></td>
+                            <td>EUID or similar unique legal identifier</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="info-box">
+                <div class="info-box-title">📋 Rulebook Table Example</div>
+                <div class="info-box-content">
+                    In a WE BUILD attestation rulebook, this appears as:
+                    <pre style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin-top: 10px; overflow-x: auto;">
+| Attribute Identifier | Semantic Reference                      | Definition                    |
+|----------------------|-----------------------------------------|-------------------------------|
+| legalName            | https://w3id.org/ebwv#legalName         | Legal name of the entity      |
+| legalForm            | https://w3id.org/ebwv#legalForm         | Legal form type               |
+| registeredAddress    | https://w3id.org/ebwv#registeredAddress | Registered postal address     |</pre>
+                </div>
+            </div>
+
+            <div class="code-block">
+<span class="json-comment">// W3C VC JSON-LD Example - Direct property reference</span>
+{
+  <span class="json-key">"@context"</span>: [
+    <span class="json-string">"https://www.w3.org/ns/credentials/v2"</span>,
+    <span class="json-string">"https://w3id.org/ebwv/v1"</span>
+  ],
+  <span class="json-key">"type"</span>: [<span class="json-string">"VerifiableCredential"</span>, <span class="json-string">"EUCompanyCertificate"</span>],
+  <span class="json-key">"credentialSubject"</span>: {
+    <span class="json-key">"ebwv:legalName"</span>: <span class="json-string">"Siemens Aktiengesellschaft"</span>,
+    <span class="json-key">"ebwv:legalForm"</span>: <span class="json-string">"Aktiengesellschaft"</span>,
+    <span class="json-key">"ebwv:legalIdentifier"</span>: <span class="json-string">"DEHR.U.12345"</span>
+  }
+}
+            </div>
+
+            <div class="comparison-grid">
+                <div class="comparison-card">
+                    <h3>✓ Advantages</h3>
+                    <ul>
+                        <li>Precise semantic anchoring</li>
+                        <li>Format-independent</li>
+                        <li>Simple and direct</li>
+                        <li>Easy to implement</li>
+                        <li>Widely understood</li>
+                    </ul>
+                </div>
+                <div class="comparison-card">
+                    <h3>⚠️ Limitations</h3>
+                    <ul>
+                        <li>Individual property only</li>
+                        <li>No schema distribution</li>
+                        <li>Limited context</li>
+                        <li>No constraints specified</li>
+                        <li>Missing ETSI's broader model</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level 2: ETSI Model -->
+        <div class="level-section">
+            <div class="level-header">
+                <div class="level-number">2</div>
+                <div class="level-title">
+                    <h2>ETSI Model: URI of Attribute Specification</h2>
+                    <div class="subtitle-small">Specification-level semantic data description</div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-box-title">📘 ETSI TS 119 478 Definition</div>
+                <div class="info-box-content">
+                    ETSI defines a <strong>semantic data specification</strong> as:
+                    <br><br>
+                    <em>"A specification, with human- and/or machine-processable representations, defining 
+                    how data is organised, described and interpreted."</em>
+                    <br><br>
+                    The <code>semanticDataSpecification</code> element is a <strong>URI identifying the specification 
+                    as a whole</strong>, not just one vocabulary term.
+                </div>
+            </div>
+
+            <h3 style="margin: 25px 0 15px 0; color: #2d3748;">Example: EUCC Legal Name Specification</h3>
+
+            <div class="architecture-diagram">
+                <div class="diagram-row">
+                    <div class="diagram-box">
+                        Attribute Identifier<br>
+                        <code style="font-size: 0.9em;">https://example.eu/attributes/eucc/legal-name/1.0</code>
+                    </div>
+                    <div class="diagram-arrow">→</div>
+                    <div class="diagram-box">
+                        Semantic Data Spec<br>
+                        <code style="font-size: 0.9em;">https://w3id.org/ebwv/specifications/eucc/legal-name/1.0</code>
+                    </div>
+                </div>
+                <div class="diagram-row">
+                    <div class="diagram-box" style="background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); border-color: #ff9800; color: #e65100;">
+                        Schema Distribution 1<br>
+                        JSON Schema
+                    </div>
+                    <div class="diagram-box" style="background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%); border-color: #9c27b0; color: #6a1b9a;">
+                        Schema Distribution 2<br>
+                        JSON-LD Context
+                    </div>
+                    <div class="diagram-box" style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border-color: #4caf50; color: #2e7d32;">
+                        Schema Distribution 3<br>
+                        SHACL Shapes
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-block">
+<span class="json-comment">// ETSI TS 119 478 Compliant Structure</span>
+{
+  <span class="json-key">"attributeIdentifier"</span>: <span class="json-string">"https://example.eu/attributes/eucc/legal-name/1.0"</span>,
+  
+  <span class="json-key">"semanticDataSpecification"</span>: <span class="json-string">"https://w3id.org/ebwv/specifications/eucc/legal-name/1.0"</span>,
+  
+  <span class="json-key">"schemaDistribution"</span>: [
+    {
+      <span class="json-key">"accessURL"</span>: <span class="json-string">"https://w3id.org/ebwv/specifications/eucc/legal-name/1.0/schema.json"</span>,
+      <span class="json-key">"mediaType"</span>: <span class="json-string">"application/json-schema"</span>
+    },
+    {
+      <span class="json-key">"accessURL"</span>: <span class="json-string">"https://w3id.org/ebwv/specifications/eucc/legal-name/1.0/context.jsonld"</span>,
+      <span class="json-key">"mediaType"</span>: <span class="json-string">"application/ld+json"</span>
+    },
+    {
+      <span class="json-key">"accessURL"</span>: <span class="json-string">"https://w3id.org/ebwv/specifications/eucc/legal-name/1.0/shapes.ttl"</span>,
+      <span class="json-key">"mediaType"</span>: <span class="json-string">"text/turtle"</span>
+    }
+  ]
+}
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('rdf', event)">RDF/Turtle Spec</button>
+                <button class="tab" onclick="showTab('json-schema', event)">JSON Schema</button>
+                <button class="tab" onclick="showTab('shacl', event)">SHACL Constraints</button>
+            </div>
+
+            <div id="rdf-tab" class="tab-content active">
+                <h4 style="margin: 15px 0; color: #2d3748;">Semantic Specification (RDF/Turtle)</h4>
+                <div class="uri-display">
+                    https://w3id.org/ebwv/specifications/eucc/legal-name/1.0
+                </div>
+                <div class="code-block">
+<span class="json-comment">@prefix ebwv: &lt;https://w3id.org/ebwv#&gt; .
+@prefix dct: &lt;http://purl.org/dc/terms/&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .</span>
+
+&lt;https://w3id.org/ebwv/specifications/eucc/legal-name/1.0&gt;
+  dct:title <span class="json-string">"EUCC Legal Name semantic data specification"</span>@en ;
+  dct:description <span class="json-string">"Legal name of the undertaking as registered in the business register."</span>@en ;
+  <span class="json-comment"># Links to the property definition</span>
+  dct:conformsTo ebwv:legalName ;
+  <span class="json-comment"># Contextual class</span>
+  ebwv:subjectClass ebwv:LegalEntity ;
+  <span class="json-comment"># Schema distributions</span>
+  dct:distribution &lt;.../schema.json&gt;, &lt;.../context.jsonld&gt;, &lt;.../shapes.ttl&gt; .
+                </div>
+            </div>
+
+            <div id="json-schema-tab" class="tab-content">
+                <h4 style="margin: 15px 0; color: #2d3748;">JSON Schema Distribution</h4>
+                <div class="uri-display">
+                    https://w3id.org/ebwv/specifications/eucc/legal-name/1.0/schema.json
+                </div>
+                <div class="code-block">
+{
+  <span class="json-key">"$id"</span>: <span class="json-string">"https://w3id.org/ebwv/specifications/eucc/legal-name/1.0/schema.json"</span>,
+  <span class="json-key">"$schema"</span>: <span class="json-string">"https://json-schema.org/draft/2020-12/schema"</span>,
+  <span class="json-key">"title"</span>: <span class="json-string">"EUCC Legal Name"</span>,
+  <span class="json-key">"description"</span>: <span class="json-string">"Legal name of the undertaking as registered in the business register"</span>,
+  <span class="json-key">"type"</span>: <span class="json-string">"string"</span>,
+  <span class="json-key">"minLength"</span>: 1,
+  <span class="json-key">"maxLength"</span>: 500,
+  <span class="json-key">"examples"</span>: [
+    <span class="json-string">"Siemens Aktiengesellschaft"</span>,
+    <span class="json-string">"Robert Bosch GmbH"</span>
+  ]
+}
+                </div>
+            </div>
+
+            <div id="shacl-tab" class="tab-content">
+                <h4 style="margin: 15px 0; color: #2d3748;">SHACL Constraints</h4>
+                <div class="uri-display">
+                    https://w3id.org/ebwv/specifications/eucc/legal-name/1.0/shapes.ttl
+                </div>
+                <div class="code-block">
+<span class="json-comment">@prefix ebwv: &lt;https://w3id.org/ebwv#&gt; .
+@prefix sh: &lt;http://www.w3.org/ns/shacl#&gt; .</span>
+
+ebwv:LegalEntityShape
+  a sh:NodeShape ;
+  sh:targetClass ebwv:LegalEntity ;
+  sh:property [
+    sh:path ebwv:legalName ;
+    sh:name <span class="json-string">"Legal Name"</span> ;
+    sh:description <span class="json-string">"Legal name of the undertaking as registered"</span> ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:minLength 1 ;
+    sh:maxLength 500 ;
+  ] .
+                </div>
+            </div>
+
+            <div class="comparison-grid" style="margin-top: 25px;">
+                <div class="comparison-card">
+                    <h3>✓ Advantages</h3>
+                    <ul>
+                        <li>Comprehensive specification</li>
+                        <li>Multiple schema formats</li>
+                        <li>ETSI-compliant approach</li>
+                        <li>Machine-processable</li>
+                        <li>Includes constraints</li>
+                        <li>Contextual information</li>
+                    </ul>
+                </div>
+                <div class="comparison-card">
+                    <h3>🔧 Requirements</h3>
+                    <ul>
+                        <li>More infrastructure needed</li>
+                        <li>Specification hosting</li>
+                        <li>Content negotiation</li>
+                        <li>Version management</li>
+                        <li>More complex to implement</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level 3: Full Specification -->
+        <div class="level-section">
+            <div class="level-header">
+                <div class="level-number">3</div>
+                <div class="level-title">
+                    <h2>Full ETSI Specification with Artefacts</h2>
+                    <div class="subtitle-small">Complete semantic data specification ecosystem</div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-box-title">📦 ETSI Multi-Artefact Approach</div>
+                <div class="info-box-content">
+                    ETSI explicitly notes that a semantic data specification can consist of <strong>several artefacts</strong>:
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li>Human-readable documentation</li>
+                        <li>UML diagrams</li>
+                        <li>RDF schemas (OWL ontologies)</li>
+                        <li>XML Schema</li>
+                        <li>JSON Schema</li>
+                        <li>CDDL (for CBOR)</li>
+                        <li>Code lists and constraints (SKOS, SHACL)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3 style="margin: 25px 0 15px 0; color: #2d3748;">Complete Specification Structure</h3>
+
+            <div class="architecture-diagram">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div class="diagram-box" style="display: inline-block; font-size: 1.1em;">
+                        Semantic Data Specification<br>
+                        <code>https://w3id.org/ebwv/specifications/eucc/legal-name/1.0</code>
+                    </div>
+                </div>
+                
+                <div class="diagram-row" style="flex-wrap: wrap;">
+                    <div class="diagram-box" style="background: #e3f2fd; border-color: #2196f3; color: #1565c0; min-width: 150px;">
+                        📄 Human Docs<br>
+                        <small>HTML/PDF</small>
+                    </div>
+                    <div class="diagram-box" style="background: #f3e5f5; border-color: #9c27b0; color: #6a1b9a; min-width: 150px;">
+                        📊 UML Diagram<br>
+                        <small>Class model</small>
+                    </div>
+                    <div class="diagram-box" style="background: #e8f5e9; border-color: #4caf50; color: #2e7d32; min-width: 150px;">
+                        🔗 RDF Schema<br>
+                        <small>OWL ontology</small>
+                    </div>
+                    <div class="diagram-box" style="background: #fff3e0; border-color: #ff9800; color: #e65100; min-width: 150px;">
+                        📋 JSON Schema<br>
+                        <small>Validation</small>
+                    </div>
+                    <div class="diagram-box" style="background: #fce4ec; border-color: #e91e63; color: #c2185b; min-width: 150px;">
+                        📑 XML Schema<br>
+                        <small>XSD</small>
+                    </div>
+                    <div class="diagram-box" style="background: #ede7f6; border-color: #673ab7; color: #4527a0; min-width: 150px;">
+                        ⚙️ CDDL<br>
+                        <small>CBOR</small>
+                    </div>
+                    <div class="diagram-box" style="background: #e0f2f1; border-color: #009688; color: #00695c; min-width: 150px;">
+                        ✓ SHACL<br>
+                        <small>Constraints</small>
+                    </div>
+                    <div class="diagram-box" style="background: #fff9c4; border-color: #fbc02d; color: #f57f17; min-width: 150px;">
+                        📚 Code Lists<br>
+                        <small>SKOS</small>
+                    </div>
+                </div>
+            </div>
+
+            <h4 style="margin: 25px 0 15px 0; color: #2d3748;">Example: Full EUCC Legal Name Specification</h4>
+
+            <div class="code-block">
+<span class="json-comment">// Complete semantic data specification with all artefacts</span>
+{
+  <span class="json-key">"@context"</span>: {
+    <span class="json-key">"dcat"</span>: <span class="json-string">"http://www.w3.org/ns/dcat#"</span>,
+    <span class="json-key">"dct"</span>: <span class="json-string">"http://purl.org/dc/terms/"</span>,
+    <span class="json-key">"ebwv"</span>: <span class="json-string">"https://w3id.org/ebwv#"</span>
+  },
+  
+  <span class="json-key">"@id"</span>: <span class="json-string">"https://w3id.org/ebwv/specifications/eucc/legal-name/1.0"</span>,
+  <span class="json-key">"@type"</span>: <span class="json-string">"dcat:Dataset"</span>,
+  
+  <span class="json-key">"dct:title"</span>: <span class="json-string">"EUCC Legal Name Semantic Data Specification"</span>,
+  <span class="json-key">"dct:description"</span>: <span class="json-string">"Complete specification for the legal name attribute in EU Company Certificates"</span>,
+  <span class="json-key">"dct:conformsTo"</span>: <span class="json-string">"https://w3id.org/ebwv#legalName"</span>,
+  <span class="json-key">"ebwv:subjectClass"</span>: <span class="json-string">"https://w3id.org/ebwv#LegalEntity"</span>,
+  
+  <span class="json-key">"dcat:distribution"</span>: [
+    {
+      <span class="json-key">"@type"</span>: <span class="json-string">"dcat:Distribution"</span>,
+      <span class="json-key">"dct:title"</span>: <span class="json-string">"Human-readable documentation"</span>,
+      <span class="json-key">"dcat:accessURL"</span>: <span class="json-string">"https://w3id.org/ebwv/specifications/eucc/legal-name/1.0/docs.html"</span>,
+      <span class="json-key">"dcat:mediaType"</span>: <span class="json-string">"text/html"</span>
+    },
+    {
+      <span class="json-key">"@type"</span>: <span class="json-string">"dcat:Distribution"</span>,
+      <span class="json-key">"dct:title"</span>: <span class="json-string">"UML class diagram"</span>,
+      <span class="json-key">"dcat:accessURL"</span>: <span class="json-string">"https://w3id.org/ebwv/specifications/eucc/legal-name/1.0/uml.png"</span>,
+      <span class="json-key">"dcat:mediaType"</span>: <span class="json-string">"image/png"</span>
+    },
+    {
+      <span class="json-key">"@type"</span>: <span class="json-string">"dcat:Distribution"</span>,
+      <span class="json-key">"dct:title"</span>: <span class="json-string">"OWL ontology"</span>,
+      <span class="json-key">"dcat:accessURL"</span>: <span class="json-string">"https://w3id.org/ebwv/specifications/eucc/legal-name/1.0/ontology.ttl"</span>,
+      <span class="json-key">"dcat:mediaType"</span>: <span class="json-string">"text/turtle"</span>
+    },
+    {
+      <span class="json-key">"@type"</span>: <span class="json-string">"dcat:Distribution"</span>,
+      <span class="json-key">"dct:title"</span>: <span class="json-string">"JSON Schema validation"</span>,
+      <span class="json-key">"dcat:accessURL"</span>: <span class="json-string">"https://w3id.org/ebwv/specifications/eucc/legal-name/1.0/schema.json"</span>,
+      <span class="json-key">"dcat:mediaType"</span>: <span class="json-string">"application/json-schema"</span>
+    },
+    {
+      <span class="json-key">"@type"</span>: <span class="json-string">"dcat:Distribution"</span>,
+      <span class="json-key">"dct:title"</span>: <span class="json-string">"JSON-LD context"</span>,
+      <span class="json-key">"dcat:accessURL"</span>: <span class="json-string">"https://w3id.org/ebwv/specifications/eucc/legal-name/1.0/context.jsonld"</span>,
+      <span class="json-key">"dcat:mediaType"</span>: <span class="json-string">"application/ld+json"</span>
+    },
+    {
+      <span class="json-key">"@type"</span>: <span class="json-string">"dcat:Distribution"</span>,
+      <span class="json-key">"dct:title"</span>: <span class="json-string">"XML Schema"</span>,
+      <span class="json-key">"dcat:accessURL"</span>: <span class="json-string">"https://w3id.org/ebwv/specifications/eucc/legal-name/1.0/schema.xsd"</span>,
+      <span class="json-key">"dcat:mediaType"</span>: <span class="json-string">"application/xml"</span>
+    },
+    {
+      <span class="json-key">"@type"</span>: <span class="json-string">"dcat:Distribution"</span>,
+      <span class="json-key">"dct:title"</span>: <span class="json-string">"CDDL for CBOR"</span>,
+      <span class="json-key">"dcat:accessURL"</span>: <span class="json-string">"https://w3id.org/ebwv/specifications/eucc/legal-name/1.0/schema.cddl"</span>,
+      <span class="json-key">"dcat:mediaType"</span>: <span class="json-string">"application/cddl"</span>
+    },
+    {
+      <span class="json-key">"@type"</span>: <span class="json-string">"dcat:Distribution"</span>,
+      <span class="json-key">"dct:title"</span>: <span class="json-string">"SHACL constraints"</span>,
+      <span class="json-key">"dcat:accessURL"</span>: <span class="json-string">"https://w3id.org/ebwv/specifications/eucc/legal-name/1.0/shapes.ttl"</span>,
+      <span class="json-key">"dcat:mediaType"</span>: <span class="json-string">"text/turtle"</span>
+    }
+  ]
+}
+            </div>
+
+            <div class="warning-box info-box" style="margin-top: 25px;">
+                <div class="info-box-title">⚠️ Important Distinction</div>
+                <div class="info-box-content">
+                    <strong>ETSI's semantic data specification ≠ Single vocabulary term</strong>
+                    <br><br>
+                    An individual OWL property URI (<code>ebwv:legalName</code>) is <strong>not equivalent</strong> 
+                    to ETSI's broader notion of a <code>semanticDataSpecification</code>.
+                    <br><br>
+                    ETSI's wording suggests that the latter normally identifies a <strong>complete data specification</strong>, 
+                    not merely one vocabulary term. The specification should be a structured, standardized, and 
+                    <strong>media type-agnostic definition</strong> describing the attribute's data elements, 
+                    semantics, and relationships.
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Summary -->
+        <div class="level-section">
+            <div class="level-header">
+                <div class="level-number" style="background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);">∑</div>
+                <div class="level-title">
+                    <h2>Comparison Summary</h2>
+                    <div class="subtitle-small">Choosing the right approach for your use case</div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Aspect</th>
+                            <th>Level 1: Direct URI</th>
+                            <th>Level 2: ETSI Model</th>
+                            <th>Level 3: Full Specification</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Complexity</strong></td>
+                            <td>Low</td>
+                            <td>Medium</td>
+                            <td>High</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ETSI Compliance</strong></td>
+                            <td>Partial</td>
+                            <td>Good</td>
+                            <td>Full</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Format Independence</strong></td>
+                            <td>✓ Yes</td>
+                            <td>✓ Yes</td>
+                            <td>✓ Yes</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Machine-Processable</strong></td>
+                            <td>✓ Yes</td>
+                            <td>✓ Yes</td>
+                            <td>✓✓ Multiple formats</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Schema Validation</strong></td>
+                            <td>Limited</td>
+                            <td>✓ Multiple schemas</td>
+                            <td>✓✓ All formats</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Constraints</strong></td>
+                            <td>Implicit</td>
+                            <td>✓ Explicit</td>
+                            <td>✓✓ Comprehensive</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Infrastructure Needed</strong></td>
+                            <td>Minimal</td>
+                            <td>Moderate</td>
+                            <td>Extensive</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Implementation Time</strong></td>
+                            <td>Fast</td>
+                            <td>Medium</td>
+                            <td>Slow</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Maintenance</strong></td>
+                            <td>Low</td>
+                            <td>Medium</td>
+                            <td>High</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Best For</strong></td>
+                            <td>Simple attributes</td>
+                            <td>Complex attributes</td>
+                            <td>Critical infrastructure</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="info-box success-box" style="margin-top: 25px;">
+                <div class="info-box-title">🎯 Recommendation for WE BUILD</div>
+                <div class="info-box-content">
+                    <strong>Hybrid Approach:</strong> Start with Level 1 (direct property URIs) for rapid implementation, 
+                    then gradually evolve toward Level 2 (ETSI model) as the ecosystem matures.
+                    <br><br>
+                    <strong>Immediate:</strong>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Use direct EBWV property URIs in attestation rulebooks</li>
+                        <li>Ensure format independence across SD-JWT VC, W3C VC, mdoc</li>
+                    </ul>
+                    <br>
+                    <strong>Medium term:</strong>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Define semantic data specifications for key attributes</li>
+                        <li>Provide JSON Schema and JSON-LD context distributions</li>
+                        <li>Add SHACL constraints for validation</li>
+                    </ul>
+                    <br>
+                    <strong>Long term:</strong>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Build complete specification ecosystem with all artefacts</li>
+                        <li>Support multiple encoding formats (XML, CBOR, etc.)</li>
+                        <li>Maintain versioned specifications with governance</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>ETSI TS 119 478 Semantic Data Specifications Demo</strong></p>
+            <p style="margin-top: 10px;">
+                Based on: <a href="https://www.etsi.org/deliver/etsi_ts/119400_119499/119478/01.01.01_60/ts_119478v010101p.pdf" target="_blank">ETSI TS 119 478 V1.1.1</a><br>
+                Vocabulary: <a href="https://w3id.org/ebwv/" target="_blank">European Business Wallet Vocabulary (EBWV)</a><br>
+                WE BUILD Project: <a href="https://webuildconsortium.eu/" target="_blank">webuildconsortium.eu</a>
+            </p>
+            <p style="margin-top: 15px; font-size: 0.9em;">
+                This demo illustrates three levels of semantic specification approaches,<br>
+                from simple property URIs to comprehensive ETSI-compliant data specifications.
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        function showTab(tabName, event) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
