@@ -813,6 +813,410 @@ ebwv:LegalEntityShape
         <!-- Comparison Summary -->
         <div class="level-section">
             <div class="level-header">
+                <div class="level-number" style="background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);">4</div>
+                <div class="level-title">
+                    <h2>Four Models: Semantic Reference Approaches</h2>
+                    <div class="subtitle-small">From direct property URIs to schema-only references</div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-box-title">📐 Four Ways to Reference Semantics</div>
+                <div class="info-box-content">
+                    ETSI TS 119 478 and related standards define multiple approaches for semantic references in attestation catalogues and data specifications. This section compares <strong>four distinct models</strong> for referencing the semantics of an attribute like <code>legalName</code>.
+                </div>
+            </div>
+
+            <div class="comparison-grid">
+                <div class="comparison-card" style="border-left-color: #667eea;">
+                    <h3>Model A: Property URI</h3>
+                    <p style="margin-bottom: 15px; color: #718096;"><strong>Direct reference to semantic property</strong></p>
+                    <div class="uri-display" style="font-size: 0.85em;">
+                        https://w3id.org/ebwv#legalName
+                    </div>
+                    <ul style="margin-top: 15px;">
+                        <li>Points directly to OWL property</li>
+                        <li>Simple, unambiguous</li>
+                        <li>Minimal infrastructure</li>
+                        <li>Used by WE BUILD now</li>
+                    </ul>
+                </div>
+
+                <div class="comparison-card" style="border-left-color: #38b2ac;">
+                    <h3>Model B: Attribute Specification URI</h3>
+                    <p style="margin-bottom: 15px; color: #718096;"><strong>Reference to attribute specification document</strong></p>
+                    <div class="uri-display" style="font-size: 0.85em;">
+                        https://specifications.webuild.eu/<br>
+                        &nbsp;&nbsp;/eucc/attributes/legal-name/1.0
+                    </div>
+                    <ul style="margin-top: 15px;">
+                        <li>Specification with constraints</li>
+                        <li>Multiple schema distributions</li>
+                        <li>Format-independent</li>
+                        <li>ETSI TS 119 478 compliant</li>
+                    </ul>
+                </div>
+
+                <div class="comparison-card" style="border-left-color: #f59e0b;">
+                    <h3>Model C: Attestation Profile URI</h3>
+                    <p style="margin-bottom: 15px; color: #718096;"><strong>Reference to attestation/application profile</strong></p>
+                    <div class="uri-display" style="font-size: 0.85em;">
+                        https://specifications.webuild.eu/<br>
+                        &nbsp;&nbsp;/eucc/1.0
+                    </div>
+                    <ul style="margin-top: 15px;">
+                        <li>Entire attestation specification</li>
+                        <li>All attributes bundled</li>
+                        <li>Use case specific</li>
+                        <li>Less granular</li>
+                    </ul>
+                </div>
+
+                <div class="comparison-card" style="border-left-color: #ef4444;">
+                    <h3>Model D: Schema URI Only</h3>
+                    <p style="margin-bottom: 15px; color: #718096;"><strong>Reference to JSON Schema file</strong></p>
+                    <div class="uri-display" style="font-size: 0.85em;">
+                        https://schemas.webuild.eu/<br>
+                        &nbsp;&nbsp;/eucc-schema.json
+                    </div>
+                    <ul style="margin-top: 15px;">
+                        <li style="color: #ef4444;">❌ No semantic meaning</li>
+                        <li style="color: #ef4444;">❌ Only structure validation</li>
+                        <li style="color: #ef4444;">❌ Format-dependent</li>
+                        <li style="color: #ef4444;">❌ Not recommended</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="warning-box info-box">
+                <div class="info-box-title">⚠️ Why Model D (Schema-Only) Is Insufficient</div>
+                <div class="info-box-content">
+                    <strong>JSON Schema alone cannot serve as a semantic foundation:</strong>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><strong>No semantic meaning:</strong> JSON Schema defines structure and validation rules, but not <em>what the data means</em></li>
+                        <li><strong>Format-specific:</strong> Locked to JSON representation, cannot be applied to XML, CBOR, or other formats</li>
+                        <li><strong>No interoperability:</strong> Different schemas for same concept cannot be automatically recognized as equivalent</li>
+                        <li><strong>No reasoning:</strong> Cannot infer relationships, hierarchies, or equivalences</li>
+                    </ul>
+                    <p style="margin-top: 15px;">
+                        <strong>Example:</strong> Two schemas might both have a <code>"legalName"</code> field, 
+                        but without semantic reference, a machine cannot determine if they mean the same thing.
+                    </p>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 40px; color: #2d3748; font-size: 1.5em;">Comparison: All Four Models</h3>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Aspect</th>
+                            <th>Model A<br><small>Property URI</small></th>
+                            <th>Model B<br><small>Attribute Spec</small></th>
+                            <th>Model C<br><small>Attestation Profile</small></th>
+                            <th>Model D<br><small>Schema Only</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Semantic Meaning</strong></td>
+                            <td style="background: #c6f6d5;">✓ Direct OWL property</td>
+                            <td style="background: #c6f6d5;">✓ Via semantic ref</td>
+                            <td style="background: #fff3cd;">⚠️ Indirect</td>
+                            <td style="background: #fecaca;">❌ None</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Format Independence</strong></td>
+                            <td style="background: #c6f6d5;">✓ Yes</td>
+                            <td style="background: #c6f6d5;">✓ Yes</td>
+                            <td style="background: #c6f6d5;">✓ Yes</td>
+                            <td style="background: #fecaca;">❌ JSON only</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Machine Reasoning</strong></td>
+                            <td style="background: #c6f6d5;">✓ OWL/RDFS</td>
+                            <td style="background: #c6f6d5;">✓ OWL/RDFS</td>
+                            <td style="background: #fff3cd;">⚠️ Limited</td>
+                            <td style="background: #fecaca;">❌ None</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Validation Constraints</strong></td>
+                            <td style="background: #fff3cd;">⚠️ Implicit</td>
+                            <td style="background: #c6f6d5;">✓ SHACL + Schema</td>
+                            <td style="background: #c6f6d5;">✓ Profile level</td>
+                            <td style="background: #fff3cd;">⚠️ JSON Schema only</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Multiple Formats</strong></td>
+                            <td>Supported</td>
+                            <td style="background: #c6f6d5;">✓ Distributions</td>
+                            <td style="background: #c6f6d5;">✓ Distributions</td>
+                            <td style="background: #fecaca;">❌ Single format</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Granularity</strong></td>
+                            <td style="background: #c6f6d5;">✓ Property-level</td>
+                            <td style="background: #c6f6d5;">✓ Attribute-level</td>
+                            <td style="background: #fff3cd;">⚠️ Attestation-level</td>
+                            <td style="background: #fff3cd;">⚠️ Schema-level</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Interoperability</strong></td>
+                            <td style="background: #c6f6d5;">✓ High</td>
+                            <td style="background: #c6f6d5;">✓ High</td>
+                            <td style="background: #fff3cd;">⚠️ Medium</td>
+                            <td style="background: #fecaca;">❌ Low</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Implementation Cost</strong></td>
+                            <td style="background: #c6f6d5;">✓ Low</td>
+                            <td style="background: #fff3cd;">⚠️ Medium</td>
+                            <td style="background: #fff3cd;">⚠️ Medium</td>
+                            <td style="background: #c6f6d5;">✓ Low</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ETSI Compliance</strong></td>
+                            <td style="background: #fff3cd;">⚠️ Partial</td>
+                            <td style="background: #c6f6d5;">✓ Full</td>
+                            <td style="background: #c6f6d5;">✓ Full</td>
+                            <td style="background: #fecaca;">❌ No</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Recommendation</strong></td>
+                            <td style="background: #c6f6d5;"><strong>✓ Start here</strong></td>
+                            <td style="background: #c6f6d5;"><strong>✓ Evolve to</strong></td>
+                            <td style="background: #fff3cd;"><strong>⚠️ Use case specific</strong></td>
+                            <td style="background: #fecaca;"><strong>❌ Avoid</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="success-box info-box" style="margin-top: 25px;">
+                <div class="info-box-title">✅ WE BUILD Recommended Path</div>
+                <div class="info-box-content">
+                    <ol style="margin-left: 20px; line-height: 1.8;">
+                        <li><strong>Phase 1 (Now):</strong> Use <strong>Model A</strong> (direct property URIs) in all attestation rulebooks
+                            <br><small style="color: #666;">→ Simple, immediate semantic interoperability via EBWV</small>
+                        </li>
+                        <li><strong>Phase 2 (2026-2027):</strong> Migrate to <strong>Model B</strong> (attribute specifications) for complex attributes
+                            <br><small style="color: #666;">→ Add constraints, multiple schemas, format distributions</small>
+                        </li>
+                        <li><strong>Phase 3 (2027+):</strong> Support <strong>Model C</strong> (attestation profiles) for use-case bundles
+                            <br><small style="color: #666;">→ Pre-configured profiles for common scenarios (e.g., "EU Public Procurement Profile")</small>
+                        </li>
+                        <li><strong>Always avoid Model D:</strong> Never use schema URIs as semantic references
+                            <br><small style="color: #666;">→ Schemas are distributions of specifications, not semantic definitions</small>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="level-section">
+            <div class="level-header">
+                <div class="level-number" style="background: linear-gradient(135deg, #9c27b0 0%, #6a1b9a 100%);">🏛️</div>
+                <div class="level-title">
+                    <h2>Three-Layer Architecture</h2>
+                    <div class="subtitle-small">Separation of concerns: Catalogue → Specification → Property</div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-box-title">🏗️ Layered Semantic Architecture</div>
+                <div class="info-box-content">
+                    ETSI TS 119 478 implies a <strong>three-layer architecture</strong> for semantic references:
+                    <ol style="margin-left: 20px; margin-top: 10px;">
+                        <li><strong>Catalogue Layer:</strong> Attestation catalogue defines attributes (e.g., "EUCC legalName")</li>
+                        <li><strong>Specification Layer:</strong> Semantic data specification document with constraints and distributions</li>
+                        <li><strong>Property Layer:</strong> EBWV/OWL property definition with semantic meaning</li>
+                    </ol>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 30px; color: #2d3748; font-size: 1.5em;">Architecture Visualization</h3>
+
+            <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 40px; border-radius: 15px; margin: 25px 0;">
+                <div style="display: flex; flex-direction: column; gap: 30px;">
+                    
+                    <!-- Layer 1: Catalogue -->
+                    <div style="background: white; padding: 25px; border-radius: 12px; border-left: 6px solid #667eea; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                            <div style="background: #667eea; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px;">1</div>
+                            <div>
+                                <h4 style="margin: 0; font-size: 1.3em; color: #2d3748;">Catalogue Layer</h4>
+                                <p style="margin: 5px 0 0 0; color: #718096;">Attestation rulebook / catalogue entry</p>
+                            </div>
+                        </div>
+                        <div class="code-block" style="margin: 0; font-size: 13px;">
+<span class="json-comment">// rb-eucc catalogue entry</span>
+{
+  <span class="json-key">"attributeIdentifier"</span>: <span class="json-string">"legal_name"</span>,
+  <span class="json-key">"attributeLabel"</span>: <span class="json-string">"Legal Name"</span>,
+  <span class="json-key">"definition"</span>: <span class="json-string">"The official registered name of the legal entity"</span>,
+  <span class="json-key">"mandatory"</span>: <span class="json-boolean">true</span>,
+  <span class="json-key">"semanticDataSpecification"</span>: <span class="json-string">"https://specifications.webuild.eu/eucc/attributes/legal-name/1.0"</span>
+}</div>
+                        <p style="margin-top: 15px; color: #555; line-height: 1.6;">
+                            <strong>Purpose:</strong> Define attestation structure and business requirements<br>
+                            <strong>Points to:</strong> Semantic data specification (Layer 2)
+                        </p>
+                    </div>
+
+                    <div style="text-align: center; color: #9c27b0; font-size: 24px; font-weight: bold;">
+                        ↓ references ↓
+                    </div>
+
+                    <!-- Layer 2: Specification -->
+                    <div style="background: white; padding: 25px; border-radius: 12px; border-left: 6px solid #38b2ac; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                            <div style="background: #38b2ac; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px;">2</div>
+                            <div>
+                                <h4 style="margin: 0; font-size: 1.3em; color: #2d3748;">Specification Layer</h4>
+                                <p style="margin: 5px 0 0 0; color: #718096;">Semantic data specification document</p>
+                            </div>
+                        </div>
+                        <div class="code-block" style="margin: 0; font-size: 13px;">
+<span class="json-comment">// https://specifications.webuild.eu/eucc/attributes/legal-name/1.0</span>
+{
+  <span class="json-key">"@context"</span>: <span class="json-string">"https://etsi.org/ts119478/v1"</span>,
+  <span class="json-key">"id"</span>: <span class="json-string">"https://specifications.webuild.eu/eucc/attributes/legal-name/1.0"</span>,
+  <span class="json-key">"type"</span>: <span class="json-string">"SemanticDataSpecification"</span>,
+  <span class="json-key">"semanticReference"</span>: <span class="json-string">"https://w3id.org/ebwv#legalName"</span>,
+  <span class="json-key">"constraints"</span>: {
+    <span class="json-key">"minLength"</span>: <span class="json-number">1</span>,
+    <span class="json-key">"maxLength"</span>: <span class="json-number">255</span>,
+    <span class="json-key">"pattern"</span>: <span class="json-string">"^[\\p{L}\\p{N}\\p{P}\\p{Zs}]+$"</span>
+  },
+  <span class="json-key">"distributions"</span>: [
+    {
+      <span class="json-key">"format"</span>: <span class="json-string">"application/ld+json"</span>,
+      <span class="json-key">"url"</span>: <span class="json-string">".../legal-name-context.jsonld"</span>
+    },
+    {
+      <span class="json-key">"format"</span>: <span class="json-string">"application/schema+json"</span>,
+      <span class="json-key">"url"</span>: <span class="json-string">".../legal-name-schema.json"</span>
+    },
+    {
+      <span class="json-key">"format"</span>: <span class="json-string">"text/turtle"</span>,
+      <span class="json-key">"url"</span>: <span class="json-string">".../legal-name-shacl.ttl"</span>
+    }
+  ]
+}</div>
+                        <p style="margin-top: 15px; color: #555; line-height: 1.6;">
+                            <strong>Purpose:</strong> Define constraints, validation rules, and format distributions<br>
+                            <strong>Points to:</strong> EBWV property (Layer 3) + provides schemas
+                        </p>
+                    </div>
+
+                    <div style="text-align: center; color: #9c27b0; font-size: 24px; font-weight: bold;">
+                        ↓ semanticReference ↓
+                    </div>
+
+                    <!-- Layer 3: Property -->
+                    <div style="background: white; padding: 25px; border-radius: 12px; border-left: 6px solid #4caf50; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                            <div style="background: #4caf50; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px;">3</div>
+                            <div>
+                                <h4 style="margin: 0; font-size: 1.3em; color: #2d3748;">Property Layer</h4>
+                                <p style="margin: 5px 0 0 0; color: #718096;">EBWV OWL property definition</p>
+                            </div>
+                        </div>
+                        <div class="code-block" style="margin: 0; font-size: 13px;">
+<span class="json-comment">// https://w3id.org/ebwv#legalName (OWL/RDFS)</span>
+@prefix ebwv: &lt;https://w3id.org/ebwv#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+
+ebwv:legalName
+    a owl:DatatypeProperty ;
+    rdfs:label <span class="json-string">"legal name"@en</span> ;
+    rdfs:comment <span class="json-string">"The official registered name of a legal entity as recorded in official company registers."@en</span> ;
+    rdfs:domain ebwv:LegalEntity ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy &lt;https://w3id.org/ebwv&gt; .</div>
+                        <p style="margin-top: 15px; color: #555; line-height: 1.6;">
+                            <strong>Purpose:</strong> Define semantic meaning, relationships, domain/range<br>
+                            <strong>Enables:</strong> Machine reasoning, interoperability, equivalence detection
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+            <h3 style="margin-top: 40px; color: #2d3748; font-size: 1.5em;">Separation of Concerns</h3>
+
+            <div class="comparison-grid">
+                <div class="comparison-card" style="border-left-color: #9c27b0;">
+                    <h3>🎯 OWL (Layer 3)</h3>
+                    <p style="margin-bottom: 15px; color: #718096;"><strong>Semantic Meaning</strong></p>
+                    <ul>
+                        <li><strong>What:</strong> Defines what a property <em>means</em></li>
+                        <li><strong>Domain/Range:</strong> What it applies to and what values it can have</li>
+                        <li><strong>Relationships:</strong> Equivalence, subproperties, inverses</li>
+                        <li><strong>Reasoning:</strong> Enables logical inference</li>
+                    </ul>
+                    <p style="margin-top: 15px; padding: 10px; background: #f3e5f5; border-radius: 6px; font-size: 0.9em;">
+                        <strong>Example:</strong> <code>ebwv:legalName</code> is a property of <code>ebwv:LegalEntity</code>, 
+                        equivalent to <code>schema:legalName</code>
+                    </p>
+                </div>
+
+                <div class="comparison-card" style="border-left-color: #38b2ac;">
+                    <h3>✅ SHACL (Layer 2)</h3>
+                    <p style="margin-bottom: 15px; color: #718096;"><strong>Validation Constraints</strong></p>
+                    <ul>
+                        <li><strong>What:</strong> Defines validation rules and constraints</li>
+                        <li><strong>Cardinality:</strong> Minimum/maximum occurrences</li>
+                        <li><strong>Patterns:</strong> Regular expressions, formats</li>
+                        <li><strong>Validation:</strong> Check if data conforms</li>
+                    </ul>
+                    <p style="margin-top: 15px; padding: 10px; background: #e0f2f1; border-radius: 6px; font-size: 0.9em;">
+                        <strong>Example:</strong> <code>legalName</code> must be 1-255 chars, 
+                        contain only letters/numbers/punctuation
+                    </p>
+                </div>
+
+                <div class="comparison-card" style="border-left-color: #667eea;">
+                    <h3>📋 JSON Schema (Layer 2)</h3>
+                    <p style="margin-bottom: 15px; color: #718096;"><strong>Structure & Validation (JSON-specific)</strong></p>
+                    <ul>
+                        <li><strong>What:</strong> Defines JSON structure and validation</li>
+                        <li><strong>Types:</strong> string, number, array, object</li>
+                        <li><strong>Format:</strong> JSON-specific constraints</li>
+                        <li><strong>Validation:</strong> JSON document conformance</li>
+                    </ul>
+                    <p style="margin-top: 15px; padding: 10px; background: #e8eaf6; border-radius: 6px; font-size: 0.9em;">
+                        <strong>Example:</strong> <code>{"legalName": {"type": "string", "minLength": 1}}</code>
+                    </p>
+                </div>
+            </div>
+
+            <div class="warning-box info-box" style="margin-top: 30px;">
+                <div class="info-box-title">🎓 Key Insight: Why All Three Are Needed</div>
+                <div class="info-box-content">
+                    <p style="margin-bottom: 15px;"><strong>Each layer serves a distinct purpose:</strong></p>
+                    <ul style="margin-left: 20px; line-height: 1.8;">
+                        <li><strong>OWL (Semantic):</strong> Tells machines <em>what it means</em> → Enables interoperability across systems</li>
+                        <li><strong>SHACL (Constraints):</strong> Tells machines <em>how to validate</em> → Works across all RDF formats</li>
+                        <li><strong>JSON Schema (Structure):</strong> Tells machines <em>JSON structure</em> → Only for JSON documents</li>
+                    </ul>
+                    <p style="margin-top: 15px;">
+                        <strong>Example scenario:</strong> Two organizations both use <code>ebwv:legalName</code> (OWL), 
+                        but one requires 1-100 chars (SHACL) and the other 1-255 chars. 
+                        They can still recognize the semantic equivalence and map between systems, 
+                        even though validation rules differ.
+                    </p>
+                    <p style="margin-top: 15px; padding: 15px; background: white; border-left: 4px solid #ff9800; border-radius: 6px;">
+                        <strong>⚠️ Without OWL:</strong> Two schemas with <code>"legalName"</code> fields are just strings to a machine. 
+                        No way to know if they mean the same thing, are equivalent, or can be mapped.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="level-section">
+            <div class="level-header">
                 <div class="level-number" style="background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);">∑</div>
                 <div class="level-title">
                     <h2>Comparison Summary</h2>
