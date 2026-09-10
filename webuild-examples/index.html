@@ -196,7 +196,7 @@
             
             <div class="stats">
                 <div class="stat">
-                    <div class="stat-number">9</div>
+                    <div class="stat-number">12</div>
                     <div class="stat-label">Available Examples</div>
                 </div>
                 <div class="stat">
@@ -227,11 +227,12 @@
                 </div>
                 
                 <div class="attestation-card available" onclick="window.location='credentials/company-info.html'">
-                    <div class="attestation-icon">🏢</div>
+                    <div class="attestation-icon">📊</div>
                     <div class="attestation-title">Company Information</div>
                     <div class="attestation-desc">
-                        Extended company profile with operational details, trading names, 
-                        branch information, and corporate structure.
+                        Extended business profile with employee count, trade aliases, previous names, 
+                        and XBRL-inspired financial statements (Revenue, Net Income, EBITDA, etc.). 
+                        Complements EUCC with KYC/KYS operational data.
                     </div>
                     <div class="attestation-meta">
                         <span class="status-badge status-available">✓ Available</span>
@@ -309,16 +310,36 @@
                     </div>
                 </div>
                 
-                <div class="attestation-card available" onclick="window.location='credentials/ubo.html'">
+                <div class="attestation-card available" onclick="window.location='credentials/ownership.html'">
                     <div class="attestation-icon">👔</div>
-                    <div class="attestation-title">Ultimate Beneficial Owner (UBO)</div>
+                    <div class="attestation-title">Ownership Attestation</div>
                     <div class="attestation-desc">
-                        Identification of natural persons who ultimately own or control the entity. 
-                        Required for AML/KYC compliance.
+                        Comprehensive beneficial ownership structure with 3 owner types: 
+                        Person (direct shareholding), Legal Entity, and Legal Arrangement (Trust). 
+                        BODS v0.4 + AMLR 2024/1624 compliance.
                     </div>
                     <div class="attestation-meta">
                         <span class="status-badge status-available">✓ Available</span>
-                        <a href="credentials/ubo.html" class="view-button">View Example</a>
+                        <a href="credentials/ownership.html" class="view-button">View Example</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="category-section">
+            <h2 class="category-title">🛂 Labor Mobility & Cross-Border Work</h2>
+            <div class="attestations-grid">
+                <div class="attestation-card available" onclick="window.location='credentials/pda1.html'">
+                    <div class="attestation-icon">🛂</div>
+                    <div class="attestation-title">Portable Document A1 (PD A1)</div>
+                    <div class="attestation-desc">
+                        Posted Worker Social Security Coordination Certificate. 
+                        Documents applicable social security legislation for cross-border employment (EU Reg. 883/2004). 
+                        16 SD Element Groups for privacy-preserving disclosure.
+                    </div>
+                    <div class="attestation-meta">
+                        <span class="status-badge status-available">✓ Available</span>
+                        <a href="credentials/pda1.html" class="view-button">View Example</a>
                     </div>
                 </div>
             </div>
