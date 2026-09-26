@@ -16,8 +16,10 @@ trade:Catalogue a owl:Class ; rdfs:label "Supplier catalogue"@en ; rdfs:seeAlso 
 trade:CatalogueCredential a owl:Class ; rdfs:label "Supplier catalogue VC type"@en .
 trade:Quotation a owl:Class ; rdfs:label "Supplier offer / quotation"@en ; rdfs:seeAlso <https://docs.oasis-open.org/ubl/os-UBL-2.4/mod/summary/reports/UBL-Quotation-2.4.html> .
 trade:QuotationCredential a owl:Class ; rdfs:label "Supplier offer / quotation VC type"@en .
-trade:OrderAgreement a owl:Class ; rdfs:label "Offer acceptance / order agreement"@en ; rdfs:seeAlso <https://docs.peppol.eu/poacc/upgrade-3/profiles/42-orderagreement/> .
-trade:OrderAgreementCredential a owl:Class ; rdfs:label "Offer acceptance / order agreement VC type"@en .
+trade:AwardDecision a owl:Class ; rdfs:label "Buyer award / offer acceptance"@en ; rdfs:seeAlso <http://data.europa.eu/a4g/ontology#AwardDecision> .
+trade:AwardDecisionCredential a owl:Class ; rdfs:label "Buyer award / offer acceptance VC type"@en .
+trade:OrderAgreement a owl:Class ; rdfs:label "Seller order acceptance"@en ; rdfs:seeAlso <https://docs.peppol.eu/poacc/upgrade-3/profiles/42-orderagreement/> .
+trade:OrderAgreementCredential a owl:Class ; rdfs:label "Seller order acceptance VC type"@en .
 trade:Order a owl:Class ; rdfs:label "Purchase order"@en ; rdfs:seeAlso <https://docs.peppol.eu/poacc/upgrade-3/syntax/Order/> .
 trade:OrderCredential a owl:Class ; rdfs:label "Purchase order VC type"@en .
 trade:Invoice a owl:Class ; rdfs:label "Supplier invoice"@en ; rdfs:seeAlso <https://docs.peppol.eu/poacc/upgrade-3/syntax/Invoice/> .

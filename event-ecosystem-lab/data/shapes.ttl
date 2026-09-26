@@ -110,6 +110,15 @@ trade:QuotationShape a sh:NodeShape ; sh:targetClass trade:Quotation ;
     sh:property [ sh:path trade:appliesToLot ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
     sh:property [ sh:path trade:sourceDocument ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .
 
+trade:AwardDecisionShape a sh:NodeShape ; sh:targetClass trade:AwardDecision ;
+    sh:property [ sh:path trade:documentNumber ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:issueDate ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
+    sh:property [ sh:path trade:seller ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:buyer ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:responseCode ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:in ( "ACCEPTED" "REJECTED" "CHANGED" ) ] ;
+    sh:property [ sh:path trade:responseTo ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+    sh:property [ sh:path trade:appliesToLot ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .
+
 trade:OrderAgreementShape a sh:NodeShape ; sh:targetClass trade:OrderAgreement ;
     sh:property [ sh:path trade:documentNumber ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
     sh:property [ sh:path trade:issueDate ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] ;

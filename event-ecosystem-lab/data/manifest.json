@@ -108,12 +108,21 @@
     "file": "data/offer.vc.json"
   },
   {
+    "name": "award",
+    "label": "Buyer award / offer acceptance",
+    "category": "trade",
+    "class": "AwardDecision",
+    "basis": "ePO AwardDecision; procurement-specific decision",
+    "note": "Buyer accepts tender through a separate award decision; ePO semantics",
+    "file": "data/award.vc.json"
+  },
+  {
     "name": "acceptance",
-    "label": "Offer acceptance / order agreement",
+    "label": "Seller order acceptance",
     "category": "trade",
     "class": "OrderAgreement",
     "basis": "Peppol BIS Order Agreement / UBL OrderResponse",
-    "note": "Seller accepts the buyer order; award decision is separate",
+    "note": "Seller accepts buyer order; distinct from the award",
     "file": "data/acceptance.vc.json"
   },
   {
