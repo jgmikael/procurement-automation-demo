@@ -229,6 +229,29 @@ for category, rows in [('eligibility',ELIG),('trade',TRADE)]:
         MANIFEST.append({'name':name,'label':label,'category':category,'class':cls,'basis':issuer,'note':note,'file':'data/'+name+'.vc.json'})
 (OUT/'manifest.json').write_text(json.dumps(MANIFEST,ensure_ascii=False,indent=2)+'\n')
 
+# Static teaching fixtures for the DID-identified OpenID4VP request payload and
+# W3C VP response. Neither contains a cryptographic signature or usable endpoint.
+requested = {'registration':'CompanyRegistration','tax':'TaxCompliance',
+             'social':'SocialSecurityCompliance','representation':'RepresentationAuthority'}
+sample_request = {
+ 'client_id':'decentralized_identifier:did:example:harbour-city-buyer',
+ 'response_type':'vp_token','response_mode':'direct_post',
+ 'response_uri':'https://buyer.example.invalid/oid4vp/callback',
+ 'nonce':'DEMO-FIXED-NONCE-NOT-FOR-PRODUCTION','state':'DEMO-STATE-NOT-FOR-PRODUCTION',
+ 'dcql_query':{'credentials':[
+   {'id':name,'format':'ldp_vc','meta':{'type_values':[[BASE+'eligibility.ttl#'+cls+'Credential']]}}
+   for name,cls in requested.items()]},
+ 'client_metadata':{'vp_formats_supported':{'ldp_vc':{'proof_type_values':['DataIntegrityProof']}}}
+}
+sample_vp = {
+ 'state':sample_request['state'],
+ 'vp_token':{'@context':[VC_CONTEXT],'type':['VerifiablePresentation'],
+             'holder':'did:example:aalto-timber-ebw',
+             'verifiableCredential':[json.loads((OUT/(name+'.vc.json')).read_text()) for name in requested]}
+}
+(OUT/'presentation-request.json').write_text(json.dumps(sample_request,ensure_ascii=False,indent=2)+'\n')
+(OUT/'wallet-presentation.vp.json').write_text(json.dumps(sample_vp,ensure_ascii=False,indent=2)+'\n')
+
 PREFIXES = '''@prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .

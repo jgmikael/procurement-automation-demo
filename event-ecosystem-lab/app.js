@@ -53,13 +53,13 @@ const FAULTS = {
 };
 const RULE_AT_STEP={3:'credential-integrity',4:'representation',5:'semantic-profile',6:'tax-eligibility',11:'invoice-reconciliation'};
 const RULE_FILES={'credential-integrity':['tax'],'representation':['representation'],'semantic-profile':['tax'],'tax-eligibility':['tax','social'],'invoice-reconciliation':['order','receipt','invoice']};
-let state={step:0,completed:false,trace:[],run:1,ruleResults:{},agentEvents:[],bidDraft:null,watcherActive:false};
+let state={step:0,completed:false,trace:[],run:1,ruleResults:{},agentEvents:[],bidDraft:null,watcherActive:false,presentationRequest:null,presentationResponse:null};
 let watcherTimer=null;
 const currentCountry=()=>COUNTRIES[$('country').value];
 const currentFault=()=>FAULTS[$('fault').value];
 const mode=()=>document.querySelector('input[name="mode"]:checked').value;
 const record=(owner,action,kind='ok')=>state.trace.push({seq:state.trace.length+1,owner,action,kind,step:state.step});
-function reset(){clearTimeout(watcherTimer);watcherTimer=null;state={step:0,completed:false,trace:[],run:state.run+1,ruleResults:{},agentEvents:[],bidDraft:null,watcherActive:false};record('System',`New synthetic ${currentCountry().name} scenario · ${mode()==='adaptive'?'agent proposed plan':'defined service portfolio'}`);render();}
+function reset(){clearTimeout(watcherTimer);watcherTimer=null;state={step:0,completed:false,trace:[],run:state.run+1,ruleResults:{},agentEvents:[],bidDraft:null,watcherActive:false,presentationRequest:null,presentationResponse:null};record('System',`New synthetic ${currentCountry().name} scenario · ${mode()==='adaptive'?'agent proposed plan':'defined service portfolio'}`);render();}
 function resultStatus(key,step){let f=currentFault();if(f&&f.at===step&&((key==='Tax status'&&['expired','unknown','untrusted'].includes($('fault').value))||(key==='Mandate'&&$('fault').value==='revoked')||(key==='Profile mapping'&&$('fault').value==='unmapped')))return 'Issue';return step<=state.step?'Sample OK':'Pending';}
 function render(){let n=state.step,s=STEPS[n],f=currentFault(),blocked=f&&f.at===n;
   $('run-number').textContent='#'+String(state.run).padStart(3,'0');$('step-title').textContent=s.title;$('step-description').textContent=s.description;
@@ -92,14 +92,25 @@ function render(){let n=state.step,s=STEPS[n],f=currentFault(),blocked=f&&f.at==
     const events=$('agent-events');events.replaceChildren();for(const event of state.agentEvents){const li=document.createElement('li');li.textContent=event;events.append(li)}
     const draft=$('agent-draft');draft.replaceChildren();if(state.bidDraft){const title=document.createElement('strong');title.textContent=`Bid draft for ${state.bidDraft.noticeId} · suitability ${state.bidDraft.score}/100`;const list=document.createElement('p');list.textContent=`Autonomously gathered ${state.bidDraft.evidence.filter(x=>x.available).length} sample documents: ${state.bidDraft.evidence.map(x=>x.name).join(', ')}.`;const next=document.createElement('p');next.textContent='DRAFT ONLY · Supplier reviews capacity, price, evidence disclosure and tender conditions before any submission.';const details=document.createElement('details');const summary=document.createElement('summary');summary.textContent='Inspect prepared bid JSON';const pre=document.createElement('pre');pre.textContent=JSON.stringify(state.bidDraft,null,2);details.append(summary,pre);draft.append(title,list,next,details)}
   }
+  $('wallet-panel').hidden=![4,5,6].includes(n);
+  if([4,5,6].includes(n)){
+    const request=state.presentationRequest,response=state.presentationResponse,result=$('wallet-result');result.replaceChildren();
+    $('wallet-title').textContent=n===4?'Public buyer → supplier EBW':n===5?'Supplier EBW → public buyer':'Buyer inspects received presentation';
+    $('wallet-intro').textContent=n===4?'The relying party asks for four W3C VC types. Its DID identifies the requester; a production request must be signed.':n===5?'After supplier approval, the wallet selects four sample VCs and assembles a W3C Verifiable Presentation.':'The verifier compares the response structure with its request before rule evaluation.';
+    $('wallet-action').hidden=n===6;$('wallet-action').disabled=n===4?!!request:!!response;
+    $('wallet-action').textContent=n===4?(request?'Request created ✓':'Create presentation request →'):(response?'Presentation prepared ✓':'Approve and present VCs →');
+    if(n===4&&request||n===5&&response){const label=document.createElement('strong');label.textContent=n===4?'OPENID4VP REQUEST PAYLOAD · UNSIGNED':'W3C VP TOKEN · UNSIGNED';const pre=document.createElement('pre');pre.textContent=JSON.stringify(n===4?request:response,null,2);result.append(label,pre)}
+    else if(n===6&&response){const inspection=DemoWalletExchange.inspect(request,response);const label=document.createElement('strong');label.textContent=inspection.structuralMatch?'STRUCTURAL MATCH · PROOFS NOT VERIFIED':'STRUCTURAL MISMATCH';const p=document.createElement('p');p.textContent=`${inspection.credentialCount} embedded W3C VCs. ${inspection.reason}`;result.append(label,p)}
+    else result.textContent=n===6?'No presentation received.':n===5?'Waiting for the supplier to approve disclosure and assemble the VP.':'The request has not been prepared yet.';
+  }
   $('issue-box').textContent=blocked?`${f.title}. ${f.detail} Select a healthy evidence chain or reset to run another case.`:'';
-  $('advance').disabled=!!blocked||state.completed||n===2&&!state.bidDraft||!!ruleId&&run?.response.decision!=='PASS';$('advance').textContent=state.completed?'Completed ✓':n===7?'Record buyer decision →':n===STEPS.length-1?'Finish process →':n===1?'Buyer approves & continues →':n===4?'Approve disclosure →':n===5?'Submit tender →':'Run next step →';$('back').disabled=n===0;
+  $('advance').disabled=!!blocked||state.completed||n===2&&!state.bidDraft||n===4&&!state.presentationRequest||n===5&&!state.presentationResponse||!!ruleId&&run?.response.decision!=='PASS';$('advance').textContent=state.completed?'Completed ✓':n===7?'Record buyer decision →':n===STEPS.length-1?'Finish process →':n===1?'Buyer approves & continues →':n===4?'Approve disclosure →':n===5?'Submit tender →':'Run next step →';$('back').disabled=n===0;
   $('agent-text').textContent=mode()==='adaptive'?s.agent:`A predefined service portfolio fixes this task's position: ${s.short}. Conditions, authority and checks remain the same.`;$('control-text').textContent=s.control;
   $('evidence-list').innerHTML=[['Company identity',2],['Tax status',3],['Social contributions',3],['Mandate',4],['Profile mapping',5]].map(([key,at])=>{let v=resultStatus(key,at);return `<div class="evidence-item"><span>${key}</span><b class="${v==='Issue'?'bad':''}">${n>=at?v:'Pending'}</b></div>`}).join('');
   $('trace').innerHTML=state.trace.map(e=>`<li><time>T+${String(e.seq-1).padStart(2,'0')}</time><span><strong>${e.owner}</strong> · ${e.action}</span></li>`).join('');
   renderSemantics();
 }
-function advance(){let n=state.step,f=currentFault();if(state.completed||f&&f.at===n||n===2&&!state.bidDraft||RULE_AT_STEP[n]&&state.ruleResults[n]?.response.decision!=='PASS')return;
+function advance(){let n=state.step,f=currentFault();if(state.completed||f&&f.at===n||n===2&&!state.bidDraft||n===4&&!state.presentationRequest||n===5&&!state.presentationResponse||RULE_AT_STEP[n]&&state.ruleResults[n]?.response.decision!=='PASS')return;
   if(n===2){clearTimeout(watcherTimer);watcherTimer=null;state.watcherActive=false;}
   if(n===STEPS.length-1){record('Supplier','Synthetic invoice recorded; simulation ended (no payment).','gate');state.completed=true;render();return;}
   const actions=['Event registered; scoped service catalogue loaded.','Procurement expert approved synthetic criteria.','Supplier agent suggested participation; supplier remained in control.','Synthetic records checked: source, issuer, status and profile are distinct.','Representative approved procedure-specific evidence disclosure.','Tender presentation authorised; labels aligned via the approved semantic profile.','Rule check returned an explained, procedure-specific result.','Public buyer recorded a synthetic award decision after human review.','Buyer recorded a synthetic purchase order.','Supplier recorded a synthetic order response.','Supplier, carrier and buyer recorded dispatch, waybill and receipt.'];
@@ -129,6 +140,14 @@ function startTenderWatcher(){if(state.step!==2||state.watcherActive||state.bidD
 }
 function stopTenderWatcher(){clearTimeout(watcherTimer);watcherTimer=null;state.watcherActive=false;agentLog('Watcher paused by the supplier.');}
 $('watch-agent').addEventListener('click',startTenderWatcher);$('stop-agent').addEventListener('click',stopTenderWatcher);
+function randomToken(){const bytes=new Uint8Array(16);crypto.getRandomValues(bytes);return Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('')}
+async function walletAction(){if(state.step===4&&!state.presentationRequest){state.presentationRequest=DemoWalletExchange.request(randomToken(),randomToken());record('Public buyer relying party',`DID-identified request payload prepared for ${Object.keys(DemoWalletExchange.types).length} W3C VC types; unsigned demo.`);render();}
+  else if(state.step===5&&state.presentationRequest&&!state.presentationResponse){const button=$('wallet-action');button.disabled=true;$('wallet-result').textContent='Selecting sample credentials from the business wallet…';
+    try{const names=Object.keys(DemoWalletExchange.types);const credentials=Object.fromEntries(await Promise.all(names.map(async name=>{const r=await fetch(`./data/${name}.vc.json?v=7`);if(!r.ok)throw Error(`${name} credential unavailable`);return [name,await r.json()]})));
+      state.presentationResponse=DemoWalletExchange.response(state.presentationRequest,credentials);record('Supplier business wallet',`Prepared W3C VP with ${names.length} embedded unsigned sample credentials for buyer review; no cryptographic holder proof.`);render();}
+    catch(error){$('wallet-result').textContent=`Presentation could not be prepared: ${error.message}`;button.disabled=false}
+  }}
+$('wallet-action').addEventListener('click',walletAction);
 async function runRule(){const step=state.step,ruleId=RULE_AT_STEP[step];if(!ruleId)return;
   const button=$('run-rule');button.disabled=true;$('rule-result').textContent='Loading sample credentials…';
   try{
@@ -155,6 +174,6 @@ function renderSemantics(){let c=currentCountry(),fault=$('fault').value,concept
 document.addEventListener('click',e=>{let tab=e.target.closest('[data-step]');if(tab){let n=Number(tab.dataset.step);if(n<=state.step){state.step=n;state.completed=false;record('Presenter',`Returned to ${STEPS[n].short} for inspection.`);render();}}});
 $('advance').addEventListener('click',advance);$('back').addEventListener('click',()=>{if(state.step>0){state.step--;state.completed=false;record('Presenter',`Returned to ${STEPS[state.step].short} for inspection.`);render();}});
 ['country','fault'].forEach(id=>$(id).addEventListener('change',reset));document.querySelectorAll('input[name="mode"]').forEach(x=>x.addEventListener('change',reset));$('reset').addEventListener('click',reset);
-$('download').addEventListener('click',()=>{let out={disclaimer:'Synthetic browser simulation; local rule and agent examples, no live credentials or legal decision',country:$('country').value,mode:mode(),fault:$('fault').value,completed:state.completed,bidDraft:state.bidDraft,agentEvents:state.agentEvents,ruleCalls:state.ruleResults,entries:state.trace};let url=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:'application/json'}));let a=document.createElement('a');a.href=url;a.download='event-ecosystem-trace.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
+$('download').addEventListener('click',()=>{let out={disclaimer:'Synthetic browser simulation; unsigned wallet exchange, local rules and agent examples, no live credentials or legal decision',country:$('country').value,mode:mode(),fault:$('fault').value,completed:state.completed,bidDraft:state.bidDraft,agentEvents:state.agentEvents,presentationRequest:state.presentationRequest,presentationResponse:state.presentationResponse,ruleCalls:state.ruleResults,entries:state.trace};let url=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:'application/json'}));let a=document.createElement('a');a.href=url;a.download='event-ecosystem-trace.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
 $('copy-json').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('json-preview').textContent);$('copy-json').textContent='Copied ✓';setTimeout(()=>$('copy-json').textContent='Copy JSON',1800)}catch{$('copy-json').textContent='Select text to copy';}});
 state.run=0;reset();
