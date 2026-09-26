@@ -15,3 +15,19 @@
 .document-link strong{font-weight:800;overflow-wrap:anywhere}
 .document-link .document-role{font-size:9px;color:#487a72;white-space:nowrap;padding-right:7px;border-right:1px solid #b8d4c8}
 @media(max-width:740px){.step-documents-heading{align-items:flex-start;flex-direction:column}.document-link{width:100%;justify-content:flex-start}.document-link>span:last-child{margin-left:auto}}
+
+/* A visible local Rule API call at each decision point. */
+.rule-panel{margin-top:15px;padding:18px 19px;border:1px solid #c9ded7;background:#f1f8f5;min-width:0}
+.rule-head{display:flex;justify-content:space-between;gap:16px;align-items:center}
+.rule-head h4{font:800 15px Manrope,sans-serif;margin:6px 0}
+.rule-head p{font:11px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;color:#577378;overflow-wrap:anywhere;margin:0}
+.rule-head button{flex:none}
+.rule-result{font-size:11px;color:#54716d;margin-top:12px}
+.rule-result ul{padding-left:17px;margin:10px 0;color:#365c57}
+.rule-result li{margin:5px 0}
+.rule-status{display:inline-block;padding:5px 9px;background:#d6efe0;color:#136e54;font:800 10px Manrope,sans-serif;letter-spacing:.12em}
+.rule-status.fail,.rule-status.review{background:#fff0d9;color:#8d571c}
+.rule-result details{margin-top:12px;border-top:1px solid #d2e5dc;padding-top:9px}
+.rule-result summary{cursor:pointer;font-weight:700;color:#17675f}
+.rule-result pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#15363c;color:#d9efe3;padding:14px;max-height:320px;overflow:auto;font:10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+@media(max-width:740px){.rule-head{align-items:flex-start;flex-direction:column}.rule-head button{width:100%}}
