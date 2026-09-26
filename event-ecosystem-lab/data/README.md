@@ -19,3 +19,7 @@ The fixtures use nested line, item, price, monetary-total and document-reference
 ## Compact credential contexts
 
 Each fixture retains the W3C VC 2.0 base context as the first `@context` entry and includes only the namespace aliases and value coercions used by that fixture. The `credentialSubject` is placed immediately after the credential type and issuer for easier inspection. The `id`, `validFrom` and (for EUCC) `validUntil` fields still describe the credential envelope; the company, eligibility and trade assertions remain inside `credentialSubject`. These examples remain unsigned.
+
+## Wallet exchange examples
+
+`presentation-request.json` shows the payload of a DID-identified OpenID4VP request from the fictional public buyer. `wallet-presentation.vp.json` embeds the four W3C VC examples in a VC Data Model 2.0 VP from the fictional supplier EBW. The JSON is shown at the Mandate, Present and Verify steps. The request is not a signed Request Object; the VP and its embedded VCs lack proofs. The fixed fixture nonce/state values are for inspection only. A live exchange would require real DID resolution, signed request authentication, holder proof with nonce and domain binding, trusted issuers and status verification.

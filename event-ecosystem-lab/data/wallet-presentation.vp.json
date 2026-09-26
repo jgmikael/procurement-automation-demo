@@ -1,0 +1,236 @@
+{
+  "state": "DEMO-STATE-NOT-FOR-PRODUCTION",
+  "vp_token": {
+    "@context": [
+      "https://www.w3.org/ns/credentials/v2"
+    ],
+    "type": [
+      "VerifiablePresentation"
+    ],
+    "holder": "did:example:aalto-timber-ebw",
+    "verifiableCredential": [
+      {
+        "@context": [
+          "https://www.w3.org/ns/credentials/v2",
+          {
+            "ebwv": "https://w3id.org/ebwv#",
+            "elig": "https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/eligibility.ttl#",
+            "xsd": "http://www.w3.org/2001/XMLSchema#",
+            "ebwv:legalIdentifier": {
+              "@id": "ebwv:legalIdentifier",
+              "@type": "ebwv:Euid"
+            },
+            "ebwv:dateOfRegistration": {
+              "@type": "xsd:date"
+            },
+            "ebwv:dateOfBirth": {
+              "@type": "xsd:date"
+            },
+            "ebwv:activity": {
+              "@type": "ebwv:Nace21"
+            },
+            "ebwv:scopeOfAuthorization": {
+              "@type": "@id"
+            },
+            "ebwv:attestationLegalCategory": {
+              "@type": "@id"
+            },
+            "elig:jointSignatureCount": {
+              "@type": "xsd:integer"
+            },
+            "elig:signatoryGroup": {
+              "@type": "@id"
+            }
+          }
+        ],
+        "type": [
+          "VerifiableCredential",
+          "elig:CompanyRegistrationCredential",
+          "ebwv:ElectronicAttestationOfAttributes"
+        ],
+        "issuer": {
+          "id": "urn:demo:issuer:registration",
+          "type": "ebwv:PublicSectorBody",
+          "ebwv:legalName": "Demo Finnish Trade Register issuer",
+          "ebwv:jurisdiction": "FI"
+        },
+        "credentialSubject": {
+          "id": "urn:demo:operator:aalto-timber",
+          "type": "ebwv:LimitedLiabilityCompany",
+          "ebwv:legalName": "Aalto Timber Services Oy",
+          "ebwv:legalIdentifier": "FI-PRH-3141592-6",
+          "ebwv:legalForm": "Oy",
+          "ebwv:jurisdiction": "FI",
+          "ebwv:registeredAddress": {
+            "id": "urn:demo:address:aalto",
+            "type": "ebwv:Address",
+            "ebwv:fullAddress": "Example Street 12; 00100 Helsinki; FI",
+            "ebwv:postCode": "00100",
+            "ebwv:postName": "Helsinki",
+            "ebwv:adminUnitL1": "FI"
+          },
+          "ebwv:dateOfRegistration": "2017-05-16",
+          "ebwv:legalStatus": "active",
+          "ebwv:activity": "31.00",
+          "ebwv:legalRepresentative": [
+            {
+              "id": "urn:demo:person:mira",
+              "type": [
+                "ebwv:LegalRepresentative",
+                "ebwv:Person"
+              ],
+              "ebwv:fullName": "Mira Example",
+              "ebwv:dateOfBirth": "1985-04-12",
+              "ebwv:scopeOfAuthorization": "ebwv:Jointly",
+              "elig:jointSignatureCount": "2",
+              "elig:signatoryGroup": "urn:demo:signatory-group:board-reps-1"
+            },
+            {
+              "id": "urn:demo:person:oskar",
+              "type": [
+                "ebwv:LegalRepresentative",
+                "ebwv:Person"
+              ],
+              "ebwv:fullName": "Oskar Example",
+              "ebwv:dateOfBirth": "1987-08-03",
+              "ebwv:scopeOfAuthorization": "ebwv:Jointly",
+              "elig:jointSignatureCount": "2",
+              "elig:signatoryGroup": "urn:demo:signatory-group:board-reps-1"
+            }
+          ]
+        },
+        "id": "https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/registration.vc.json",
+        "validFrom": "2026-09-26T00:00:00Z",
+        "ebwv:attestationLegalCategory": "ebwv:Pub-EAA",
+        "validUntil": "2026-09-26T23:00:00Z"
+      },
+      {
+        "@context": [
+          "https://www.w3.org/ns/credentials/v2",
+          {
+            "ebwv": "https://w3id.org/ebwv#",
+            "elig": "https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/eligibility.ttl#",
+            "xsd": "http://www.w3.org/2001/XMLSchema#",
+            "elig:asOf": {
+              "@type": "xsd:date"
+            },
+            "elig:appliesToLot": {
+              "@type": "@id"
+            },
+            "ebwv:legalIdentifier": {
+              "@id": "ebwv:legalIdentifier",
+              "@type": "ebwv:Euid"
+            }
+          }
+        ],
+        "type": [
+          "VerifiableCredential",
+          "elig:TaxComplianceCredential"
+        ],
+        "issuer": "urn:demo:issuer:tax",
+        "credentialSubject": {
+          "id": "urn:demo:eligibility:tax-2026",
+          "type": "elig:TaxCompliance",
+          "elig:economicOperator": {
+            "id": "urn:demo:operator:aalto-timber",
+            "type": "ebwv:Company",
+            "ebwv:legalName": "Aalto Timber Services Oy",
+            "ebwv:legalIdentifier": "FI-PRH-3141592-6"
+          },
+          "elig:appliesToLot": "urn:demo:procurement:lot-1",
+          "elig:complianceStatus": "CLEAR",
+          "elig:jurisdiction": "FI",
+          "elig:asOf": "2026-09-26"
+        },
+        "id": "https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/tax.vc.json",
+        "validFrom": "2026-09-26T00:00:00Z"
+      },
+      {
+        "@context": [
+          "https://www.w3.org/ns/credentials/v2",
+          {
+            "ebwv": "https://w3id.org/ebwv#",
+            "elig": "https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/eligibility.ttl#",
+            "xsd": "http://www.w3.org/2001/XMLSchema#",
+            "elig:asOf": {
+              "@type": "xsd:date"
+            },
+            "elig:appliesToLot": {
+              "@type": "@id"
+            },
+            "ebwv:legalIdentifier": {
+              "@id": "ebwv:legalIdentifier",
+              "@type": "ebwv:Euid"
+            }
+          }
+        ],
+        "type": [
+          "VerifiableCredential",
+          "elig:SocialSecurityComplianceCredential"
+        ],
+        "issuer": "urn:demo:issuer:social",
+        "credentialSubject": {
+          "id": "urn:demo:eligibility:social-2026",
+          "type": [
+            "ebwv:SocialSecurityContribution",
+            "elig:SocialSecurityCompliance"
+          ],
+          "elig:economicOperator": {
+            "id": "urn:demo:operator:aalto-timber",
+            "type": "ebwv:Company",
+            "ebwv:legalName": "Aalto Timber Services Oy",
+            "ebwv:legalIdentifier": "FI-PRH-3141592-6"
+          },
+          "elig:appliesToLot": "urn:demo:procurement:lot-1",
+          "ebwv:complianceStatus": "CLEAR",
+          "elig:jurisdiction": "FI",
+          "elig:asOf": "2026-09-26"
+        },
+        "id": "https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/social.vc.json",
+        "validFrom": "2026-09-26T00:00:00Z"
+      },
+      {
+        "@context": [
+          "https://www.w3.org/ns/credentials/v2",
+          {
+            "ebwv": "https://w3id.org/ebwv#",
+            "elig": "https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/eligibility.ttl#",
+            "xsd": "http://www.w3.org/2001/XMLSchema#",
+            "elig:asOf": {
+              "@type": "xsd:date"
+            },
+            "elig:appliesToLot": {
+              "@type": "@id"
+            },
+            "ebwv:legalIdentifier": {
+              "@id": "ebwv:legalIdentifier",
+              "@type": "ebwv:Euid"
+            }
+          }
+        ],
+        "type": [
+          "VerifiableCredential",
+          "elig:RepresentationAuthorityCredential"
+        ],
+        "issuer": "urn:demo:issuer:representation",
+        "credentialSubject": {
+          "id": "urn:demo:eligibility:representation-2026",
+          "type": "elig:RepresentationAuthority",
+          "elig:economicOperator": {
+            "id": "urn:demo:operator:aalto-timber",
+            "type": "ebwv:Company",
+            "ebwv:legalName": "Aalto Timber Services Oy",
+            "ebwv:legalIdentifier": "FI-PRH-3141592-6"
+          },
+          "elig:appliesToLot": "urn:demo:procurement:lot-1",
+          "elig:representativeName": "Mira Example",
+          "elig:scope": "Submit eligibility evidence and tender for LOT-1",
+          "elig:authorityStatus": "ACTIVE",
+          "elig:asOf": "2026-09-26"
+        },
+        "id": "https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/representation.vc.json",
+        "validFrom": "2026-09-26T00:00:00Z"
+      }
+    ]
+  }
+}
