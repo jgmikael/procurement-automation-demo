@@ -54,7 +54,8 @@ ELIG = [
 TRADE = [
  ('catalogue','Supplier catalogue','Catalogue','Peppol BIS Catalogue / UBL Catalogue',{'trade:documentNumber':'CAT-2026-001','trade:issueDate':'2026-09-22','trade:seller':CO,'trade:buyer':BUYER,'trade:itemName':'Modular birch desk','trade:quantity':'200','trade:unitPrice':'320.00','trade:currencyCode':'EUR'}, 'Supplier publishes catalogue entries'),
  ('offer','Supplier offer / quotation','Quotation','OASIS UBL Quotation; ePO Tender is procurement context',{'trade:documentNumber':'QUO-2026-011','trade:issueDate':'2026-09-26','trade:seller':CO,'trade:buyer':BUYER,'trade:itemName':'Modular birch desk','trade:quantity':'200','trade:unitPrice':'310.00','trade:currencyCode':'EUR','trade:appliesToLot':LOT,'trade:sourceDocument':BASE+'catalogue.vc.json'}, 'Commercial offer; procurement tender remains distinct'),
- ('acceptance','Offer acceptance / order agreement','OrderAgreement','Peppol BIS Order Agreement / UBL OrderResponse',{'trade:documentNumber':'AGR-2026-012','trade:issueDate':'2026-10-10','trade:seller':CO,'trade:buyer':BUYER,'trade:responseCode':'ACCEPTED','trade:responseTo':BASE+'order.vc.json'}, 'Seller accepts the buyer order; award decision is separate'),
+ ('award','Buyer award / offer acceptance','AwardDecision','ePO AwardDecision; procurement-specific decision',{'trade:documentNumber':'AWD-2026-012','trade:issueDate':'2026-10-08','trade:seller':CO,'trade:buyer':BUYER,'trade:responseCode':'ACCEPTED','trade:responseTo':BASE+'offer.vc.json','trade:appliesToLot':LOT}, 'Buyer accepts tender through a separate award decision; ePO semantics'),
+ ('acceptance','Seller order acceptance','OrderAgreement','Peppol BIS Order Agreement / UBL OrderResponse',{'trade:documentNumber':'AGR-2026-012','trade:issueDate':'2026-10-10','trade:seller':CO,'trade:buyer':BUYER,'trade:responseCode':'ACCEPTED','trade:responseTo':BASE+'order.vc.json'}, 'Seller accepts buyer order; distinct from the award'),
  ('order','Purchase order','Order','Peppol BIS Ordering / UBL Order',{'trade:documentNumber':'ORD-2026-014','trade:issueDate':'2026-10-09','trade:seller':CO,'trade:buyer':BUYER,'trade:itemName':'Modular birch desk','trade:quantity':'200','trade:unitPrice':'310.00','trade:currencyCode':'EUR','trade:sourceDocument':BASE+'offer.vc.json'}, 'Buyer places order after separate award decision'),
  ('invoice','Supplier invoice','Invoice','Peppol BIS Billing / UBL Invoice',{'trade:documentNumber':'INV-2026-009','trade:issueDate':'2026-11-02','trade:seller':CO,'trade:buyer':BUYER,'trade:payableAmount':'62000.00','trade:currencyCode':'EUR','trade:sourceDocument':BASE+'order.vc.json'}, 'Supplier requests payment'),
  ('despatch','Despatch advice','DespatchAdvice','Peppol BIS Despatch Advice / UBL DespatchAdvice',{'trade:documentNumber':'DES-2026-027','trade:issueDate':'2026-10-25','trade:seller':CO,'trade:buyer':BUYER,'trade:itemName':'Modular birch desk','trade:quantity':'200','trade:sourceDocument':BASE+'order.vc.json'}, 'Supplier announces shipped goods'),
@@ -96,6 +97,7 @@ ELIG_LINKS = {
 TRADE_LINKS = {
  'Catalogue':'https://docs.peppol.eu/poacc/upgrade-3/syntax/Catalogue/',
  'Quotation':'https://docs.oasis-open.org/ubl/os-UBL-2.4/mod/summary/reports/UBL-Quotation-2.4.html',
+ 'AwardDecision':'http://data.europa.eu/a4g/ontology#AwardDecision',
  'OrderAgreement':'https://docs.peppol.eu/poacc/upgrade-3/profiles/42-orderagreement/',
  'Order':'https://docs.peppol.eu/poacc/upgrade-3/syntax/Order/',
  'Invoice':'https://docs.peppol.eu/poacc/upgrade-3/syntax/Invoice/',
