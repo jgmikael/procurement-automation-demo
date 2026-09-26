@@ -16,7 +16,7 @@ Visit the [simulation](https://jgmikael.github.io/procurement-automation-demo/ev
 
 ## Data layer
 
-`data/` contains 19 synthetic, unsigned W3C VC 2.0 examples: 10 eligibility attestations and 9 procurement, commercial and logistics documents. The eligibility extension is grounded in the draft EBWV and ePO; a small OWL trade vocabulary records links to Peppol BIS and UBL source definitions. `data/shapes.ttl` contains 19 SHACL shapes for the credential subjects. The OWL and SHACL files describe the fixtures but do not establish signature validity, XML conformance or legal eligibility.
+`data/` contains 19 synthetic, unsigned W3C VC 2.0 examples: 10 eligibility attestations and 9 procurement, commercial and logistics documents. The company registration credential follows the [WE BUILD EUCC rulebook](https://github.com/webuild-consortium/webuild-attestation-rulebooks-catalog/blob/main/rulebooks/rb-eucc/README.md) limited liability company variant, with a synthetic EUID, registered address, NACE activity, legal representatives and an explicit joint signature group. The eligibility extension is grounded in the draft EBWV and ePO; a small OWL trade vocabulary records links to Peppol BIS and UBL source definitions. `data/shapes.ttl` contains 19 SHACL shapes for the credential subjects. The OWL and SHACL files describe the fixtures but do not establish signature validity, XML conformance or legal eligibility.
 
 Regenerate the files with `python event-ecosystem-lab/build_data.py` from the repository root. Use `rdflib` and `pyshacl` to parse the Turtle and validate the JSON-LD credential subjects against `data/shapes.ttl`. The generator writes the manifest consumed by `data-layer.js`.
 

@@ -34,13 +34,45 @@ CONTEXT = ['https://www.w3.org/ns/credentials/v2', {
     'trade:payableAmount': {'@type': 'xsd:decimal'},
     'trade:quantity': {'@type': 'xsd:integer'},
     'trade:receivedQuantity': {'@type': 'xsd:integer'},
+    'ebwv:legalIdentifier': {'@id': 'ebwv:legalIdentifier', '@type': 'ebwv:Euid'},
+    'ebwv:dateOfRegistration': {'@type': 'xsd:date'},
+    'ebwv:dateOfBirth': {'@type': 'xsd:date'},
+    'ebwv:activity': {'@type': 'ebwv:Nace21'},
+    'ebwv:scopeOfAuthorization': {'@type': '@id'},
+    'ebwv:attestationLegalCategory': {'@type': '@id'},
+    'elig:jointSignatureCount': {'@type': 'xsd:integer'},
+    'elig:signatoryGroup': {'@type': '@id'},
 }]
 LOT = 'urn:demo:procurement:lot-1'
 CO = 'urn:demo:operator:aalto-timber'
 BUYER = 'urn:demo:buyer:harbour-city'
+EUID = 'FI-PRH-3141592-6' # Synthetic EUID: country + example register code + example Business ID.
+EUCC_RULEBOOK = 'https://github.com/webuild-consortium/webuild-attestation-rulebooks-catalog/blob/main/rulebooks/rb-eucc/README.md'
+
+EUCC_COMPANY = {
+ 'ebwv:legalName':'Aalto Timber Services Oy',
+ 'ebwv:legalIdentifier':EUID,
+ 'ebwv:legalForm':'Oy',
+ 'ebwv:jurisdiction':'FI',
+ 'ebwv:registeredAddress':{'id':'urn:demo:address:aalto','type':'ebwv:Address',
+                           'ebwv:fullAddress':'Example Street 12; 00100 Helsinki; FI',
+                           'ebwv:postCode':'00100','ebwv:postName':'Helsinki','ebwv:adminUnitL1':'FI'},
+ 'ebwv:dateOfRegistration':'2017-05-16',
+ 'ebwv:legalStatus':'active',
+ 'ebwv:activity':'31.00',
+ 'ebwv:legalRepresentative':[
+     {'id':'urn:demo:person:mira','type':['ebwv:LegalRepresentative','ebwv:Person'],
+      'ebwv:fullName':'Mira Example','ebwv:dateOfBirth':'1985-04-12',
+      'ebwv:scopeOfAuthorization':'ebwv:Jointly','elig:jointSignatureCount':'2',
+      'elig:signatoryGroup':'urn:demo:signatory-group:board-reps-1'},
+     {'id':'urn:demo:person:oskar','type':['ebwv:LegalRepresentative','ebwv:Person'],
+      'ebwv:fullName':'Oskar Example','ebwv:dateOfBirth':'1987-08-03',
+      'ebwv:scopeOfAuthorization':'ebwv:Jointly','elig:jointSignatureCount':'2',
+      'elig:signatoryGroup':'urn:demo:signatory-group:board-reps-1'}],
+}
 
 ELIG = [
- ('registration','Company registration','CompanyRegistration', 'Finnish Trade Register', {'elig:registrationStatus':'ACTIVE','elig:asOf':'2026-09-26'}, 'Legal and professional standing; Art. 27(1)(a)'),
+ ('registration','EU Company Certificate','CompanyRegistration', 'Demo Finnish Trade Register issuer', EUCC_COMPANY, 'WE BUILD EUCC rulebook §2 and §3.3; limited liability company; joint signatures of two'),
  ('representation','Representative authority','RepresentationAuthority','Finnish Trade Register',{'elig:representativeName':'Mira Example','elig:scope':'Submit eligibility evidence and tender for LOT-1','elig:authorityStatus':'ACTIVE','elig:asOf':'2026-09-26'}, 'Authorised action in the wallet; agent governance design'),
  ('tax','Tax compliance','TaxCompliance','Finnish Tax Administration',{'elig:complianceStatus':'CLEAR','elig:jurisdiction':'FI','elig:asOf':'2026-09-26'}, 'Exclusion proof; Arts. 25–26, 28'),
  ('social','Social security contributions','SocialSecurityCompliance','Finnish Social Insurance Institution',{'ebwv:complianceStatus':'CLEAR','elig:jurisdiction':'FI','elig:asOf':'2026-09-26'}, 'Exclusion proof; Arts. 25–26, 28'),
@@ -64,18 +96,29 @@ TRADE = [
 ]
 
 def credential(name, category, cls, issuer, fields):
-    subject = {'id': f'urn:demo:{category}:{name}-2026', 'type': f'{"elig" if category == "eligibility" else "trade"}:{cls}'}
-    if category == 'eligibility':
-        subject.update({'elig:economicOperator':{'id':CO,'type':'ebwv:Company','ebwv:legalName':'Aalto Timber Services Oy','ebwv:legalIdentifier':'FI-3141592-6'},'elig:appliesToLot':LOT})
-        if name == 'social': subject['type'] = ['ebwv:SocialSecurityContribution','elig:SocialSecurityCompliance']
-    subject.update(fields)
+    if name == 'registration':
+        # EUCC is reusable company evidence, independent of a particular procurement lot.
+        subject={'id':CO,'type':['ebwv:LimitedLiabilityCompany','elig:CompanyRegistration'],**fields}
+    else:
+        subject = {'id': f'urn:demo:{category}:{name}-2026', 'type': f'{"elig" if category == "eligibility" else "trade"}:{cls}'}
+        if category == 'eligibility':
+            subject.update({'elig:economicOperator':{'id':CO,'type':'ebwv:Company','ebwv:legalName':'Aalto Timber Services Oy','ebwv:legalIdentifier':EUID},'elig:appliesToLot':LOT})
+            if name == 'social': subject['type'] = ['ebwv:SocialSecurityContribution','elig:SocialSecurityCompliance']
+        subject.update(fields)
     issuer_id=(BUYER if name in ('award','order','receipt') else
                'urn:demo:carrier:baltic-logistics' if name=='waybill' else
                CO if category=='trade' else f'urn:demo:issuer:{name}')
     start=fields.get('trade:issueDate') or fields.get('elig:asOf') or '2026-09-26'
-    return {'@context':CONTEXT,'id':BASE+name+'.vc.json','type':['VerifiableCredential',f'{"elig" if category == "eligibility" else "trade"}:{cls}Credential'],
-            'issuer':issuer_id,'validFrom':start+'T00:00:00Z',
-            'credentialSubject':subject}
+    vc={'@context':CONTEXT,'id':BASE+name+'.vc.json','type':['VerifiableCredential',f'{"elig" if category == "eligibility" else "trade"}:{cls}Credential'],
+        'issuer':issuer_id,'validFrom':start+'T00:00:00Z','credentialSubject':subject}
+    if name=='registration':
+        vc['type'].append('ebwv:ElectronicAttestationOfAttributes')
+        vc['issuer']={'id':issuer_id,'type':'ebwv:PublicSectorBody',
+                      'ebwv:legalName':'Demo Finnish Trade Register issuer','ebwv:jurisdiction':'FI'}
+        vc['ebwv:attestationLegalCategory']='ebwv:Pub-EAA'
+        # Short illustrative lifetime avoids inventing a non-working revocation service.
+        vc['validUntil']='2026-09-26T23:00:00Z'
+    return vc
 
 MANIFEST=[]
 for category, rows in [('eligibility',ELIG),('trade',TRADE)]:
@@ -132,6 +175,8 @@ def vocabulary(category,rows,fields):
         doc+=f'{ns}:{cls} a owl:Class ; rdfs:label "{label}"@en'
         if category=='eligibility' and cls in ELIG_LINKS:
             doc+=f' ; rdfs:seeAlso {ELIG_LINKS[cls]}'
+        if cls=='CompanyRegistration':
+            doc+=f' ; rdfs:subClassOf ebwv:LimitedLiabilityCompany ; rdfs:seeAlso <{EUCC_RULEBOOK}>'
         if category=='trade': doc+=f' ; rdfs:seeAlso <{TRADE_LINKS[cls]}>'
         doc+=' .\n'
         doc+=f'{ns}:{cls}Credential a owl:Class ; rdfs:label "{label} VC type"@en .\n'
@@ -139,6 +184,8 @@ def vocabulary(category,rows,fields):
     if category=='eligibility':
         doc+='elig:economicOperator a owl:ObjectProperty ; rdfs:range ebwv:EconomicOperator ; rdfs:label "economic operator"@en .\n'
         doc+='elig:appliesToLot a owl:ObjectProperty ; rdfs:range epo:Lot ; rdfs:label "applies to lot"@en .\n'
+        doc+='elig:jointSignatureCount a owl:DatatypeProperty ; rdfs:domain ebwv:LegalRepresentative ; rdfs:range xsd:integer ; rdfs:label "joint signature count"@en ; rdfs:comment "Demo extension for the EUCC rulebook joint_two rule, which is more specific than ebwv:Jointly."@en .\n'
+        doc+='elig:signatoryGroup a owl:ObjectProperty ; rdfs:domain ebwv:LegalRepresentative ; rdfs:range rdfs:Resource ; rdfs:label "signatory group"@en ; rdfs:comment "Identifies which representatives belong to the same joint-signature rule."@en .\n'
     for f in fields:
         if f=='elig:appliesToLot': continue
         doc+=property_owl(f)
@@ -167,10 +214,46 @@ elig:OperatorShape a sh:NodeShape ; sh:class ebwv:Company ;
     sh:property [ sh:path ebwv:legalName ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
     sh:property [ sh:path ebwv:legalIdentifier ; sh:minCount 1 ; sh:maxCount 1 ] .
 
+# EUCC limited liability company profile (WE BUILD rb-eucc, sections 2 and 3.3).
+# EUCC's legalRepresentativeId semantic reference is absent from current EBWV;
+# no such EBWV term is invented here. Synthetic persons omit optional identifiers.
+elig:EUCCAddressShape a sh:NodeShape ; sh:class ebwv:Address ;
+    sh:property [ sh:path ebwv:fullAddress ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+elig:EUCCRepresentativeShape a sh:NodeShape ; sh:class ebwv:LegalRepresentative ;
+    sh:property [ sh:path ebwv:scopeOfAuthorization ; sh:minCount 1 ; sh:maxCount 1 ;
+                  sh:nodeKind sh:IRI ; sh:in ( ebwv:Alone ebwv:Jointly ) ] ;
+    sh:or ( [ sh:property [ sh:path ebwv:scopeOfAuthorization ; sh:hasValue ebwv:Alone ] ]
+            [ sh:property [ sh:path ebwv:scopeOfAuthorization ; sh:hasValue ebwv:Jointly ] ;
+              sh:property [ sh:path elig:jointSignatureCount ; sh:minCount 1 ;
+                            sh:datatype xsd:integer ; sh:minInclusive 2 ] ;
+              sh:property [ sh:path elig:signatoryGroup ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ] ) ;
+    sh:or ( [ sh:class ebwv:Person ;
+              sh:property [ sh:path ebwv:fullName ; sh:minCount 1 ; sh:datatype xsd:string ] ;
+              sh:property [ sh:path ebwv:dateOfBirth ; sh:minCount 1 ; sh:datatype xsd:date ] ]
+            [ sh:class ebwv:EconomicOperator ;
+              sh:property [ sh:path ebwv:legalName ; sh:minCount 1 ] ;
+              sh:property [ sh:path ebwv:legalIdentifier ; sh:minCount 1 ] ;
+              sh:property [ sh:path ebwv:legalForm ; sh:minCount 1 ] ] ) .
+
+elig:CompanyRegistrationShape a sh:NodeShape ; sh:targetClass elig:CompanyRegistration ;
+    sh:class ebwv:LimitedLiabilityCompany ;
+    sh:property [ sh:path ebwv:legalName ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path ebwv:legalIdentifier ; sh:minCount 1 ; sh:maxCount 1 ;
+                  sh:datatype ebwv:Euid ; sh:pattern "^[A-Z]{{2}}-[A-Z0-9]+-[A-Z0-9-]+$" ] ;
+    sh:property [ sh:path ebwv:legalForm ; sh:minCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path ebwv:jurisdiction ; sh:minCount 1 ; sh:pattern "^[A-Z]{{2}}$" ] ;
+    sh:property [ sh:path ebwv:registeredAddress ; sh:minCount 1 ; sh:node elig:EUCCAddressShape ] ;
+    sh:property [ sh:path ebwv:dateOfRegistration ; sh:minCount 1 ; sh:datatype xsd:date ] ;
+    sh:property [ sh:path ebwv:legalStatus ; sh:minCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path ebwv:activity ; sh:minCount 1 ; sh:datatype ebwv:Nace21 ] ;
+    sh:property [ sh:path ebwv:legalRepresentative ; sh:minCount 1 ; sh:node elig:EUCCRepresentativeShape ] .
+
 '''.replace('< '+BASE+'shapes.ttl >','<'+BASE+'shapes.ttl>')
 for category,rows in [('eligibility',ELIG),('trade',TRADE)]:
     ns='elig' if category=='eligibility' else 'trade'
     for name,label,cls,issuer,fields,note in rows:
+        if name=='registration': continue # Nested EUCC profile is defined above.
         paths=list(fields)
         if category=='eligibility': paths=[p for p in paths if p!='elig:appliesToLot']
         SHAPES+=f'{ns}:{cls}Shape a sh:NodeShape ; sh:targetClass {ns}:{cls} ;\n'
