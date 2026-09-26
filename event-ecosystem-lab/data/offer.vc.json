@@ -68,7 +68,7 @@
     "VerifiableCredential",
     "trade:QuotationCredential"
   ],
-  "issuer": "urn:demo:issuer:offer",
+  "issuer": "urn:demo:operator:aalto-timber",
   "validFrom": "2026-09-26T00:00:00Z",
   "credentialSubject": {
     "id": "urn:demo:trade:offer-2026",

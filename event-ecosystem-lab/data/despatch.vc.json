@@ -68,8 +68,8 @@
     "VerifiableCredential",
     "trade:DespatchAdviceCredential"
   ],
-  "issuer": "urn:demo:issuer:despatch",
-  "validFrom": "2026-09-26T00:00:00Z",
+  "issuer": "urn:demo:operator:aalto-timber",
+  "validFrom": "2026-10-25T00:00:00Z",
   "credentialSubject": {
     "id": "urn:demo:trade:despatch-2026",
     "type": "trade:DespatchAdvice",
