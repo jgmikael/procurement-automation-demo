@@ -50,7 +50,7 @@ function advance(){let n=state.step,f=currentFault();if(state.completed||f&&f.at
   render();
 }
 let taxCredential=null;
-fetch('./data/tax.vc.json').then(r=>r.ok?r.json():Promise.reject(Error(r.status))).then(vc=>{taxCredential=vc;renderSemantics()}).catch(()=>{});
+fetch('./data/tax.vc.json?v=2').then(r=>r.ok?r.json():Promise.reject(Error(r.status))).then(vc=>{taxCredential=vc;renderSemantics()}).catch(()=>{});
 function renderSemantics(){let c=currentCountry(),fault=$('fault').value,concept='https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/eligibility.ttl#complianceStatus',mapped=fault!=='unmapped',status=fault==='unknown'?'UNKNOWN':'CLEAR';
   $('mapping-demo').innerHTML=`<div class="mapping-row"><span>Local label</span><strong>${c.label} (${c.name})</strong></div><div class="mapping-row"><span>Common concept</span><strong><code>${mapped?concept:'UNMAPPED · expert review'}</code></strong></div><div class="mapping-row"><span>Value code</span><strong>${status}</strong></div><div class="mapping-row"><span>Profile</span><strong>elig:TaxComplianceShape · as of 2026-09-26</strong></div><div class="mapping-row"><span>Rule</span><strong>${mapped?'Tax status must be CLEAR on the specified date.':'No rule evaluation until the mapping is governed.'}</strong></div>`;
   if(taxCredential){const payload=JSON.parse(JSON.stringify(taxCredential));payload.credentialSubject['elig:complianceStatus']=status;$('json-preview').textContent=JSON.stringify(payload,null,2)}else $('json-preview').textContent='Loading W3C VC example…';
