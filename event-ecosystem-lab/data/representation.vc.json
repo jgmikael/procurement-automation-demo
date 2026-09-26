@@ -60,6 +60,31 @@
       },
       "trade:receivedQuantity": {
         "@type": "xsd:integer"
+      },
+      "ebwv:legalIdentifier": {
+        "@id": "ebwv:legalIdentifier",
+        "@type": "ebwv:Euid"
+      },
+      "ebwv:dateOfRegistration": {
+        "@type": "xsd:date"
+      },
+      "ebwv:dateOfBirth": {
+        "@type": "xsd:date"
+      },
+      "ebwv:activity": {
+        "@type": "ebwv:Nace21"
+      },
+      "ebwv:scopeOfAuthorization": {
+        "@type": "@id"
+      },
+      "ebwv:attestationLegalCategory": {
+        "@type": "@id"
+      },
+      "elig:jointSignatureCount": {
+        "@type": "xsd:integer"
+      },
+      "elig:signatoryGroup": {
+        "@type": "@id"
       }
     }
   ],
@@ -77,7 +102,7 @@
       "id": "urn:demo:operator:aalto-timber",
       "type": "ebwv:Company",
       "ebwv:legalName": "Aalto Timber Services Oy",
-      "ebwv:legalIdentifier": "FI-3141592-6"
+      "ebwv:legalIdentifier": "FI-PRH-3141592-6"
     },
     "elig:appliesToLot": "urn:demo:procurement:lot-1",
     "elig:representativeName": "Mira Example",

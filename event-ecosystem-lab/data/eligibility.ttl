@@ -12,8 +12,8 @@
   rdfs:label "Event Ecosystem Lab eligibility extension profile v0.1"@en ;
   rdfs:comment "Synthetic demonstration extension; EBWV, ePO, Peppol and UBL terms are independently governed."@en .
 
-elig:CompanyRegistration a owl:Class ; rdfs:label "Company registration"@en ; rdfs:seeAlso epo:SelectionCriterion .
-elig:CompanyRegistrationCredential a owl:Class ; rdfs:label "Company registration VC type"@en .
+elig:CompanyRegistration a owl:Class ; rdfs:label "EU Company Certificate"@en ; rdfs:seeAlso epo:SelectionCriterion ; rdfs:subClassOf ebwv:LimitedLiabilityCompany ; rdfs:seeAlso <https://github.com/webuild-consortium/webuild-attestation-rulebooks-catalog/blob/main/rulebooks/rb-eucc/README.md> .
+elig:CompanyRegistrationCredential a owl:Class ; rdfs:label "EU Company Certificate VC type"@en .
 elig:RepresentationAuthority a owl:Class ; rdfs:label "Representative authority"@en .
 elig:RepresentationAuthorityCredential a owl:Class ; rdfs:label "Representative authority VC type"@en .
 elig:TaxCompliance a owl:Class ; rdfs:label "Tax compliance"@en ; rdfs:seeAlso epo:ExclusionGround .
@@ -35,6 +35,8 @@ elig:OperatorOriginCredential a owl:Class ; rdfs:label "Operator origin VC type"
 
 elig:economicOperator a owl:ObjectProperty ; rdfs:range ebwv:EconomicOperator ; rdfs:label "economic operator"@en .
 elig:appliesToLot a owl:ObjectProperty ; rdfs:range epo:Lot ; rdfs:label "applies to lot"@en .
+elig:jointSignatureCount a owl:DatatypeProperty ; rdfs:domain ebwv:LegalRepresentative ; rdfs:range xsd:integer ; rdfs:label "joint signature count"@en ; rdfs:comment "Demo extension for the EUCC rulebook joint_two rule, which is more specific than ebwv:Jointly."@en .
+elig:signatoryGroup a owl:ObjectProperty ; rdfs:domain ebwv:LegalRepresentative ; rdfs:range rdfs:Resource ; rdfs:label "signatory group"@en ; rdfs:comment "Identifies which representatives belong to the same joint-signature rule."@en .
 elig:annualTurnover a owl:DatatypeProperty ; rdfs:label "annualTurnover"@en ; rdfs:range xsd:decimal .
 elig:asOf a owl:DatatypeProperty ; rdfs:label "asOf"@en ; rdfs:range xsd:date .
 elig:authorityStatus a owl:DatatypeProperty ; rdfs:label "authorityStatus"@en ; rdfs:range xsd:string .
@@ -53,6 +55,5 @@ elig:proceedingStatus a owl:DatatypeProperty ; rdfs:label "proceedingStatus"@en 
 elig:qualificationStatus a owl:DatatypeProperty ; rdfs:label "qualificationStatus"@en ; rdfs:range xsd:string .
 elig:referenceProject a owl:DatatypeProperty ; rdfs:label "referenceProject"@en ; rdfs:range xsd:string .
 elig:registerName a owl:DatatypeProperty ; rdfs:label "registerName"@en ; rdfs:range xsd:string .
-elig:registrationStatus a owl:DatatypeProperty ; rdfs:label "registrationStatus"@en ; rdfs:range xsd:string .
 elig:representativeName a owl:DatatypeProperty ; rdfs:label "representativeName"@en ; rdfs:range xsd:string .
 elig:scope a owl:DatatypeProperty ; rdfs:label "scope"@en ; rdfs:range xsd:string .

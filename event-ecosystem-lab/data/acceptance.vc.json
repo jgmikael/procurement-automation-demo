@@ -60,6 +60,31 @@
       },
       "trade:receivedQuantity": {
         "@type": "xsd:integer"
+      },
+      "ebwv:legalIdentifier": {
+        "@id": "ebwv:legalIdentifier",
+        "@type": "ebwv:Euid"
+      },
+      "ebwv:dateOfRegistration": {
+        "@type": "xsd:date"
+      },
+      "ebwv:dateOfBirth": {
+        "@type": "xsd:date"
+      },
+      "ebwv:activity": {
+        "@type": "ebwv:Nace21"
+      },
+      "ebwv:scopeOfAuthorization": {
+        "@type": "@id"
+      },
+      "ebwv:attestationLegalCategory": {
+        "@type": "@id"
+      },
+      "elig:jointSignatureCount": {
+        "@type": "xsd:integer"
+      },
+      "elig:signatoryGroup": {
+        "@type": "@id"
       }
     }
   ],

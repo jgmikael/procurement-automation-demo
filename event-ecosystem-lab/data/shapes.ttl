@@ -16,11 +16,40 @@ elig:OperatorShape a sh:NodeShape ; sh:class ebwv:Company ;
     sh:property [ sh:path ebwv:legalName ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
     sh:property [ sh:path ebwv:legalIdentifier ; sh:minCount 1 ; sh:maxCount 1 ] .
 
+# EUCC limited liability company profile (WE BUILD rb-eucc, sections 2 and 3.3).
+# EUCC's legalRepresentativeId semantic reference is absent from current EBWV;
+# no such EBWV term is invented here. Synthetic persons omit optional identifiers.
+elig:EUCCAddressShape a sh:NodeShape ; sh:class ebwv:Address ;
+    sh:property [ sh:path ebwv:fullAddress ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+elig:EUCCRepresentativeShape a sh:NodeShape ; sh:class ebwv:LegalRepresentative ;
+    sh:property [ sh:path ebwv:scopeOfAuthorization ; sh:minCount 1 ; sh:maxCount 1 ;
+                  sh:nodeKind sh:IRI ; sh:in ( ebwv:Alone ebwv:Jointly ) ] ;
+    sh:or ( [ sh:property [ sh:path ebwv:scopeOfAuthorization ; sh:hasValue ebwv:Alone ] ]
+            [ sh:property [ sh:path ebwv:scopeOfAuthorization ; sh:hasValue ebwv:Jointly ] ;
+              sh:property [ sh:path elig:jointSignatureCount ; sh:minCount 1 ;
+                            sh:datatype xsd:integer ; sh:minInclusive 2 ] ;
+              sh:property [ sh:path elig:signatoryGroup ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ] ) ;
+    sh:or ( [ sh:class ebwv:Person ;
+              sh:property [ sh:path ebwv:fullName ; sh:minCount 1 ; sh:datatype xsd:string ] ;
+              sh:property [ sh:path ebwv:dateOfBirth ; sh:minCount 1 ; sh:datatype xsd:date ] ]
+            [ sh:class ebwv:EconomicOperator ;
+              sh:property [ sh:path ebwv:legalName ; sh:minCount 1 ] ;
+              sh:property [ sh:path ebwv:legalIdentifier ; sh:minCount 1 ] ;
+              sh:property [ sh:path ebwv:legalForm ; sh:minCount 1 ] ] ) .
+
 elig:CompanyRegistrationShape a sh:NodeShape ; sh:targetClass elig:CompanyRegistration ;
-    sh:property [ sh:path elig:economicOperator ; sh:minCount 1 ; sh:maxCount 1 ; sh:node elig:OperatorShape ] ;
-    sh:property [ sh:path elig:appliesToLot ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
-    sh:property [ sh:path elig:registrationStatus ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:in ( "ACTIVE" "INACTIVE" "UNKNOWN" ) ] ;
-    sh:property [ sh:path elig:asOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] .
+    sh:class ebwv:LimitedLiabilityCompany ;
+    sh:property [ sh:path ebwv:legalName ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path ebwv:legalIdentifier ; sh:minCount 1 ; sh:maxCount 1 ;
+                  sh:datatype ebwv:Euid ; sh:pattern "^[A-Z]{2}-[A-Z0-9]+-[A-Z0-9-]+$" ] ;
+    sh:property [ sh:path ebwv:legalForm ; sh:minCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path ebwv:jurisdiction ; sh:minCount 1 ; sh:pattern "^[A-Z]{2}$" ] ;
+    sh:property [ sh:path ebwv:registeredAddress ; sh:minCount 1 ; sh:node elig:EUCCAddressShape ] ;
+    sh:property [ sh:path ebwv:dateOfRegistration ; sh:minCount 1 ; sh:datatype xsd:date ] ;
+    sh:property [ sh:path ebwv:legalStatus ; sh:minCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path ebwv:activity ; sh:minCount 1 ; sh:datatype ebwv:Nace21 ] ;
+    sh:property [ sh:path ebwv:legalRepresentative ; sh:minCount 1 ; sh:node elig:EUCCRepresentativeShape ] .
 
 elig:RepresentationAuthorityShape a sh:NodeShape ; sh:targetClass elig:RepresentationAuthority ;
     sh:property [ sh:path elig:economicOperator ; sh:minCount 1 ; sh:maxCount 1 ; sh:node elig:OperatorShape ] ;

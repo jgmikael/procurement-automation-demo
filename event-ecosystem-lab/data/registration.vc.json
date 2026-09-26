@@ -60,27 +60,95 @@
       },
       "trade:receivedQuantity": {
         "@type": "xsd:integer"
+      },
+      "ebwv:legalIdentifier": {
+        "@id": "ebwv:legalIdentifier",
+        "@type": "ebwv:Euid"
+      },
+      "ebwv:dateOfRegistration": {
+        "@type": "xsd:date"
+      },
+      "ebwv:dateOfBirth": {
+        "@type": "xsd:date"
+      },
+      "ebwv:activity": {
+        "@type": "ebwv:Nace21"
+      },
+      "ebwv:scopeOfAuthorization": {
+        "@type": "@id"
+      },
+      "ebwv:attestationLegalCategory": {
+        "@type": "@id"
+      },
+      "elig:jointSignatureCount": {
+        "@type": "xsd:integer"
+      },
+      "elig:signatoryGroup": {
+        "@type": "@id"
       }
     }
   ],
   "id": "https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/registration.vc.json",
   "type": [
     "VerifiableCredential",
-    "elig:CompanyRegistrationCredential"
+    "elig:CompanyRegistrationCredential",
+    "ebwv:ElectronicAttestationOfAttributes"
   ],
-  "issuer": "urn:demo:issuer:registration",
+  "issuer": {
+    "id": "urn:demo:issuer:registration",
+    "type": "ebwv:PublicSectorBody",
+    "ebwv:legalName": "Demo Finnish Trade Register issuer",
+    "ebwv:jurisdiction": "FI"
+  },
   "validFrom": "2026-09-26T00:00:00Z",
   "credentialSubject": {
-    "id": "urn:demo:eligibility:registration-2026",
-    "type": "elig:CompanyRegistration",
-    "elig:economicOperator": {
-      "id": "urn:demo:operator:aalto-timber",
-      "type": "ebwv:Company",
-      "ebwv:legalName": "Aalto Timber Services Oy",
-      "ebwv:legalIdentifier": "FI-3141592-6"
+    "id": "urn:demo:operator:aalto-timber",
+    "type": [
+      "ebwv:LimitedLiabilityCompany",
+      "elig:CompanyRegistration"
+    ],
+    "ebwv:legalName": "Aalto Timber Services Oy",
+    "ebwv:legalIdentifier": "FI-PRH-3141592-6",
+    "ebwv:legalForm": "Oy",
+    "ebwv:jurisdiction": "FI",
+    "ebwv:registeredAddress": {
+      "id": "urn:demo:address:aalto",
+      "type": "ebwv:Address",
+      "ebwv:fullAddress": "Example Street 12; 00100 Helsinki; FI",
+      "ebwv:postCode": "00100",
+      "ebwv:postName": "Helsinki",
+      "ebwv:adminUnitL1": "FI"
     },
-    "elig:appliesToLot": "urn:demo:procurement:lot-1",
-    "elig:registrationStatus": "ACTIVE",
-    "elig:asOf": "2026-09-26"
-  }
+    "ebwv:dateOfRegistration": "2017-05-16",
+    "ebwv:legalStatus": "active",
+    "ebwv:activity": "31.00",
+    "ebwv:legalRepresentative": [
+      {
+        "id": "urn:demo:person:mira",
+        "type": [
+          "ebwv:LegalRepresentative",
+          "ebwv:Person"
+        ],
+        "ebwv:fullName": "Mira Example",
+        "ebwv:dateOfBirth": "1985-04-12",
+        "ebwv:scopeOfAuthorization": "ebwv:Jointly",
+        "elig:jointSignatureCount": "2",
+        "elig:signatoryGroup": "urn:demo:signatory-group:board-reps-1"
+      },
+      {
+        "id": "urn:demo:person:oskar",
+        "type": [
+          "ebwv:LegalRepresentative",
+          "ebwv:Person"
+        ],
+        "ebwv:fullName": "Oskar Example",
+        "ebwv:dateOfBirth": "1987-08-03",
+        "ebwv:scopeOfAuthorization": "ebwv:Jointly",
+        "elig:jointSignatureCount": "2",
+        "elig:signatoryGroup": "urn:demo:signatory-group:board-reps-1"
+      }
+    ]
+  },
+  "ebwv:attestationLegalCategory": "ebwv:Pub-EAA",
+  "validUntil": "2026-09-26T23:00:00Z"
 }

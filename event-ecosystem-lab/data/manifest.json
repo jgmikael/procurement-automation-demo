@@ -1,11 +1,11 @@
 [
   {
     "name": "registration",
-    "label": "Company registration",
+    "label": "EU Company Certificate",
     "category": "eligibility",
     "class": "CompanyRegistration",
-    "basis": "Finnish Trade Register",
-    "note": "Legal and professional standing; Art. 27(1)(a)",
+    "basis": "Demo Finnish Trade Register issuer",
+    "note": "WE BUILD EUCC rulebook §2 and §3.3; limited liability company; joint signatures of two",
     "file": "data/registration.vc.json"
   },
   {
