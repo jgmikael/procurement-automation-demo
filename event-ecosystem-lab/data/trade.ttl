@@ -1,0 +1,48 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix ebwv: <https://w3id.org/ebwv#> .
+@prefix epo: <http://data.europa.eu/a4g/ontology#> .
+@prefix elig: <https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/eligibility.ttl#> .
+@prefix trade: <https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/trade.ttl#> .
+
+<https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/trade.ttl> a owl:Ontology ;
+  rdfs:label "Event Ecosystem Lab trade extension profile v0.1"@en ;
+  rdfs:comment "Synthetic demonstration extension; EBWV, ePO, Peppol and UBL terms are independently governed."@en .
+
+trade:Catalogue a owl:Class ; rdfs:label "Supplier catalogue"@en ; rdfs:seeAlso <https://docs.peppol.eu/poacc/upgrade-3/syntax/Catalogue/> .
+trade:CatalogueCredential a owl:Class ; rdfs:label "Supplier catalogue VC type"@en .
+trade:Quotation a owl:Class ; rdfs:label "Supplier offer / quotation"@en ; rdfs:seeAlso <https://docs.oasis-open.org/ubl/os-UBL-2.4/mod/summary/reports/UBL-Quotation-2.4.html> .
+trade:QuotationCredential a owl:Class ; rdfs:label "Supplier offer / quotation VC type"@en .
+trade:OrderAgreement a owl:Class ; rdfs:label "Offer acceptance / order agreement"@en ; rdfs:seeAlso <https://docs.peppol.eu/poacc/upgrade-3/profiles/42-orderagreement/> .
+trade:OrderAgreementCredential a owl:Class ; rdfs:label "Offer acceptance / order agreement VC type"@en .
+trade:Order a owl:Class ; rdfs:label "Purchase order"@en ; rdfs:seeAlso <https://docs.peppol.eu/poacc/upgrade-3/syntax/Order/> .
+trade:OrderCredential a owl:Class ; rdfs:label "Purchase order VC type"@en .
+trade:Invoice a owl:Class ; rdfs:label "Supplier invoice"@en ; rdfs:seeAlso <https://docs.peppol.eu/poacc/upgrade-3/syntax/Invoice/> .
+trade:InvoiceCredential a owl:Class ; rdfs:label "Supplier invoice VC type"@en .
+trade:DespatchAdvice a owl:Class ; rdfs:label "Despatch advice"@en ; rdfs:seeAlso <https://docs.peppol.eu/poacc/upgrade-3/syntax/DespatchAdvice/> .
+trade:DespatchAdviceCredential a owl:Class ; rdfs:label "Despatch advice VC type"@en .
+trade:ReceiptAdvice a owl:Class ; rdfs:label "Receipt advice"@en ; rdfs:seeAlso <https://docs.oasis-open.org/ubl/os-UBL-2.4/mod/summary/reports/UBL-ReceiptAdvice-2.4.html> .
+trade:ReceiptAdviceCredential a owl:Class ; rdfs:label "Receipt advice VC type"@en .
+trade:Waybill a owl:Class ; rdfs:label "Waybill"@en ; rdfs:seeAlso <https://docs.oasis-open.org/ubl/os-UBL-2.4/mod/summary/reports/UBL-Waybill-2.4.html> .
+trade:WaybillCredential a owl:Class ; rdfs:label "Waybill VC type"@en .
+
+trade:appliesToLot a owl:ObjectProperty ; rdfs:label "appliesToLot"@en ; rdfs:range rdfs:Resource .
+trade:buyer a owl:DatatypeProperty ; rdfs:label "buyer"@en ; rdfs:range xsd:string .
+trade:carrierName a owl:DatatypeProperty ; rdfs:label "carrierName"@en ; rdfs:range xsd:string .
+trade:currencyCode a owl:DatatypeProperty ; rdfs:label "currencyCode"@en ; rdfs:range xsd:string .
+trade:deliveryDate a owl:DatatypeProperty ; rdfs:label "deliveryDate"@en ; rdfs:range xsd:date .
+trade:documentNumber a owl:DatatypeProperty ; rdfs:label "documentNumber"@en ; rdfs:range xsd:string .
+trade:issueDate a owl:DatatypeProperty ; rdfs:label "issueDate"@en ; rdfs:range xsd:date .
+trade:itemName a owl:DatatypeProperty ; rdfs:label "itemName"@en ; rdfs:range xsd:string .
+trade:payableAmount a owl:DatatypeProperty ; rdfs:label "payableAmount"@en ; rdfs:range xsd:decimal .
+trade:quantity a owl:DatatypeProperty ; rdfs:label "quantity"@en ; rdfs:range xsd:integer .
+trade:receivedQuantity a owl:DatatypeProperty ; rdfs:label "receivedQuantity"@en ; rdfs:range xsd:integer .
+trade:responseCode a owl:DatatypeProperty ; rdfs:label "responseCode"@en ; rdfs:range xsd:string .
+trade:responseTo a owl:ObjectProperty ; rdfs:label "responseTo"@en ; rdfs:range rdfs:Resource .
+trade:seller a owl:DatatypeProperty ; rdfs:label "seller"@en ; rdfs:range xsd:string .
+trade:sourceDocument a owl:ObjectProperty ; rdfs:label "sourceDocument"@en ; rdfs:range rdfs:Resource .
+trade:trackingIdentifier a owl:DatatypeProperty ; rdfs:label "trackingIdentifier"@en ; rdfs:range xsd:string .
+trade:unitPrice a owl:DatatypeProperty ; rdfs:label "unitPrice"@en ; rdfs:range xsd:decimal .

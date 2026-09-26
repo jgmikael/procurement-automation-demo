@@ -1,0 +1,165 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix ebwv: <https://w3id.org/ebwv#> .
+@prefix epo: <http://data.europa.eu/a4g/ontology#> .
+@prefix elig: <https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/eligibility.ttl#> .
+@prefix trade: <https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/trade.ttl#> .
+
+# Validate the credentialSubject RDF node after JSON-LD expansion.
+# These shapes do not check signatures, trust, legal eligibility or Peppol XML conformance.
+<https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/shapes.ttl> a owl:Ontology ; rdfs:label "Synthetic VC subject shapes v0.1"@en .
+
+elig:OperatorShape a sh:NodeShape ; sh:class ebwv:Company ;
+    sh:property [ sh:path ebwv:legalName ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path ebwv:legalIdentifier ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+elig:CompanyRegistrationShape a sh:NodeShape ; sh:targetClass elig:CompanyRegistration ;
+    sh:property [ sh:path elig:economicOperator ; sh:minCount 1 ; sh:maxCount 1 ; sh:node elig:OperatorShape ] ;
+    sh:property [ sh:path elig:appliesToLot ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+    sh:property [ sh:path elig:registrationStatus ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:in ( "ACTIVE" "INACTIVE" "UNKNOWN" ) ] ;
+    sh:property [ sh:path elig:asOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] .
+
+elig:RepresentationAuthorityShape a sh:NodeShape ; sh:targetClass elig:RepresentationAuthority ;
+    sh:property [ sh:path elig:economicOperator ; sh:minCount 1 ; sh:maxCount 1 ; sh:node elig:OperatorShape ] ;
+    sh:property [ sh:path elig:appliesToLot ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+    sh:property [ sh:path elig:representativeName ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path elig:scope ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path elig:authorityStatus ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:in ( "ACTIVE" "INACTIVE" "UNKNOWN" ) ] ;
+    sh:property [ sh:path elig:asOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] .
+
+elig:TaxComplianceShape a sh:NodeShape ; sh:targetClass elig:TaxCompliance ;
+    sh:property [ sh:path elig:economicOperator ; sh:minCount 1 ; sh:maxCount 1 ; sh:node elig:OperatorShape ] ;
+    sh:property [ sh:path elig:appliesToLot ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+    sh:property [ sh:path elig:complianceStatus ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:in ( "CLEAR" "ACTIVE" "NOT_CLEAR" "UNKNOWN" ) ] ;
+    sh:property [ sh:path elig:jurisdiction ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path elig:asOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] .
+
+elig:SocialSecurityComplianceShape a sh:NodeShape ; sh:targetClass elig:SocialSecurityCompliance ;
+    sh:property [ sh:path elig:economicOperator ; sh:minCount 1 ; sh:maxCount 1 ; sh:node elig:OperatorShape ] ;
+    sh:property [ sh:path elig:appliesToLot ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+    sh:property [ sh:path ebwv:complianceStatus ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:in ( "CLEAR" "ACTIVE" "NOT_CLEAR" "UNKNOWN" ) ] ;
+    sh:property [ sh:path elig:jurisdiction ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path elig:asOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] .
+
+elig:InsolvencyStatusShape a sh:NodeShape ; sh:targetClass elig:InsolvencyStatus ;
+    sh:property [ sh:path elig:economicOperator ; sh:minCount 1 ; sh:maxCount 1 ; sh:node elig:OperatorShape ] ;
+    sh:property [ sh:path elig:appliesToLot ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+    sh:property [ sh:path elig:proceedingStatus ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path elig:asOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] .
+
+elig:ExclusionCheckShape a sh:NodeShape ; sh:targetClass elig:ExclusionCheck ;
+    sh:property [ sh:path elig:economicOperator ; sh:minCount 1 ; sh:maxCount 1 ; sh:node elig:OperatorShape ] ;
+    sh:property [ sh:path elig:appliesToLot ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+    sh:property [ sh:path elig:scope ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path elig:checkOutcome ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path elig:asOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] .
+
+elig:FinancialCapacityShape a sh:NodeShape ; sh:targetClass elig:FinancialCapacity ;
+    sh:property [ sh:path elig:economicOperator ; sh:minCount 1 ; sh:maxCount 1 ; sh:node elig:OperatorShape ] ;
+    sh:property [ sh:path elig:appliesToLot ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+    sh:property [ sh:path elig:annualTurnover ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ] ;
+    sh:property [ sh:path elig:currencyCode ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path elig:periodStart ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
+    sh:property [ sh:path elig:periodEnd ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
+    sh:property [ sh:path elig:insuranceLimit ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ] .
+
+elig:ProfessionalAuthorisationShape a sh:NodeShape ; sh:targetClass elig:ProfessionalAuthorisation ;
+    sh:property [ sh:path elig:economicOperator ; sh:minCount 1 ; sh:maxCount 1 ; sh:node elig:OperatorShape ] ;
+    sh:property [ sh:path elig:appliesToLot ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+    sh:property [ sh:path elig:registerName ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path elig:licenceIdentifier ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path elig:licenceStatus ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:in ( "ACTIVE" "INACTIVE" "UNKNOWN" ) ] ;
+    sh:property [ sh:path elig:asOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] .
+
+elig:TechnicalCapacityShape a sh:NodeShape ; sh:targetClass elig:TechnicalCapacity ;
+    sh:property [ sh:path elig:economicOperator ; sh:minCount 1 ; sh:maxCount 1 ; sh:node elig:OperatorShape ] ;
+    sh:property [ sh:path elig:appliesToLot ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+    sh:property [ sh:path elig:referenceProject ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path elig:deliveredValue ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ] ;
+    sh:property [ sh:path elig:currencyCode ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path elig:qualificationStatus ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+elig:OperatorOriginShape a sh:NodeShape ; sh:targetClass elig:OperatorOrigin ;
+    sh:property [ sh:path elig:economicOperator ; sh:minCount 1 ; sh:maxCount 1 ; sh:node elig:OperatorShape ] ;
+    sh:property [ sh:path elig:appliesToLot ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+    sh:property [ sh:path elig:establishmentCountry ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path elig:asOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] .
+
+trade:CatalogueShape a sh:NodeShape ; sh:targetClass trade:Catalogue ;
+    sh:property [ sh:path trade:documentNumber ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:issueDate ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
+    sh:property [ sh:path trade:seller ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:buyer ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:itemName ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:quantity ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:integer ] ;
+    sh:property [ sh:path trade:unitPrice ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ] ;
+    sh:property [ sh:path trade:currencyCode ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+trade:QuotationShape a sh:NodeShape ; sh:targetClass trade:Quotation ;
+    sh:property [ sh:path trade:documentNumber ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:issueDate ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
+    sh:property [ sh:path trade:seller ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:buyer ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:itemName ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:quantity ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:integer ] ;
+    sh:property [ sh:path trade:unitPrice ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ] ;
+    sh:property [ sh:path trade:currencyCode ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:appliesToLot ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+    sh:property [ sh:path trade:sourceDocument ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .
+
+trade:OrderAgreementShape a sh:NodeShape ; sh:targetClass trade:OrderAgreement ;
+    sh:property [ sh:path trade:documentNumber ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:issueDate ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
+    sh:property [ sh:path trade:seller ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:buyer ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:responseCode ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:in ( "ACCEPTED" "REJECTED" "CHANGED" ) ] ;
+    sh:property [ sh:path trade:responseTo ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .
+
+trade:OrderShape a sh:NodeShape ; sh:targetClass trade:Order ;
+    sh:property [ sh:path trade:documentNumber ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:issueDate ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
+    sh:property [ sh:path trade:seller ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:buyer ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:itemName ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:quantity ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:integer ] ;
+    sh:property [ sh:path trade:unitPrice ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ] ;
+    sh:property [ sh:path trade:currencyCode ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:sourceDocument ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .
+
+trade:InvoiceShape a sh:NodeShape ; sh:targetClass trade:Invoice ;
+    sh:property [ sh:path trade:documentNumber ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:issueDate ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
+    sh:property [ sh:path trade:seller ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:buyer ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:payableAmount ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ] ;
+    sh:property [ sh:path trade:currencyCode ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:sourceDocument ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .
+
+trade:DespatchAdviceShape a sh:NodeShape ; sh:targetClass trade:DespatchAdvice ;
+    sh:property [ sh:path trade:documentNumber ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:issueDate ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
+    sh:property [ sh:path trade:seller ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:buyer ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:itemName ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:quantity ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:integer ] ;
+    sh:property [ sh:path trade:sourceDocument ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .
+
+trade:ReceiptAdviceShape a sh:NodeShape ; sh:targetClass trade:ReceiptAdvice ;
+    sh:property [ sh:path trade:documentNumber ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:issueDate ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
+    sh:property [ sh:path trade:seller ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:buyer ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:receivedQuantity ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:integer ] ;
+    sh:property [ sh:path trade:sourceDocument ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .
+
+trade:WaybillShape a sh:NodeShape ; sh:targetClass trade:Waybill ;
+    sh:property [ sh:path trade:documentNumber ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:issueDate ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
+    sh:property [ sh:path trade:carrierName ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:trackingIdentifier ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path trade:deliveryDate ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
+    sh:property [ sh:path trade:sourceDocument ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .
+

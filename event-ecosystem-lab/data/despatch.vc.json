@@ -1,0 +1,84 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    {
+      "ebwv": "https://w3id.org/ebwv#",
+      "epo": "http://data.europa.eu/a4g/ontology#",
+      "elig": "https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/eligibility.ttl#",
+      "trade": "https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/trade.ttl#",
+      "xsd": "http://www.w3.org/2001/XMLSchema#",
+      "elig:asOf": {
+        "@type": "xsd:date"
+      },
+      "elig:periodStart": {
+        "@type": "xsd:date"
+      },
+      "elig:periodEnd": {
+        "@type": "xsd:date"
+      },
+      "trade:issueDate": {
+        "@type": "xsd:date"
+      },
+      "trade:deliveryDate": {
+        "@type": "xsd:date"
+      },
+      "trade:currency": {
+        "@type": "@id"
+      },
+      "trade:precedes": {
+        "@type": "@id"
+      },
+      "elig:appliesToLot": {
+        "@type": "@id"
+      },
+      "trade:appliesToLot": {
+        "@type": "@id"
+      },
+      "trade:sourceDocument": {
+        "@type": "@id"
+      },
+      "trade:responseTo": {
+        "@type": "@id"
+      },
+      "elig:annualTurnover": {
+        "@type": "xsd:decimal"
+      },
+      "elig:insuranceLimit": {
+        "@type": "xsd:decimal"
+      },
+      "elig:deliveredValue": {
+        "@type": "xsd:decimal"
+      },
+      "trade:unitPrice": {
+        "@type": "xsd:decimal"
+      },
+      "trade:payableAmount": {
+        "@type": "xsd:decimal"
+      },
+      "trade:quantity": {
+        "@type": "xsd:integer"
+      },
+      "trade:receivedQuantity": {
+        "@type": "xsd:integer"
+      }
+    }
+  ],
+  "id": "https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/despatch.vc.json",
+  "type": [
+    "VerifiableCredential",
+    "trade:DespatchAdviceCredential"
+  ],
+  "issuer": "urn:demo:issuer:despatch",
+  "validFrom": "2026-09-26T00:00:00Z",
+  "credentialSubject": {
+    "id": "urn:demo:trade:despatch-2026",
+    "type": "trade:DespatchAdvice",
+    "trade:documentNumber": "DES-2026-027",
+    "trade:issueDate": "2026-10-25",
+    "trade:seller": "urn:demo:operator:aalto-timber",
+    "trade:buyer": "urn:demo:buyer:harbour-city",
+    "trade:itemName": "Modular birch desk",
+    "trade:quantity": "200",
+    "trade:sourceDocument": "https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/order.vc.json"
+  }
+}

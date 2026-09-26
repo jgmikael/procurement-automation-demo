@@ -1,0 +1,164 @@
+[
+  {
+    "name": "registration",
+    "label": "Company registration",
+    "category": "eligibility",
+    "class": "CompanyRegistration",
+    "basis": "Finnish Trade Register",
+    "note": "Legal and professional standing; Art. 27(1)(a)",
+    "file": "data/registration.vc.json"
+  },
+  {
+    "name": "representation",
+    "label": "Representative authority",
+    "category": "eligibility",
+    "class": "RepresentationAuthority",
+    "basis": "Finnish Trade Register",
+    "note": "Authorised action in the wallet; agent governance design",
+    "file": "data/representation.vc.json"
+  },
+  {
+    "name": "tax",
+    "label": "Tax compliance",
+    "category": "eligibility",
+    "class": "TaxCompliance",
+    "basis": "Finnish Tax Administration",
+    "note": "Exclusion proof; Arts. 25–26, 28",
+    "file": "data/tax.vc.json"
+  },
+  {
+    "name": "social",
+    "label": "Social security contributions",
+    "category": "eligibility",
+    "class": "SocialSecurityCompliance",
+    "basis": "Finnish Social Insurance Institution",
+    "note": "Exclusion proof; Arts. 25–26, 28",
+    "file": "data/social.vc.json"
+  },
+  {
+    "name": "insolvency",
+    "label": "Insolvency status",
+    "category": "eligibility",
+    "class": "InsolvencyStatus",
+    "basis": "Finnish Insolvency Register",
+    "note": "Exclusion proof; Arts. 25–26, 28",
+    "file": "data/insolvency.vc.json"
+  },
+  {
+    "name": "exclusion",
+    "label": "Exclusion grounds check",
+    "category": "eligibility",
+    "class": "ExclusionCheck",
+    "basis": "Competent judicial evidence service",
+    "note": "Exclusion proof; Arts. 25–26, 28; scoped outcome only",
+    "file": "data/exclusion.vc.json"
+  },
+  {
+    "name": "financial",
+    "label": "Financial capacity",
+    "category": "eligibility",
+    "class": "FinancialCapacity",
+    "basis": "Licensed financial statement register",
+    "note": "Economic and financial standing; Art. 27(1)(c)",
+    "file": "data/financial.vc.json"
+  },
+  {
+    "name": "licence",
+    "label": "Professional authorisation",
+    "category": "eligibility",
+    "class": "ProfessionalAuthorisation",
+    "basis": "Professional licensing authority",
+    "note": "Trade register/licence where applicable; Art. 27(1)(a)",
+    "file": "data/licence.vc.json"
+  },
+  {
+    "name": "technical",
+    "label": "Technical capacity",
+    "category": "eligibility",
+    "class": "TechnicalCapacity",
+    "basis": "Qualified reference verifier",
+    "note": "Technical and professional ability; Art. 27(1)(b)",
+    "file": "data/technical.vc.json"
+  },
+  {
+    "name": "origin",
+    "label": "Operator origin",
+    "category": "eligibility",
+    "class": "OperatorOrigin",
+    "basis": "Finnish Trade Register",
+    "note": "Origin information where procedure requires it; Art. 133",
+    "file": "data/origin.vc.json"
+  },
+  {
+    "name": "catalogue",
+    "label": "Supplier catalogue",
+    "category": "trade",
+    "class": "Catalogue",
+    "basis": "Peppol BIS Catalogue / UBL Catalogue",
+    "note": "Supplier publishes catalogue entries",
+    "file": "data/catalogue.vc.json"
+  },
+  {
+    "name": "offer",
+    "label": "Supplier offer / quotation",
+    "category": "trade",
+    "class": "Quotation",
+    "basis": "OASIS UBL Quotation; ePO Tender is procurement context",
+    "note": "Commercial offer; procurement tender remains distinct",
+    "file": "data/offer.vc.json"
+  },
+  {
+    "name": "acceptance",
+    "label": "Offer acceptance / order agreement",
+    "category": "trade",
+    "class": "OrderAgreement",
+    "basis": "Peppol BIS Order Agreement / UBL OrderResponse",
+    "note": "Seller accepts the buyer order; award decision is separate",
+    "file": "data/acceptance.vc.json"
+  },
+  {
+    "name": "order",
+    "label": "Purchase order",
+    "category": "trade",
+    "class": "Order",
+    "basis": "Peppol BIS Ordering / UBL Order",
+    "note": "Buyer places order after separate award decision",
+    "file": "data/order.vc.json"
+  },
+  {
+    "name": "invoice",
+    "label": "Supplier invoice",
+    "category": "trade",
+    "class": "Invoice",
+    "basis": "Peppol BIS Billing / UBL Invoice",
+    "note": "Supplier requests payment",
+    "file": "data/invoice.vc.json"
+  },
+  {
+    "name": "despatch",
+    "label": "Despatch advice",
+    "category": "trade",
+    "class": "DespatchAdvice",
+    "basis": "Peppol BIS Despatch Advice / UBL DespatchAdvice",
+    "note": "Supplier announces shipped goods",
+    "file": "data/despatch.vc.json"
+  },
+  {
+    "name": "receipt",
+    "label": "Receipt advice",
+    "category": "trade",
+    "class": "ReceiptAdvice",
+    "basis": "OASIS UBL ReceiptAdvice; no Peppol BIS claimed",
+    "note": "Buyer acknowledges receipt",
+    "file": "data/receipt.vc.json"
+  },
+  {
+    "name": "waybill",
+    "label": "Waybill",
+    "category": "trade",
+    "class": "Waybill",
+    "basis": "OASIS UBL Waybill; no Peppol BIS claimed",
+    "note": "Carrier records transport movement",
+    "file": "data/waybill.vc.json"
+  }
+]

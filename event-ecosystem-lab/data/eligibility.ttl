@@ -1,0 +1,58 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix ebwv: <https://w3id.org/ebwv#> .
+@prefix epo: <http://data.europa.eu/a4g/ontology#> .
+@prefix elig: <https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/eligibility.ttl#> .
+@prefix trade: <https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/trade.ttl#> .
+
+<https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/eligibility.ttl> a owl:Ontology ;
+  rdfs:label "Event Ecosystem Lab eligibility extension profile v0.1"@en ;
+  rdfs:comment "Synthetic demonstration extension; EBWV, ePO, Peppol and UBL terms are independently governed."@en .
+
+elig:CompanyRegistration a owl:Class ; rdfs:label "Company registration"@en ; rdfs:seeAlso epo:SelectionCriterion .
+elig:CompanyRegistrationCredential a owl:Class ; rdfs:label "Company registration VC type"@en .
+elig:RepresentationAuthority a owl:Class ; rdfs:label "Representative authority"@en .
+elig:RepresentationAuthorityCredential a owl:Class ; rdfs:label "Representative authority VC type"@en .
+elig:TaxCompliance a owl:Class ; rdfs:label "Tax compliance"@en ; rdfs:seeAlso epo:ExclusionGround .
+elig:TaxComplianceCredential a owl:Class ; rdfs:label "Tax compliance VC type"@en .
+elig:SocialSecurityCompliance a owl:Class ; rdfs:label "Social security contributions"@en ; rdfs:seeAlso epo:ExclusionGround .
+elig:SocialSecurityComplianceCredential a owl:Class ; rdfs:label "Social security contributions VC type"@en .
+elig:InsolvencyStatus a owl:Class ; rdfs:label "Insolvency status"@en ; rdfs:seeAlso epo:ExclusionGround .
+elig:InsolvencyStatusCredential a owl:Class ; rdfs:label "Insolvency status VC type"@en .
+elig:ExclusionCheck a owl:Class ; rdfs:label "Exclusion grounds check"@en ; rdfs:seeAlso epo:ExclusionGround .
+elig:ExclusionCheckCredential a owl:Class ; rdfs:label "Exclusion grounds check VC type"@en .
+elig:FinancialCapacity a owl:Class ; rdfs:label "Financial capacity"@en ; rdfs:seeAlso epo:SelectionCriterion .
+elig:FinancialCapacityCredential a owl:Class ; rdfs:label "Financial capacity VC type"@en .
+elig:ProfessionalAuthorisation a owl:Class ; rdfs:label "Professional authorisation"@en ; rdfs:seeAlso epo:SelectionCriterion .
+elig:ProfessionalAuthorisationCredential a owl:Class ; rdfs:label "Professional authorisation VC type"@en .
+elig:TechnicalCapacity a owl:Class ; rdfs:label "Technical capacity"@en ; rdfs:seeAlso epo:SelectionCriterion .
+elig:TechnicalCapacityCredential a owl:Class ; rdfs:label "Technical capacity VC type"@en .
+elig:OperatorOrigin a owl:Class ; rdfs:label "Operator origin"@en .
+elig:OperatorOriginCredential a owl:Class ; rdfs:label "Operator origin VC type"@en .
+
+elig:economicOperator a owl:ObjectProperty ; rdfs:range ebwv:EconomicOperator ; rdfs:label "economic operator"@en .
+elig:appliesToLot a owl:ObjectProperty ; rdfs:range epo:Lot ; rdfs:label "applies to lot"@en .
+elig:annualTurnover a owl:DatatypeProperty ; rdfs:label "annualTurnover"@en ; rdfs:range xsd:decimal .
+elig:asOf a owl:DatatypeProperty ; rdfs:label "asOf"@en ; rdfs:range xsd:date .
+elig:authorityStatus a owl:DatatypeProperty ; rdfs:label "authorityStatus"@en ; rdfs:range xsd:string .
+elig:checkOutcome a owl:DatatypeProperty ; rdfs:label "checkOutcome"@en ; rdfs:range xsd:string .
+elig:complianceStatus a owl:DatatypeProperty ; rdfs:label "complianceStatus"@en ; rdfs:range xsd:string .
+elig:currencyCode a owl:DatatypeProperty ; rdfs:label "currencyCode"@en ; rdfs:range xsd:string .
+elig:deliveredValue a owl:DatatypeProperty ; rdfs:label "deliveredValue"@en ; rdfs:range xsd:decimal .
+elig:establishmentCountry a owl:DatatypeProperty ; rdfs:label "establishmentCountry"@en ; rdfs:range xsd:string .
+elig:insuranceLimit a owl:DatatypeProperty ; rdfs:label "insuranceLimit"@en ; rdfs:range xsd:decimal .
+elig:jurisdiction a owl:DatatypeProperty ; rdfs:label "jurisdiction"@en ; rdfs:range xsd:string .
+elig:licenceIdentifier a owl:DatatypeProperty ; rdfs:label "licenceIdentifier"@en ; rdfs:range xsd:string .
+elig:licenceStatus a owl:DatatypeProperty ; rdfs:label "licenceStatus"@en ; rdfs:range xsd:string .
+elig:periodEnd a owl:DatatypeProperty ; rdfs:label "periodEnd"@en ; rdfs:range xsd:date .
+elig:periodStart a owl:DatatypeProperty ; rdfs:label "periodStart"@en ; rdfs:range xsd:date .
+elig:proceedingStatus a owl:DatatypeProperty ; rdfs:label "proceedingStatus"@en ; rdfs:range xsd:string .
+elig:qualificationStatus a owl:DatatypeProperty ; rdfs:label "qualificationStatus"@en ; rdfs:range xsd:string .
+elig:referenceProject a owl:DatatypeProperty ; rdfs:label "referenceProject"@en ; rdfs:range xsd:string .
+elig:registerName a owl:DatatypeProperty ; rdfs:label "registerName"@en ; rdfs:range xsd:string .
+elig:registrationStatus a owl:DatatypeProperty ; rdfs:label "registrationStatus"@en ; rdfs:range xsd:string .
+elig:representativeName a owl:DatatypeProperty ; rdfs:label "representativeName"@en ; rdfs:range xsd:string .
+elig:scope a owl:DatatypeProperty ; rdfs:label "scope"@en ; rdfs:range xsd:string .
