@@ -22,7 +22,7 @@ Regenerate the files with `python event-ecosystem-lab/build_data.py` from the re
 
 ## Evidence boundaries
 
-The browser uses synthetic values, fixed strings and deterministic JavaScript. It performs **no** LLM reasoning, cryptographic VC verification, live SHACL validation, registry query, business-wallet transaction or eligibility-service call. The `urn:demo:` instance identifiers are fictional; the EBWV, ePO and busdoc vocabulary URIs are real, while `elig:` and `trade:` are published demo extensions. COM(2026) 590 and COM(2025) 838 are proposals. Agent orchestration and VC profiles are design choices for a pilot, not requirements already imposed by those proposals.
+The 12-step browser simulation links each process stage to its relevant W3C VC example in the data layer, from catalogue and eligibility evidence through award, order, delivery and invoice. Each linked VC is a synthetic, unsigned sample; requested profiles at the requirements stage are examples rather than already-issued credentials. The browser uses synthetic values, fixed strings and deterministic JavaScript. It performs **no** LLM reasoning, cryptographic VC verification, live SHACL validation, registry query, business-wallet transaction or eligibility-service call. The `urn:demo:` instance identifiers are fictional; the EBWV, ePO and busdoc vocabulary URIs are real, while `elig:` and `trade:` are published demo extensions. COM(2026) 590 and COM(2025) 838 are proposals. Agent orchestration and VC profiles are design choices for a pilot, not requirements already imposed by those proposals.
 
 ## Next implementation slices
 

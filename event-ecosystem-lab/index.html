@@ -7,7 +7,7 @@
   <meta name="description" content="An interactive simulation of agent-orchestrated public procurement with semantic evidence and EU Business Wallets.">
   <title>Event Ecosystem Lab · Procurement</title>
   <link rel="stylesheet" href="./styles.css">
-  <script src="./app.js?v=2" defer></script>
+  <script src="./app.js?v=3" defer></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -36,7 +36,7 @@
         </aside>
         <div class="stage-panel"><div class="stage-top"><div><span class="panel-kicker">EVENT RUN <span id="run-number">#001</span></span><h3 id="step-title"></h3><p id="step-description"></p></div><div id="stage-badge" class="status-badge"></div></div>
           <div class="progress" id="progress" aria-label="Process progress"></div>
-          <div class="stage-body"><div class="stage-main"><div class="label-line"><span id="actor-label"></span><span id="basis-label"></span></div><div id="stage-detail" class="detail-card"></div><div id="issue-box" class="issue-box" role="status"></div><div class="stage-actions"><button id="advance" class="button primary"></button><button id="back" class="button subtle">← Previous</button></div></div>
+          <div class="stage-body"><div class="stage-main"><div class="label-line"><span id="actor-label"></span><span id="basis-label"></span></div><div id="stage-detail" class="detail-card"></div><section class="step-documents" aria-labelledby="step-documents-title"><div class="step-documents-heading"><span class="panel-kicker" id="step-documents-title">W3C VC examples for this step</span><span>Opens in the data layer ↗</span></div><div id="step-document-links" class="step-document-links"></div></section><div id="issue-box" class="issue-box" role="status"></div><div class="stage-actions"><button id="advance" class="button primary"></button><button id="back" class="button subtle">← Previous</button></div></div>
             <div class="side-stack"><div class="micro-card"><span class="micro-label">ACTIVE EVIDENCE</span><div id="evidence-list"></div></div><div class="micro-card"><span class="micro-label">CONTROL GATE</span><p id="control-text"></p></div><div class="micro-card dark"><span class="micro-label">WHAT THE AGENT CAN DO</span><p id="agent-text"></p></div></div></div>
         </div>
       </div>
