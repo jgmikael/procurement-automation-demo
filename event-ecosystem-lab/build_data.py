@@ -69,8 +69,12 @@ def credential(name, category, cls, issuer, fields):
         subject.update({'elig:economicOperator':{'id':CO,'type':'ebwv:Company','ebwv:legalName':'Aalto Timber Services Oy','ebwv:legalIdentifier':'FI-3141592-6'},'elig:appliesToLot':LOT})
         if name == 'social': subject['type'] = ['ebwv:SocialSecurityContribution','elig:SocialSecurityCompliance']
     subject.update(fields)
+    issuer_id=(BUYER if name in ('award','order','receipt') else
+               'urn:demo:carrier:baltic-logistics' if name=='waybill' else
+               CO if category=='trade' else f'urn:demo:issuer:{name}')
+    start=fields.get('trade:issueDate') or fields.get('elig:asOf') or '2026-09-26'
     return {'@context':CONTEXT,'id':BASE+name+'.vc.json','type':['VerifiableCredential',f'{"elig" if category == "eligibility" else "trade"}:{cls}Credential'],
-            'issuer':f'urn:demo:issuer:{name}','validFrom':'2026-09-26T00:00:00Z',
+            'issuer':issuer_id,'validFrom':start+'T00:00:00Z',
             'credentialSubject':subject}
 
 MANIFEST=[]
