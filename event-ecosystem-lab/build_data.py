@@ -15,25 +15,23 @@ CONTEXT = ['https://www.w3.org/ns/credentials/v2', {
     'epo': 'http://data.europa.eu/a4g/ontology#',
     'elig': BASE + 'eligibility.ttl#',
     'trade': BASE + 'trade.ttl#',
+    'busdoc': 'https://iri.suomi.fi/model/busdoc/',
     'xsd': 'http://www.w3.org/2001/XMLSchema#',
     'elig:asOf': {'@type': 'xsd:date'},
     'elig:periodStart': {'@type': 'xsd:date'},
     'elig:periodEnd': {'@type': 'xsd:date'},
-    'trade:issueDate': {'@type': 'xsd:date'},
-    'trade:deliveryDate': {'@type': 'xsd:date'},
-    'trade:currency': {'@type': '@id'},
-    'trade:precedes': {'@type': '@id'},
     'elig:appliesToLot': {'@type': '@id'},
-    'trade:appliesToLot': {'@type': '@id'},
-    'trade:sourceDocument': {'@type': '@id'},
-    'trade:responseTo': {'@type': '@id'},
     'elig:annualTurnover': {'@type': 'xsd:decimal'},
     'elig:insuranceLimit': {'@type': 'xsd:decimal'},
     'elig:deliveredValue': {'@type': 'xsd:decimal'},
-    'trade:unitPrice': {'@type': 'xsd:decimal'},
-    'trade:payableAmount': {'@type': 'xsd:decimal'},
-    'trade:quantity': {'@type': 'xsd:integer'},
-    'trade:receivedQuantity': {'@type': 'xsd:integer'},
+    'busdoc:issueDate': {'@type': 'xsd:date'},
+    'busdoc:quantity': {'@type': 'xsd:decimal'},
+    'busdoc:deliveredQuantity': {'@type': 'xsd:decimal'},
+    'busdoc:receivedQuantity': {'@type': 'xsd:decimal'},
+    'busdoc:priceAmount': {'@type': 'xsd:decimal'},
+    'busdoc:payableAmount': {'@type': 'xsd:decimal'},
+    'elig:issueDate': {'@type': 'xsd:date'},
+    'elig:decisionFor': {'@type': '@id'},
     'ebwv:legalIdentifier': {'@id': 'ebwv:legalIdentifier', '@type': 'ebwv:Euid'},
     'ebwv:dateOfRegistration': {'@type': 'xsd:date'},
     'ebwv:dateOfBirth': {'@type': 'xsd:date'},
@@ -83,16 +81,89 @@ ELIG = [
  ('technical','Technical capacity','TechnicalCapacity','Qualified reference verifier',{'elig:referenceProject':'Municipal furniture supply 2024–2025','elig:deliveredValue':'780000.00','elig:currencyCode':'EUR','elig:qualificationStatus':'CONFIRMED'}, 'Technical and professional ability; Art. 27(1)(b)'),
  ('origin','Operator origin','OperatorOrigin','Finnish Trade Register',{'elig:establishmentCountry':'FI','elig:asOf':'2026-09-26'}, 'Origin information where procedure requires it; Art. 133'),
 ]
+# The busdoc export is a component library (its prefix maps to UBL 2.2); these
+# deliberately small examples select terms that still have UBL 2.4 counterparts.
+# UBL document roots are defined locally because busdoc has no such root classes.
+def party(identifier, kind):
+    return {'id': identifier, 'type': f'busdoc:{kind}'}
+
+def item_line(kind, identifier, quantity, price=None):
+    line = {'id': f'urn:demo:line:{kind.lower()}-1', 'type': f'busdoc:{kind}',
+            'busdoc:iD': '1', 'busdoc:item_': {'id': 'urn:demo:item:birch-desk',
+                'type': 'busdoc:Item', 'busdoc:name': 'Modular birch desk'}}
+    if quantity is not None:
+        line['busdoc:invoicedQuantity' if kind == 'InvoiceLine' else
+             'busdoc:receivedQuantity' if kind == 'ReceiptLine' else
+             'busdoc:deliveredQuantity' if kind == 'DespatchLine' else 'busdoc:quantity'] = str(quantity)
+    if price is not None:
+        line['busdoc:price_'] = {'id': f'urn:demo:price:{kind.lower()}-1',
+                                'type': 'busdoc:Price', 'busdoc:priceAmount': str(price)}
+    return line
+
+TRADING_PARTIES = {'busdoc:sellerSupplierParty': party(CO, 'SupplierParty'),
+                   'busdoc:buyerCustomerParty': party(BUYER, 'CustomerParty')}
+def document(identifier, day, **extra):
+    return {'busdoc:iD': identifier, 'busdoc:issueDate': day, **extra}
+
 TRADE = [
- ('catalogue','Supplier catalogue','Catalogue','Peppol BIS Catalogue / UBL Catalogue',{'trade:documentNumber':'CAT-2026-001','trade:issueDate':'2026-09-22','trade:seller':CO,'trade:buyer':BUYER,'trade:itemName':'Modular birch desk','trade:quantity':'200','trade:unitPrice':'320.00','trade:currencyCode':'EUR'}, 'Supplier publishes catalogue entries'),
- ('offer','Supplier offer / quotation','Quotation','OASIS UBL Quotation; ePO Tender is procurement context',{'trade:documentNumber':'QUO-2026-011','trade:issueDate':'2026-09-26','trade:seller':CO,'trade:buyer':BUYER,'trade:itemName':'Modular birch desk','trade:quantity':'200','trade:unitPrice':'310.00','trade:currencyCode':'EUR','trade:appliesToLot':LOT,'trade:sourceDocument':BASE+'catalogue.vc.json'}, 'Commercial offer; procurement tender remains distinct'),
- ('award','Buyer award / offer acceptance','AwardDecision','ePO AwardDecision; procurement-specific decision',{'trade:documentNumber':'AWD-2026-012','trade:issueDate':'2026-10-08','trade:seller':CO,'trade:buyer':BUYER,'trade:responseCode':'ACCEPTED','trade:responseTo':BASE+'offer.vc.json','trade:appliesToLot':LOT}, 'Buyer accepts tender through a separate award decision; ePO semantics'),
- ('acceptance','Seller order acceptance','OrderAgreement','Peppol BIS Order Agreement / UBL OrderResponse',{'trade:documentNumber':'AGR-2026-012','trade:issueDate':'2026-10-10','trade:seller':CO,'trade:buyer':BUYER,'trade:responseCode':'ACCEPTED','trade:responseTo':BASE+'order.vc.json'}, 'Seller accepts buyer order; distinct from the award'),
- ('order','Purchase order','Order','Peppol BIS Ordering / UBL Order',{'trade:documentNumber':'ORD-2026-014','trade:issueDate':'2026-10-09','trade:seller':CO,'trade:buyer':BUYER,'trade:itemName':'Modular birch desk','trade:quantity':'200','trade:unitPrice':'310.00','trade:currencyCode':'EUR','trade:sourceDocument':BASE+'offer.vc.json'}, 'Buyer places order after separate award decision'),
- ('invoice','Supplier invoice','Invoice','Peppol BIS Billing / UBL Invoice',{'trade:documentNumber':'INV-2026-009','trade:issueDate':'2026-11-02','trade:seller':CO,'trade:buyer':BUYER,'trade:payableAmount':'62000.00','trade:currencyCode':'EUR','trade:sourceDocument':BASE+'order.vc.json'}, 'Supplier requests payment'),
- ('despatch','Despatch advice','DespatchAdvice','Peppol BIS Despatch Advice / UBL DespatchAdvice',{'trade:documentNumber':'DES-2026-027','trade:issueDate':'2026-10-25','trade:seller':CO,'trade:buyer':BUYER,'trade:itemName':'Modular birch desk','trade:quantity':'200','trade:sourceDocument':BASE+'order.vc.json'}, 'Supplier announces shipped goods'),
- ('receipt','Receipt advice','ReceiptAdvice','OASIS UBL ReceiptAdvice; no Peppol BIS claimed',{'trade:documentNumber':'REC-2026-028','trade:issueDate':'2026-10-29','trade:seller':CO,'trade:buyer':BUYER,'trade:receivedQuantity':'200','trade:sourceDocument':BASE+'despatch.vc.json'}, 'Buyer acknowledges receipt'),
- ('waybill','Waybill','Waybill','OASIS UBL Waybill; no Peppol BIS claimed',{'trade:documentNumber':'WAY-2026-030','trade:issueDate':'2026-10-25','trade:carrierName':'Baltic Demo Logistics','trade:trackingIdentifier':'BDL-003145','trade:deliveryDate':'2026-10-29','trade:sourceDocument':BASE+'despatch.vc.json'}, 'Carrier records transport movement'),
+ ('catalogue','Supplier catalogue','Catalogue','OASIS UBL 2.4 Catalogue',
+  document('CAT-2026-001','2026-09-22',**TRADING_PARTIES,
+           **{'busdoc:catalogueLine_':{
+               **item_line('CatalogueLine','1',None),
+               'busdoc:requiredItemLocationQuantity':{'id':'urn:demo:location-quantity:1',
+                   'type':'busdoc:ItemLocationQuantity',
+                   'busdoc:price_':{'id':'urn:demo:price:catalogue-1','type':'busdoc:Price',
+                                    'busdoc:priceAmount':'320.00'}}}}),
+  'Supplier publishes a catalogue line'),
+ ('offer','Supplier offer / quotation','Quotation','OASIS UBL 2.4 Quotation',
+  document('QUO-2026-011','2026-09-26',**TRADING_PARTIES,
+           **{'trade:quotationLine':{'id':'urn:demo:line:quotation-1',
+                  'type':'busdoc:QuotationLine','busdoc:iD':'1',
+                  'trade:lineItem':item_line('LineItem','1',200,310)}}),
+  'Commercial quotation; procurement tender remains distinct'),
+ ('award','Buyer award decision','AwardDecision','ePO AwardDecision (outside UBL)',
+  {'elig:decisionID':'AWD-2026-012','elig:issueDate':'2026-10-08',
+   'elig:appliesToLot':LOT,'elig:decisionFor':BASE+'offer.vc.json',
+   'elig:decisionOutcome':'AWARDED'},
+  'Procurement award governed by ePO, outside the UBL trade vocabulary'),
+ ('acceptance','Seller order acceptance','OrderResponse','OASIS UBL 2.4 OrderResponse',
+  document('AGR-2026-012','2026-10-10',**TRADING_PARTIES,
+           **{'trade:orderReference':{'id':BASE+'order.vc.json',
+                   'type':'busdoc:OrderReference','busdoc:iD':'ORD-2026-014'},
+              'trade:orderResponseCode':'ACCEPTED'}),
+  'Seller responds to the buyer order; distinct from award'),
+ ('order','Purchase order','Order','OASIS UBL 2.4 Order',
+  document('ORD-2026-014','2026-10-09',**TRADING_PARTIES,
+           **{'busdoc:orderLine_':{'id':'urn:demo:line:order-1','type':'busdoc:OrderLine',
+                'busdoc:lineItem_':item_line('LineItem','1',200,310)}}),
+  'Buyer places an order after award'),
+ ('invoice','Supplier invoice','Invoice','OASIS UBL 2.4 Invoice',
+  document('INV-2026-009','2026-11-02',**TRADING_PARTIES,
+           **{'busdoc:documentCurrencyCode':'EUR',
+              'busdoc:legalMonetaryTotal':{'id':'urn:demo:monetary-total:invoice-1',
+                  'type':'busdoc:MonetaryTotal','busdoc:payableAmount':'62000.00'},
+              'busdoc:invoiceLine_':item_line('InvoiceLine','1',200,310),
+              'busdoc:orderDocumentReference_':{'id':BASE+'order.vc.json',
+                   'type':'busdoc:DocumentReference','busdoc:iD':'ORD-2026-014'}}),
+  'Supplier requests payment'),
+ ('despatch','Despatch advice','DespatchAdvice','OASIS UBL 2.4 DespatchAdvice',
+  document('DES-2026-027','2026-10-25',**TRADING_PARTIES,
+           **{'trade:despatchLine':item_line('DespatchLine','1',200),
+              'busdoc:orderDocumentReference_':{'id':BASE+'order.vc.json',
+                   'type':'busdoc:DocumentReference','busdoc:iD':'ORD-2026-014'}}),
+  'Supplier announces dispatched goods'),
+ ('receipt','Receipt advice','ReceiptAdvice','OASIS UBL 2.4 ReceiptAdvice',
+  document('REC-2026-028','2026-10-29',**TRADING_PARTIES,
+           **{'trade:receiptLine':item_line('ReceiptLine','1',200),
+              'busdoc:despatchDocumentReference':{'id':BASE+'despatch.vc.json',
+                   'type':'busdoc:DocumentReference','busdoc:iD':'DES-2026-027'}}),
+  'Buyer acknowledges receipt'),
+ ('waybill','Waybill','Waybill','OASIS UBL 2.4 Waybill',
+  document('WAY-2026-030','2026-10-25',
+           **{'busdoc:carrierParty':party('urn:demo:carrier:baltic-logistics','Party'),
+              'busdoc:shipment_':{'id':'urn:demo:shipment:1','type':'busdoc:Shipment',
+                                  'busdoc:iD':'BDL-003145'}}),
+  'Carrier records the shipment'),
 ]
 
 def credential(name, category, cls, issuer, fields):
@@ -100,7 +171,8 @@ def credential(name, category, cls, issuer, fields):
         # EUCC is reusable company evidence, independent of a particular procurement lot.
         subject={'id':CO,'type':['ebwv:LimitedLiabilityCompany','elig:CompanyRegistration'],**fields}
     else:
-        subject = {'id': f'urn:demo:{category}:{name}-2026', 'type': f'{"elig" if category == "eligibility" else "trade"}:{cls}'}
+        subject = {'id': f'urn:demo:{category}:{name}-2026',
+                   'type': ('epo:AwardDecision' if name == 'award' else f'{"elig" if category == "eligibility" else "trade"}:{cls}')}
         if category == 'eligibility':
             subject.update({'elig:economicOperator':{'id':CO,'type':'ebwv:Company','ebwv:legalName':'Aalto Timber Services Oy','ebwv:legalIdentifier':EUID},'elig:appliesToLot':LOT})
             if name == 'social': subject['type'] = ['ebwv:SocialSecurityContribution','elig:SocialSecurityCompliance']
@@ -108,8 +180,8 @@ def credential(name, category, cls, issuer, fields):
     issuer_id=(BUYER if name in ('award','order','receipt') else
                'urn:demo:carrier:baltic-logistics' if name=='waybill' else
                CO if category=='trade' else f'urn:demo:issuer:{name}')
-    start=fields.get('trade:issueDate') or fields.get('elig:asOf') or '2026-09-26'
-    vc={'@context':CONTEXT,'id':BASE+name+'.vc.json','type':['VerifiableCredential',f'{"elig" if category == "eligibility" else "trade"}:{cls}Credential'],
+    start=fields.get('busdoc:issueDate') or fields.get('elig:issueDate') or fields.get('elig:asOf') or '2026-09-26'
+    vc={'@context':CONTEXT,'id':BASE+name+'.vc.json','type':['VerifiableCredential',f'{"elig" if category == "eligibility" or name == "award" else "trade"}:{cls}Credential'],
         'issuer':issuer_id,'validFrom':start+'T00:00:00Z','credentialSubject':subject}
     if name=='registration':
         vc['type'].append('ebwv:ElectronicAttestationOfAttributes')
@@ -135,24 +207,13 @@ PREFIXES = '''@prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix ebwv: <https://w3id.org/ebwv#> .
 @prefix epo: <http://data.europa.eu/a4g/ontology#> .
-@prefix elig: '''+ '<'+BASE+'eligibility.ttl#> .\n'+'''@prefix trade: '''+ '<'+BASE+'trade.ttl#> .\n\n'
+@prefix elig: '''+ '<'+BASE+'eligibility.ttl#> .\n'+'''@prefix trade: '''+ '<'+BASE+'trade.ttl#> .\n'+'@prefix busdoc: <https://iri.suomi.fi/model/busdoc/> .\n\n'
 ELIG_LINKS = {
  'CompanyRegistration':'epo:SelectionCriterion','TaxCompliance':'epo:ExclusionGround',
  'SocialSecurityCompliance':'epo:ExclusionGround','InsolvencyStatus':'epo:ExclusionGround',
  'ExclusionCheck':'epo:ExclusionGround','FinancialCapacity':'epo:SelectionCriterion',
  'ProfessionalAuthorisation':'epo:SelectionCriterion','TechnicalCapacity':'epo:SelectionCriterion'}
-TRADE_LINKS = {
- 'Catalogue':'https://docs.peppol.eu/poacc/upgrade-3/syntax/Catalogue/',
- 'Quotation':'https://docs.oasis-open.org/ubl/os-UBL-2.4/mod/summary/reports/UBL-Quotation-2.4.html',
- 'AwardDecision':'http://data.europa.eu/a4g/ontology#AwardDecision',
- 'OrderAgreement':'https://docs.peppol.eu/poacc/upgrade-3/profiles/42-orderagreement/',
- 'Order':'https://docs.peppol.eu/poacc/upgrade-3/syntax/Order/',
- 'Invoice':'https://docs.peppol.eu/poacc/upgrade-3/syntax/Invoice/',
- 'DespatchAdvice':'https://docs.peppol.eu/poacc/upgrade-3/syntax/DespatchAdvice/',
- 'ReceiptAdvice':'https://docs.oasis-open.org/ubl/os-UBL-2.4/mod/summary/reports/UBL-ReceiptAdvice-2.4.html',
- 'Waybill':'https://docs.oasis-open.org/ubl/os-UBL-2.4/mod/summary/reports/UBL-Waybill-2.4.html'}
 ELIG_FIELDS = sorted({k for _,_,_,_,fields,_ in ELIG for k in fields if k.startswith('elig:')})
-TRADE_FIELDS = sorted({k for _,_,_,_,fields,_ in TRADE for k in fields})
 DATE_FIELDS = {'asOf','periodStart','periodEnd','issueDate','deliveryDate'}
 DECIMAL_FIELDS = {'annualTurnover','insuranceLimit','deliveredValue','unitPrice','payableAmount'}
 INTEGER_FIELDS = {'quantity','receivedQuantity'}
@@ -167,8 +228,8 @@ def property_owl(term):
     return f'{term} a {kind} ; rdfs:label "{local}"@en ; rdfs:range {rng} .\n'
 
 def vocabulary(category,rows,fields):
-    ns='elig' if category=='eligibility' else 'trade'
-    doc=PREFIXES+f'<{BASE}{"eligibility" if ns=="elig" else "trade"}.ttl> a owl:Ontology ;\n'
+    ns='elig'
+    doc=PREFIXES+f'<{BASE}eligibility.ttl> a owl:Ontology ;\n'
     doc+=f'  rdfs:label "Event Ecosystem Lab {category} extension profile v0.1"@en ;\n'
     doc+=f'  rdfs:comment "Synthetic demonstration extension; EBWV, ePO, Peppol and UBL terms are independently governed."@en .\n\n'
     for name,label,cls,issuer,props,note in rows:
@@ -177,7 +238,6 @@ def vocabulary(category,rows,fields):
             doc+=f' ; rdfs:seeAlso {ELIG_LINKS[cls]}'
         if cls=='CompanyRegistration':
             doc+=f' ; rdfs:subClassOf ebwv:LimitedLiabilityCompany ; rdfs:seeAlso <{EUCC_RULEBOOK}>'
-        if category=='trade': doc+=f' ; rdfs:seeAlso <{TRADE_LINKS[cls]}>'
         doc+=' .\n'
         doc+=f'{ns}:{cls}Credential a owl:Class ; rdfs:label "{label} VC type"@en .\n'
     doc+='\n'
@@ -191,8 +251,25 @@ def vocabulary(category,rows,fields):
         doc+=property_owl(f)
     return doc
 
-(OUT/'eligibility.ttl').write_text(vocabulary('eligibility',ELIG,ELIG_FIELDS))
-(OUT/'trade.ttl').write_text(vocabulary('trade',TRADE,TRADE_FIELDS))
+(OUT/'eligibility.ttl').write_text(vocabulary('eligibility',ELIG,ELIG_FIELDS) + "\n".join(["elig:AwardDecisionCredential a owl:Class .","elig:decisionID a owl:DatatypeProperty ; rdfs:range xsd:string .","elig:issueDate a owl:DatatypeProperty ; rdfs:range xsd:date .","elig:decisionFor a owl:ObjectProperty .","elig:decisionOutcome a owl:DatatypeProperty ; rdfs:range xsd:string ."]))
+UBL_DOCUMENTS = ('Catalogue','Quotation','OrderResponse','Order','Invoice',
+                 'DespatchAdvice','ReceiptAdvice','Waybill')
+# busdoc exports components but not UBL document roots. Use UBL 2.4 schema
+# namespaces for provenance, without asserting OWL equivalence to XML Schema.
+trade_owl = PREFIXES + f'<{BASE}trade.ttl> a owl:Ontology ; rdfs:label "UBL 2.4 trade document profile"@en ; rdfs:seeAlso <https://iri.suomi.fi/model/busdoc/> .\n'
+for cls in UBL_DOCUMENTS:
+    trade_owl += (f'trade:{cls} a owl:Class ; rdfs:label "UBL {cls}"@en ; '
+                  f'rdfs:seeAlso <https://docs.oasis-open.org/ubl/os-UBL-2.4/xsd/maindoc/UBL-{cls}-2.4.xsd> .\n'
+                  f'trade:{cls}Credential a owl:Class .\n')
+for cls in ('CatalogueLine','QuotationLine','OrderLine','OrderReference','LineItem','InvoiceLine','DespatchLine','ReceiptLine','ItemLocationQuantity','MonetaryTotal','DocumentReference','Item','Price','SupplierParty','CustomerParty','Party','Shipment'):
+    trade_owl += f'busdoc:{cls} rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .\n'
+for prop in ('iD','issueDate','sellerSupplierParty','buyerCustomerParty','catalogueLine_','requiredItemLocationQuantity','orderLine_','lineItem_','invoiceLine_','orderDocumentReference_','despatchDocumentReference','documentCurrencyCode','legalMonetaryTotal','payableAmount','carrierParty','shipment_','item_','price_','name','quantity','invoicedQuantity','deliveredQuantity','receivedQuantity','priceAmount'):
+    trade_owl += f'busdoc:{prop} rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .\n'
+# UBL elements missing from the incomplete busdoc export are declared locally.
+for prop,domain,range_ in [('quotationLine','Quotation','busdoc:QuotationLine'),('lineItem','QuotationLine','busdoc:LineItem'),('despatchLine','DespatchAdvice','busdoc:DespatchLine'),('receiptLine','ReceiptAdvice','busdoc:ReceiptLine'),('orderReference','OrderResponse','busdoc:OrderReference')]:
+    trade_owl += f'trade:{prop} a owl:ObjectProperty ; rdfs:label "{prop}"@en ; rdfs:domain {"busdoc" if domain == "QuotationLine" else "trade"}:{domain} ; rdfs:range {range_} .\n'
+trade_owl += 'trade:orderResponseCode a owl:DatatypeProperty ; rdfs:domain trade:OrderResponse ; rdfs:range xsd:string .\n'
+(OUT/'trade.ttl').write_text(trade_owl)
 
 def path_shape(prop):
     local=prop.split(':')[-1]
@@ -250,16 +327,59 @@ elig:CompanyRegistrationShape a sh:NodeShape ; sh:targetClass elig:CompanyRegist
     sh:property [ sh:path ebwv:legalRepresentative ; sh:minCount 1 ; sh:node elig:EUCCRepresentativeShape ] .
 
 '''.replace('< '+BASE+'shapes.ttl >','<'+BASE+'shapes.ttl>')
-for category,rows in [('eligibility',ELIG),('trade',TRADE)]:
-    ns='elig' if category=='eligibility' else 'trade'
-    for name,label,cls,issuer,fields,note in rows:
-        if name=='registration': continue # Nested EUCC profile is defined above.
-        paths=list(fields)
-        if category=='eligibility': paths=[p for p in paths if p!='elig:appliesToLot']
-        SHAPES+=f'{ns}:{cls}Shape a sh:NodeShape ; sh:targetClass {ns}:{cls} ;\n'
-        if category=='eligibility':
-            SHAPES+='    sh:property [ sh:path elig:economicOperator ; sh:minCount 1 ; sh:maxCount 1 ; sh:node elig:OperatorShape ] ;\n'
-            SHAPES+='    sh:property [ sh:path elig:appliesToLot ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;\n'
-        SHAPES+=' ;\n'.join(path_shape(p) for p in paths)+' .\n\n'
+for name,label,cls,issuer,fields,note in ELIG:
+    if name=='registration': continue
+    paths=[p for p in fields if p!='elig:appliesToLot']
+    SHAPES+=f'elig:{cls}Shape a sh:NodeShape ; sh:targetClass elig:{cls} ;\n'
+    SHAPES+='    sh:property [ sh:path elig:economicOperator ; sh:minCount 1 ; sh:maxCount 1 ; sh:node elig:OperatorShape ] ;\n'
+    SHAPES+='    sh:property [ sh:path elig:appliesToLot ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;\n'
+    SHAPES+=' ;\n'.join(path_shape(p) for p in paths)+' .\n\n'
+SHAPES += ('trade:DocumentShape a sh:NodeShape ; '
+           'sh:property [ sh:path busdoc:iD ; sh:minCount 1 ; sh:datatype xsd:string ] ; '
+           'sh:property [ sh:path busdoc:issueDate ; sh:minCount 1 ; sh:datatype xsd:date ] .\n'
+           'trade:ItemShape a sh:NodeShape ; sh:class busdoc:Item ; '
+           'sh:property [ sh:path busdoc:name ; sh:minCount 1 ; sh:datatype xsd:string ] .\n\n')
+for name,label,cls,issuer,fields,note in TRADE:
+    if name=='award':
+        SHAPES += ('elig:AwardDecisionShape a sh:NodeShape ; sh:targetClass epo:AwardDecision ; '
+                   'sh:property [ sh:path elig:decisionID ; sh:minCount 1 ] ; '
+                   'sh:property [ sh:path elig:issueDate ; sh:minCount 1 ; sh:datatype xsd:date ] ; '
+                   'sh:property [ sh:path elig:decisionFor ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ; '
+                   'sh:property [ sh:path elig:appliesToLot ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ; '
+                   'sh:property [ sh:path elig:decisionOutcome ; sh:hasValue "AWARDED" ] .\n\n')
+        continue
+    SHAPES+=f'trade:{cls}Shape a sh:NodeShape ; sh:targetClass trade:{cls} ; sh:node trade:DocumentShape'
+    if name!='waybill':
+        SHAPES+=' ; sh:property [ sh:path busdoc:sellerSupplierParty ; sh:minCount 1 ; sh:class busdoc:SupplierParty ]'
+        SHAPES+=' ; sh:property [ sh:path busdoc:buyerCustomerParty ; sh:minCount 1 ; sh:class busdoc:CustomerParty ]'
+    line_path={'catalogue':'busdoc:catalogueLine_','offer':'trade:quotationLine',
+               'order':'busdoc:orderLine_','invoice':'busdoc:invoiceLine_',
+               'despatch':'trade:despatchLine','receipt':'trade:receiptLine'}.get(name)
+    if line_path:
+        line_class={'catalogue':'CatalogueLine','offer':'QuotationLine','order':'OrderLine',
+                    'invoice':'InvoiceLine','despatch':'DespatchLine','receipt':'ReceiptLine'}[name]
+        SHAPES+=f' ; sh:property [ sh:path {line_path} ; sh:minCount 1 ; sh:class busdoc:{line_class}'
+        if name=='catalogue':
+            SHAPES+=' ; sh:property [ sh:path busdoc:item_ ; sh:minCount 1 ; sh:node trade:ItemShape ]'
+            SHAPES+=' ; sh:property [ sh:path busdoc:requiredItemLocationQuantity ; sh:minCount 1 ; sh:class busdoc:ItemLocationQuantity ; sh:property [ sh:path busdoc:price_ ; sh:minCount 1 ; sh:class busdoc:Price ] ]'
+        elif name=='offer':
+            SHAPES+=' ; sh:property [ sh:path trade:lineItem ; sh:minCount 1 ; sh:class busdoc:LineItem ; sh:property [ sh:path busdoc:item_ ; sh:minCount 1 ; sh:node trade:ItemShape ] ; sh:property [ sh:path busdoc:quantity ; sh:minCount 1 ; sh:datatype xsd:decimal ] ]'
+        elif name!='order':
+            SHAPES+=' ; sh:property [ sh:path busdoc:item_ ; sh:minCount 1 ; sh:node trade:ItemShape ]'
+            quantity_prop={'invoice':'busdoc:invoicedQuantity','despatch':'busdoc:deliveredQuantity','receipt':'busdoc:receivedQuantity'}.get(name)
+            if quantity_prop:
+                dtype='xsd:string' if name=='invoice' else 'xsd:decimal'
+                SHAPES+=f' ; sh:property [ sh:path {quantity_prop} ; sh:minCount 1 ; sh:datatype {dtype} ]'
+        else:
+            SHAPES+=' ; sh:property [ sh:path busdoc:lineItem_ ; sh:minCount 1 ; sh:class busdoc:LineItem ]'
+        SHAPES+=' ]'
+    if name=='invoice': SHAPES+=' ; sh:property [ sh:path busdoc:legalMonetaryTotal ; sh:minCount 1 ; sh:class busdoc:MonetaryTotal ; sh:property [ sh:path busdoc:payableAmount ; sh:minCount 1 ; sh:datatype xsd:decimal ] ]'
+    if name=='acceptance':
+        SHAPES+=' ; sh:property [ sh:path trade:orderReference ; sh:minCount 1 ; sh:class busdoc:OrderReference ; sh:property [ sh:path busdoc:iD ; sh:minCount 1 ] ]'
+        SHAPES+=' ; sh:property [ sh:path trade:orderResponseCode ; sh:hasValue "ACCEPTED" ]'
+    if name=='waybill':
+        SHAPES+=' ; sh:property [ sh:path busdoc:carrierParty ; sh:minCount 1 ]'
+        SHAPES+=' ; sh:property [ sh:path busdoc:shipment_ ; sh:minCount 1 ; sh:class busdoc:Shipment ]'
+    SHAPES+=' .\n\n'
 (OUT/'shapes.ttl').write_text(SHAPES)
 print(f'Generated {len(MANIFEST)} credentials and manifest')
