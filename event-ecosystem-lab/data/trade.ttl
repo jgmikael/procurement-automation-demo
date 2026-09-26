@@ -7,44 +7,69 @@
 @prefix epo: <http://data.europa.eu/a4g/ontology#> .
 @prefix elig: <https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/eligibility.ttl#> .
 @prefix trade: <https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/trade.ttl#> .
+@prefix busdoc: <https://iri.suomi.fi/model/busdoc/> .
 
-<https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/trade.ttl> a owl:Ontology ;
-  rdfs:label "Event Ecosystem Lab trade extension profile v0.1"@en ;
-  rdfs:comment "Synthetic demonstration extension; EBWV, ePO, Peppol and UBL terms are independently governed."@en .
-
-trade:Catalogue a owl:Class ; rdfs:label "Supplier catalogue"@en ; rdfs:seeAlso <https://docs.peppol.eu/poacc/upgrade-3/syntax/Catalogue/> .
-trade:CatalogueCredential a owl:Class ; rdfs:label "Supplier catalogue VC type"@en .
-trade:Quotation a owl:Class ; rdfs:label "Supplier offer / quotation"@en ; rdfs:seeAlso <https://docs.oasis-open.org/ubl/os-UBL-2.4/mod/summary/reports/UBL-Quotation-2.4.html> .
-trade:QuotationCredential a owl:Class ; rdfs:label "Supplier offer / quotation VC type"@en .
-trade:AwardDecision a owl:Class ; rdfs:label "Buyer award / offer acceptance"@en ; rdfs:seeAlso <http://data.europa.eu/a4g/ontology#AwardDecision> .
-trade:AwardDecisionCredential a owl:Class ; rdfs:label "Buyer award / offer acceptance VC type"@en .
-trade:OrderAgreement a owl:Class ; rdfs:label "Seller order acceptance"@en ; rdfs:seeAlso <https://docs.peppol.eu/poacc/upgrade-3/profiles/42-orderagreement/> .
-trade:OrderAgreementCredential a owl:Class ; rdfs:label "Seller order acceptance VC type"@en .
-trade:Order a owl:Class ; rdfs:label "Purchase order"@en ; rdfs:seeAlso <https://docs.peppol.eu/poacc/upgrade-3/syntax/Order/> .
-trade:OrderCredential a owl:Class ; rdfs:label "Purchase order VC type"@en .
-trade:Invoice a owl:Class ; rdfs:label "Supplier invoice"@en ; rdfs:seeAlso <https://docs.peppol.eu/poacc/upgrade-3/syntax/Invoice/> .
-trade:InvoiceCredential a owl:Class ; rdfs:label "Supplier invoice VC type"@en .
-trade:DespatchAdvice a owl:Class ; rdfs:label "Despatch advice"@en ; rdfs:seeAlso <https://docs.peppol.eu/poacc/upgrade-3/syntax/DespatchAdvice/> .
-trade:DespatchAdviceCredential a owl:Class ; rdfs:label "Despatch advice VC type"@en .
-trade:ReceiptAdvice a owl:Class ; rdfs:label "Receipt advice"@en ; rdfs:seeAlso <https://docs.oasis-open.org/ubl/os-UBL-2.4/mod/summary/reports/UBL-ReceiptAdvice-2.4.html> .
-trade:ReceiptAdviceCredential a owl:Class ; rdfs:label "Receipt advice VC type"@en .
-trade:Waybill a owl:Class ; rdfs:label "Waybill"@en ; rdfs:seeAlso <https://docs.oasis-open.org/ubl/os-UBL-2.4/mod/summary/reports/UBL-Waybill-2.4.html> .
-trade:WaybillCredential a owl:Class ; rdfs:label "Waybill VC type"@en .
-
-trade:appliesToLot a owl:ObjectProperty ; rdfs:label "appliesToLot"@en ; rdfs:range rdfs:Resource .
-trade:buyer a owl:DatatypeProperty ; rdfs:label "buyer"@en ; rdfs:range xsd:string .
-trade:carrierName a owl:DatatypeProperty ; rdfs:label "carrierName"@en ; rdfs:range xsd:string .
-trade:currencyCode a owl:DatatypeProperty ; rdfs:label "currencyCode"@en ; rdfs:range xsd:string .
-trade:deliveryDate a owl:DatatypeProperty ; rdfs:label "deliveryDate"@en ; rdfs:range xsd:date .
-trade:documentNumber a owl:DatatypeProperty ; rdfs:label "documentNumber"@en ; rdfs:range xsd:string .
-trade:issueDate a owl:DatatypeProperty ; rdfs:label "issueDate"@en ; rdfs:range xsd:date .
-trade:itemName a owl:DatatypeProperty ; rdfs:label "itemName"@en ; rdfs:range xsd:string .
-trade:payableAmount a owl:DatatypeProperty ; rdfs:label "payableAmount"@en ; rdfs:range xsd:decimal .
-trade:quantity a owl:DatatypeProperty ; rdfs:label "quantity"@en ; rdfs:range xsd:integer .
-trade:receivedQuantity a owl:DatatypeProperty ; rdfs:label "receivedQuantity"@en ; rdfs:range xsd:integer .
-trade:responseCode a owl:DatatypeProperty ; rdfs:label "responseCode"@en ; rdfs:range xsd:string .
-trade:responseTo a owl:ObjectProperty ; rdfs:label "responseTo"@en ; rdfs:range rdfs:Resource .
-trade:seller a owl:DatatypeProperty ; rdfs:label "seller"@en ; rdfs:range xsd:string .
-trade:sourceDocument a owl:ObjectProperty ; rdfs:label "sourceDocument"@en ; rdfs:range rdfs:Resource .
-trade:trackingIdentifier a owl:DatatypeProperty ; rdfs:label "trackingIdentifier"@en ; rdfs:range xsd:string .
-trade:unitPrice a owl:DatatypeProperty ; rdfs:label "unitPrice"@en ; rdfs:range xsd:decimal .
+<https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/trade.ttl> a owl:Ontology ; rdfs:label "UBL 2.4 trade document profile"@en ; rdfs:seeAlso <https://iri.suomi.fi/model/busdoc/> .
+trade:Catalogue a owl:Class ; rdfs:label "UBL Catalogue"@en ; rdfs:seeAlso <https://docs.oasis-open.org/ubl/os-UBL-2.4/xsd/maindoc/UBL-Catalogue-2.4.xsd> .
+trade:CatalogueCredential a owl:Class .
+trade:Quotation a owl:Class ; rdfs:label "UBL Quotation"@en ; rdfs:seeAlso <https://docs.oasis-open.org/ubl/os-UBL-2.4/xsd/maindoc/UBL-Quotation-2.4.xsd> .
+trade:QuotationCredential a owl:Class .
+trade:OrderResponse a owl:Class ; rdfs:label "UBL OrderResponse"@en ; rdfs:seeAlso <https://docs.oasis-open.org/ubl/os-UBL-2.4/xsd/maindoc/UBL-OrderResponse-2.4.xsd> .
+trade:OrderResponseCredential a owl:Class .
+trade:Order a owl:Class ; rdfs:label "UBL Order"@en ; rdfs:seeAlso <https://docs.oasis-open.org/ubl/os-UBL-2.4/xsd/maindoc/UBL-Order-2.4.xsd> .
+trade:OrderCredential a owl:Class .
+trade:Invoice a owl:Class ; rdfs:label "UBL Invoice"@en ; rdfs:seeAlso <https://docs.oasis-open.org/ubl/os-UBL-2.4/xsd/maindoc/UBL-Invoice-2.4.xsd> .
+trade:InvoiceCredential a owl:Class .
+trade:DespatchAdvice a owl:Class ; rdfs:label "UBL DespatchAdvice"@en ; rdfs:seeAlso <https://docs.oasis-open.org/ubl/os-UBL-2.4/xsd/maindoc/UBL-DespatchAdvice-2.4.xsd> .
+trade:DespatchAdviceCredential a owl:Class .
+trade:ReceiptAdvice a owl:Class ; rdfs:label "UBL ReceiptAdvice"@en ; rdfs:seeAlso <https://docs.oasis-open.org/ubl/os-UBL-2.4/xsd/maindoc/UBL-ReceiptAdvice-2.4.xsd> .
+trade:ReceiptAdviceCredential a owl:Class .
+trade:Waybill a owl:Class ; rdfs:label "UBL Waybill"@en ; rdfs:seeAlso <https://docs.oasis-open.org/ubl/os-UBL-2.4/xsd/maindoc/UBL-Waybill-2.4.xsd> .
+trade:WaybillCredential a owl:Class .
+busdoc:CatalogueLine rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:QuotationLine rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:OrderLine rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:OrderReference rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:LineItem rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:InvoiceLine rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:DespatchLine rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:ReceiptLine rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:ItemLocationQuantity rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:MonetaryTotal rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:DocumentReference rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:Item rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:Price rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:SupplierParty rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:CustomerParty rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:Party rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:Shipment rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:iD rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:issueDate rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:sellerSupplierParty rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:buyerCustomerParty rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:catalogueLine_ rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:requiredItemLocationQuantity rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:orderLine_ rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:lineItem_ rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:invoiceLine_ rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:orderDocumentReference_ rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:despatchDocumentReference rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:documentCurrencyCode rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:legalMonetaryTotal rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:payableAmount rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:carrierParty rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:shipment_ rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:item_ rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:price_ rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:name rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:quantity rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:invoicedQuantity rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:deliveredQuantity rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:receivedQuantity rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:priceAmount rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+trade:quotationLine a owl:ObjectProperty ; rdfs:label "quotationLine"@en ; rdfs:domain trade:Quotation ; rdfs:range busdoc:QuotationLine .
+trade:lineItem a owl:ObjectProperty ; rdfs:label "lineItem"@en ; rdfs:domain busdoc:QuotationLine ; rdfs:range busdoc:LineItem .
+trade:despatchLine a owl:ObjectProperty ; rdfs:label "despatchLine"@en ; rdfs:domain trade:DespatchAdvice ; rdfs:range busdoc:DespatchLine .
+trade:receiptLine a owl:ObjectProperty ; rdfs:label "receiptLine"@en ; rdfs:domain trade:ReceiptAdvice ; rdfs:range busdoc:ReceiptLine .
+trade:orderReference a owl:ObjectProperty ; rdfs:label "orderReference"@en ; rdfs:domain trade:OrderResponse ; rdfs:range busdoc:OrderReference .
+trade:orderResponseCode a owl:DatatypeProperty ; rdfs:domain trade:OrderResponse ; rdfs:range xsd:string .

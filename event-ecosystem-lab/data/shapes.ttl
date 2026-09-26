@@ -7,6 +7,7 @@
 @prefix epo: <http://data.europa.eu/a4g/ontology#> .
 @prefix elig: <https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/eligibility.ttl#> .
 @prefix trade: <https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/trade.ttl#> .
+@prefix busdoc: <https://iri.suomi.fi/model/busdoc/> .
 
 # Validate the credentialSubject RDF node after JSON-LD expansion.
 # These shapes do not check signatures, trust, legal eligibility or Peppol XML conformance.
@@ -117,87 +118,24 @@ elig:OperatorOriginShape a sh:NodeShape ; sh:targetClass elig:OperatorOrigin ;
     sh:property [ sh:path elig:establishmentCountry ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
     sh:property [ sh:path elig:asOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] .
 
-trade:CatalogueShape a sh:NodeShape ; sh:targetClass trade:Catalogue ;
-    sh:property [ sh:path trade:documentNumber ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:issueDate ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
-    sh:property [ sh:path trade:seller ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:buyer ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:itemName ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:quantity ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:integer ] ;
-    sh:property [ sh:path trade:unitPrice ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ] ;
-    sh:property [ sh:path trade:currencyCode ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+trade:DocumentShape a sh:NodeShape ; sh:property [ sh:path busdoc:iD ; sh:minCount 1 ; sh:datatype xsd:string ] ; sh:property [ sh:path busdoc:issueDate ; sh:minCount 1 ; sh:datatype xsd:date ] .
+trade:ItemShape a sh:NodeShape ; sh:class busdoc:Item ; sh:property [ sh:path busdoc:name ; sh:minCount 1 ; sh:datatype xsd:string ] .
 
-trade:QuotationShape a sh:NodeShape ; sh:targetClass trade:Quotation ;
-    sh:property [ sh:path trade:documentNumber ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:issueDate ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
-    sh:property [ sh:path trade:seller ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:buyer ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:itemName ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:quantity ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:integer ] ;
-    sh:property [ sh:path trade:unitPrice ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ] ;
-    sh:property [ sh:path trade:currencyCode ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:appliesToLot ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
-    sh:property [ sh:path trade:sourceDocument ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .
+trade:CatalogueShape a sh:NodeShape ; sh:targetClass trade:Catalogue ; sh:node trade:DocumentShape ; sh:property [ sh:path busdoc:sellerSupplierParty ; sh:minCount 1 ; sh:class busdoc:SupplierParty ] ; sh:property [ sh:path busdoc:buyerCustomerParty ; sh:minCount 1 ; sh:class busdoc:CustomerParty ] ; sh:property [ sh:path busdoc:catalogueLine_ ; sh:minCount 1 ; sh:class busdoc:CatalogueLine ; sh:property [ sh:path busdoc:item_ ; sh:minCount 1 ; sh:node trade:ItemShape ] ; sh:property [ sh:path busdoc:requiredItemLocationQuantity ; sh:minCount 1 ; sh:class busdoc:ItemLocationQuantity ; sh:property [ sh:path busdoc:price_ ; sh:minCount 1 ; sh:class busdoc:Price ] ] ] .
 
-trade:AwardDecisionShape a sh:NodeShape ; sh:targetClass trade:AwardDecision ;
-    sh:property [ sh:path trade:documentNumber ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:issueDate ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
-    sh:property [ sh:path trade:seller ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:buyer ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:responseCode ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:in ( "ACCEPTED" "REJECTED" "CHANGED" ) ] ;
-    sh:property [ sh:path trade:responseTo ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
-    sh:property [ sh:path trade:appliesToLot ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .
+trade:QuotationShape a sh:NodeShape ; sh:targetClass trade:Quotation ; sh:node trade:DocumentShape ; sh:property [ sh:path busdoc:sellerSupplierParty ; sh:minCount 1 ; sh:class busdoc:SupplierParty ] ; sh:property [ sh:path busdoc:buyerCustomerParty ; sh:minCount 1 ; sh:class busdoc:CustomerParty ] ; sh:property [ sh:path trade:quotationLine ; sh:minCount 1 ; sh:class busdoc:QuotationLine ; sh:property [ sh:path trade:lineItem ; sh:minCount 1 ; sh:class busdoc:LineItem ; sh:property [ sh:path busdoc:item_ ; sh:minCount 1 ; sh:node trade:ItemShape ] ; sh:property [ sh:path busdoc:quantity ; sh:minCount 1 ; sh:datatype xsd:decimal ] ] ] .
 
-trade:OrderAgreementShape a sh:NodeShape ; sh:targetClass trade:OrderAgreement ;
-    sh:property [ sh:path trade:documentNumber ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:issueDate ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
-    sh:property [ sh:path trade:seller ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:buyer ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:responseCode ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:in ( "ACCEPTED" "REJECTED" "CHANGED" ) ] ;
-    sh:property [ sh:path trade:responseTo ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .
+elig:AwardDecisionShape a sh:NodeShape ; sh:targetClass epo:AwardDecision ; sh:property [ sh:path elig:decisionID ; sh:minCount 1 ] ; sh:property [ sh:path elig:issueDate ; sh:minCount 1 ; sh:datatype xsd:date ] ; sh:property [ sh:path elig:decisionFor ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ; sh:property [ sh:path elig:appliesToLot ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ; sh:property [ sh:path elig:decisionOutcome ; sh:hasValue "AWARDED" ] .
 
-trade:OrderShape a sh:NodeShape ; sh:targetClass trade:Order ;
-    sh:property [ sh:path trade:documentNumber ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:issueDate ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
-    sh:property [ sh:path trade:seller ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:buyer ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:itemName ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:quantity ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:integer ] ;
-    sh:property [ sh:path trade:unitPrice ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ] ;
-    sh:property [ sh:path trade:currencyCode ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:sourceDocument ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .
+trade:OrderResponseShape a sh:NodeShape ; sh:targetClass trade:OrderResponse ; sh:node trade:DocumentShape ; sh:property [ sh:path busdoc:sellerSupplierParty ; sh:minCount 1 ; sh:class busdoc:SupplierParty ] ; sh:property [ sh:path busdoc:buyerCustomerParty ; sh:minCount 1 ; sh:class busdoc:CustomerParty ] ; sh:property [ sh:path trade:orderReference ; sh:minCount 1 ; sh:class busdoc:OrderReference ; sh:property [ sh:path busdoc:iD ; sh:minCount 1 ] ] ; sh:property [ sh:path trade:orderResponseCode ; sh:hasValue "ACCEPTED" ] .
 
-trade:InvoiceShape a sh:NodeShape ; sh:targetClass trade:Invoice ;
-    sh:property [ sh:path trade:documentNumber ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:issueDate ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
-    sh:property [ sh:path trade:seller ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:buyer ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:payableAmount ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ] ;
-    sh:property [ sh:path trade:currencyCode ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:sourceDocument ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .
+trade:OrderShape a sh:NodeShape ; sh:targetClass trade:Order ; sh:node trade:DocumentShape ; sh:property [ sh:path busdoc:sellerSupplierParty ; sh:minCount 1 ; sh:class busdoc:SupplierParty ] ; sh:property [ sh:path busdoc:buyerCustomerParty ; sh:minCount 1 ; sh:class busdoc:CustomerParty ] ; sh:property [ sh:path busdoc:orderLine_ ; sh:minCount 1 ; sh:class busdoc:OrderLine ; sh:property [ sh:path busdoc:lineItem_ ; sh:minCount 1 ; sh:class busdoc:LineItem ] ] .
 
-trade:DespatchAdviceShape a sh:NodeShape ; sh:targetClass trade:DespatchAdvice ;
-    sh:property [ sh:path trade:documentNumber ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:issueDate ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
-    sh:property [ sh:path trade:seller ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:buyer ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:itemName ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:quantity ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:integer ] ;
-    sh:property [ sh:path trade:sourceDocument ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .
+trade:InvoiceShape a sh:NodeShape ; sh:targetClass trade:Invoice ; sh:node trade:DocumentShape ; sh:property [ sh:path busdoc:sellerSupplierParty ; sh:minCount 1 ; sh:class busdoc:SupplierParty ] ; sh:property [ sh:path busdoc:buyerCustomerParty ; sh:minCount 1 ; sh:class busdoc:CustomerParty ] ; sh:property [ sh:path busdoc:invoiceLine_ ; sh:minCount 1 ; sh:class busdoc:InvoiceLine ; sh:property [ sh:path busdoc:item_ ; sh:minCount 1 ; sh:node trade:ItemShape ] ; sh:property [ sh:path busdoc:invoicedQuantity ; sh:minCount 1 ; sh:datatype xsd:string ] ] ; sh:property [ sh:path busdoc:legalMonetaryTotal ; sh:minCount 1 ; sh:class busdoc:MonetaryTotal ; sh:property [ sh:path busdoc:payableAmount ; sh:minCount 1 ; sh:datatype xsd:decimal ] ] .
 
-trade:ReceiptAdviceShape a sh:NodeShape ; sh:targetClass trade:ReceiptAdvice ;
-    sh:property [ sh:path trade:documentNumber ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:issueDate ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
-    sh:property [ sh:path trade:seller ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:buyer ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:receivedQuantity ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:integer ] ;
-    sh:property [ sh:path trade:sourceDocument ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .
+trade:DespatchAdviceShape a sh:NodeShape ; sh:targetClass trade:DespatchAdvice ; sh:node trade:DocumentShape ; sh:property [ sh:path busdoc:sellerSupplierParty ; sh:minCount 1 ; sh:class busdoc:SupplierParty ] ; sh:property [ sh:path busdoc:buyerCustomerParty ; sh:minCount 1 ; sh:class busdoc:CustomerParty ] ; sh:property [ sh:path trade:despatchLine ; sh:minCount 1 ; sh:class busdoc:DespatchLine ; sh:property [ sh:path busdoc:item_ ; sh:minCount 1 ; sh:node trade:ItemShape ] ; sh:property [ sh:path busdoc:deliveredQuantity ; sh:minCount 1 ; sh:datatype xsd:decimal ] ] .
 
-trade:WaybillShape a sh:NodeShape ; sh:targetClass trade:Waybill ;
-    sh:property [ sh:path trade:documentNumber ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:issueDate ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
-    sh:property [ sh:path trade:carrierName ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:trackingIdentifier ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
-    sh:property [ sh:path trade:deliveryDate ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
-    sh:property [ sh:path trade:sourceDocument ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] .
+trade:ReceiptAdviceShape a sh:NodeShape ; sh:targetClass trade:ReceiptAdvice ; sh:node trade:DocumentShape ; sh:property [ sh:path busdoc:sellerSupplierParty ; sh:minCount 1 ; sh:class busdoc:SupplierParty ] ; sh:property [ sh:path busdoc:buyerCustomerParty ; sh:minCount 1 ; sh:class busdoc:CustomerParty ] ; sh:property [ sh:path trade:receiptLine ; sh:minCount 1 ; sh:class busdoc:ReceiptLine ; sh:property [ sh:path busdoc:item_ ; sh:minCount 1 ; sh:node trade:ItemShape ] ; sh:property [ sh:path busdoc:receivedQuantity ; sh:minCount 1 ; sh:datatype xsd:decimal ] ] .
+
+trade:WaybillShape a sh:NodeShape ; sh:targetClass trade:Waybill ; sh:node trade:DocumentShape ; sh:property [ sh:path busdoc:carrierParty ; sh:minCount 1 ] ; sh:property [ sh:path busdoc:shipment_ ; sh:minCount 1 ; sh:class busdoc:Shipment ] .
 

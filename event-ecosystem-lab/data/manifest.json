@@ -94,8 +94,8 @@
     "label": "Supplier catalogue",
     "category": "trade",
     "class": "Catalogue",
-    "basis": "Peppol BIS Catalogue / UBL Catalogue",
-    "note": "Supplier publishes catalogue entries",
+    "basis": "OASIS UBL 2.4 Catalogue",
+    "note": "Supplier publishes a catalogue line",
     "file": "data/catalogue.vc.json"
   },
   {
@@ -103,26 +103,26 @@
     "label": "Supplier offer / quotation",
     "category": "trade",
     "class": "Quotation",
-    "basis": "OASIS UBL Quotation; ePO Tender is procurement context",
-    "note": "Commercial offer; procurement tender remains distinct",
+    "basis": "OASIS UBL 2.4 Quotation",
+    "note": "Commercial quotation; procurement tender remains distinct",
     "file": "data/offer.vc.json"
   },
   {
     "name": "award",
-    "label": "Buyer award / offer acceptance",
+    "label": "Buyer award decision",
     "category": "trade",
     "class": "AwardDecision",
-    "basis": "ePO AwardDecision; procurement-specific decision",
-    "note": "Buyer accepts tender through a separate award decision; ePO semantics",
+    "basis": "ePO AwardDecision (outside UBL)",
+    "note": "Procurement award governed by ePO, outside the UBL trade vocabulary",
     "file": "data/award.vc.json"
   },
   {
     "name": "acceptance",
     "label": "Seller order acceptance",
     "category": "trade",
-    "class": "OrderAgreement",
-    "basis": "Peppol BIS Order Agreement / UBL OrderResponse",
-    "note": "Seller accepts buyer order; distinct from the award",
+    "class": "OrderResponse",
+    "basis": "OASIS UBL 2.4 OrderResponse",
+    "note": "Seller responds to the buyer order; distinct from award",
     "file": "data/acceptance.vc.json"
   },
   {
@@ -130,8 +130,8 @@
     "label": "Purchase order",
     "category": "trade",
     "class": "Order",
-    "basis": "Peppol BIS Ordering / UBL Order",
-    "note": "Buyer places order after separate award decision",
+    "basis": "OASIS UBL 2.4 Order",
+    "note": "Buyer places an order after award",
     "file": "data/order.vc.json"
   },
   {
@@ -139,7 +139,7 @@
     "label": "Supplier invoice",
     "category": "trade",
     "class": "Invoice",
-    "basis": "Peppol BIS Billing / UBL Invoice",
+    "basis": "OASIS UBL 2.4 Invoice",
     "note": "Supplier requests payment",
     "file": "data/invoice.vc.json"
   },
@@ -148,8 +148,8 @@
     "label": "Despatch advice",
     "category": "trade",
     "class": "DespatchAdvice",
-    "basis": "Peppol BIS Despatch Advice / UBL DespatchAdvice",
-    "note": "Supplier announces shipped goods",
+    "basis": "OASIS UBL 2.4 DespatchAdvice",
+    "note": "Supplier announces dispatched goods",
     "file": "data/despatch.vc.json"
   },
   {
@@ -157,7 +157,7 @@
     "label": "Receipt advice",
     "category": "trade",
     "class": "ReceiptAdvice",
-    "basis": "OASIS UBL ReceiptAdvice; no Peppol BIS claimed",
+    "basis": "OASIS UBL 2.4 ReceiptAdvice",
     "note": "Buyer acknowledges receipt",
     "file": "data/receipt.vc.json"
   },
@@ -166,8 +166,8 @@
     "label": "Waybill",
     "category": "trade",
     "class": "Waybill",
-    "basis": "OASIS UBL Waybill; no Peppol BIS claimed",
-    "note": "Carrier records transport movement",
+    "basis": "OASIS UBL 2.4 Waybill",
+    "note": "Carrier records the shipment",
     "file": "data/waybill.vc.json"
   }
 ]

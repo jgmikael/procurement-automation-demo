@@ -6,6 +6,7 @@
       "epo": "http://data.europa.eu/a4g/ontology#",
       "elig": "https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/eligibility.ttl#",
       "trade": "https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/trade.ttl#",
+      "busdoc": "https://iri.suomi.fi/model/busdoc/",
       "xsd": "http://www.w3.org/2001/XMLSchema#",
       "elig:asOf": {
         "@type": "xsd:date"
@@ -16,28 +17,7 @@
       "elig:periodEnd": {
         "@type": "xsd:date"
       },
-      "trade:issueDate": {
-        "@type": "xsd:date"
-      },
-      "trade:deliveryDate": {
-        "@type": "xsd:date"
-      },
-      "trade:currency": {
-        "@type": "@id"
-      },
-      "trade:precedes": {
-        "@type": "@id"
-      },
       "elig:appliesToLot": {
-        "@type": "@id"
-      },
-      "trade:appliesToLot": {
-        "@type": "@id"
-      },
-      "trade:sourceDocument": {
-        "@type": "@id"
-      },
-      "trade:responseTo": {
         "@type": "@id"
       },
       "elig:annualTurnover": {
@@ -49,17 +29,29 @@
       "elig:deliveredValue": {
         "@type": "xsd:decimal"
       },
-      "trade:unitPrice": {
+      "busdoc:issueDate": {
+        "@type": "xsd:date"
+      },
+      "busdoc:quantity": {
         "@type": "xsd:decimal"
       },
-      "trade:payableAmount": {
+      "busdoc:deliveredQuantity": {
         "@type": "xsd:decimal"
       },
-      "trade:quantity": {
-        "@type": "xsd:integer"
+      "busdoc:receivedQuantity": {
+        "@type": "xsd:decimal"
       },
-      "trade:receivedQuantity": {
-        "@type": "xsd:integer"
+      "busdoc:priceAmount": {
+        "@type": "xsd:decimal"
+      },
+      "busdoc:payableAmount": {
+        "@type": "xsd:decimal"
+      },
+      "elig:issueDate": {
+        "@type": "xsd:date"
+      },
+      "elig:decisionFor": {
+        "@type": "@id"
       },
       "ebwv:legalIdentifier": {
         "@id": "ebwv:legalIdentifier",
@@ -98,12 +90,31 @@
   "credentialSubject": {
     "id": "urn:demo:trade:despatch-2026",
     "type": "trade:DespatchAdvice",
-    "trade:documentNumber": "DES-2026-027",
-    "trade:issueDate": "2026-10-25",
-    "trade:seller": "urn:demo:operator:aalto-timber",
-    "trade:buyer": "urn:demo:buyer:harbour-city",
-    "trade:itemName": "Modular birch desk",
-    "trade:quantity": "200",
-    "trade:sourceDocument": "https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/order.vc.json"
+    "busdoc:iD": "DES-2026-027",
+    "busdoc:issueDate": "2026-10-25",
+    "busdoc:sellerSupplierParty": {
+      "id": "urn:demo:operator:aalto-timber",
+      "type": "busdoc:SupplierParty"
+    },
+    "busdoc:buyerCustomerParty": {
+      "id": "urn:demo:buyer:harbour-city",
+      "type": "busdoc:CustomerParty"
+    },
+    "trade:despatchLine": {
+      "id": "urn:demo:line:despatchline-1",
+      "type": "busdoc:DespatchLine",
+      "busdoc:iD": "1",
+      "busdoc:item_": {
+        "id": "urn:demo:item:birch-desk",
+        "type": "busdoc:Item",
+        "busdoc:name": "Modular birch desk"
+      },
+      "busdoc:deliveredQuantity": "200"
+    },
+    "busdoc:orderDocumentReference_": {
+      "id": "https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/order.vc.json",
+      "type": "busdoc:DocumentReference",
+      "busdoc:iD": "ORD-2026-014"
+    }
   }
 }
