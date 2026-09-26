@@ -13,8 +13,8 @@
   rdfs:label "Event Ecosystem Lab eligibility extension profile v0.1"@en ;
   rdfs:comment "Synthetic demonstration extension; EBWV, ePO, Peppol and UBL terms are independently governed."@en .
 
-elig:CompanyRegistration a owl:Class ; rdfs:label "EU Company Certificate"@en ; rdfs:seeAlso epo:SelectionCriterion ; rdfs:subClassOf ebwv:LimitedLiabilityCompany ; rdfs:seeAlso <https://github.com/webuild-consortium/webuild-attestation-rulebooks-catalog/blob/main/rulebooks/rb-eucc/README.md> .
 elig:CompanyRegistrationCredential a owl:Class ; rdfs:label "EU Company Certificate VC type"@en .
+elig:CompanyRegistrationCredential rdfs:seeAlso <https://github.com/webuild-consortium/webuild-attestation-rulebooks-catalog/blob/main/rulebooks/rb-eucc/README.md> .
 elig:RepresentationAuthority a owl:Class ; rdfs:label "Representative authority"@en .
 elig:RepresentationAuthorityCredential a owl:Class ; rdfs:label "Representative authority VC type"@en .
 elig:TaxCompliance a owl:Class ; rdfs:label "Tax compliance"@en ; rdfs:seeAlso epo:ExclusionGround .
@@ -60,6 +60,5 @@ elig:representativeName a owl:DatatypeProperty ; rdfs:label "representativeName"
 elig:scope a owl:DatatypeProperty ; rdfs:label "scope"@en ; rdfs:range xsd:string .
 elig:AwardDecisionCredential a owl:Class .
 elig:decisionID a owl:DatatypeProperty ; rdfs:range xsd:string .
-elig:issueDate a owl:DatatypeProperty ; rdfs:range xsd:date .
 elig:decisionFor a owl:ObjectProperty .
 elig:decisionOutcome a owl:DatatypeProperty ; rdfs:range xsd:string .

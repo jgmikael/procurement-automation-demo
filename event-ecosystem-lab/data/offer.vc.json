@@ -38,7 +38,7 @@
       "id": "urn:demo:line:quotation-1",
       "type": "busdoc:QuotationLine",
       "busdoc:iD": "1",
-      "trade:lineItem": {
+      "busdoc:lineItem_": {
         "id": "urn:demo:line:lineitem-1",
         "type": "busdoc:LineItem",
         "busdoc:iD": "1",

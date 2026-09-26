@@ -28,7 +28,7 @@
       "id": "urn:demo:buyer:harbour-city",
       "type": "busdoc:CustomerParty"
     },
-    "trade:orderReference": {
+    "busdoc:orderReference_": {
       "id": "https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/order.vc.json",
       "type": "busdoc:OrderReference",
       "busdoc:iD": "ORD-2026-014"

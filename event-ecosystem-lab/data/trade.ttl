@@ -53,6 +53,7 @@ busdoc:orderLine_ rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
 busdoc:lineItem_ rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
 busdoc:invoiceLine_ rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
 busdoc:orderDocumentReference_ rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
+busdoc:orderReference_ rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
 busdoc:despatchDocumentReference rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
 busdoc:documentCurrencyCode rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
 busdoc:legalMonetaryTotal rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
@@ -68,8 +69,6 @@ busdoc:deliveredQuantity rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
 busdoc:receivedQuantity rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
 busdoc:priceAmount rdfs:isDefinedBy <https://iri.suomi.fi/model/busdoc/> .
 trade:quotationLine a owl:ObjectProperty ; rdfs:label "quotationLine"@en ; rdfs:domain trade:Quotation ; rdfs:range busdoc:QuotationLine .
-trade:lineItem a owl:ObjectProperty ; rdfs:label "lineItem"@en ; rdfs:domain busdoc:QuotationLine ; rdfs:range busdoc:LineItem .
 trade:despatchLine a owl:ObjectProperty ; rdfs:label "despatchLine"@en ; rdfs:domain trade:DespatchAdvice ; rdfs:range busdoc:DespatchLine .
 trade:receiptLine a owl:ObjectProperty ; rdfs:label "receiptLine"@en ; rdfs:domain trade:ReceiptAdvice ; rdfs:range busdoc:ReceiptLine .
-trade:orderReference a owl:ObjectProperty ; rdfs:label "orderReference"@en ; rdfs:domain trade:OrderResponse ; rdfs:range busdoc:OrderReference .
 trade:orderResponseCode a owl:DatatypeProperty ; rdfs:domain trade:OrderResponse ; rdfs:range xsd:string .

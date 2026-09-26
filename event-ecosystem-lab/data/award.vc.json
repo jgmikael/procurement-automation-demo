@@ -8,8 +8,8 @@
       "elig:appliesToLot": {
         "@type": "@id"
       },
-      "elig:issueDate": {
-        "@type": "xsd:date"
+      "epo:hasAwardDecisionDate": {
+        "@type": "xsd:dateTime"
       },
       "elig:decisionFor": {
         "@type": "@id"
@@ -25,7 +25,7 @@
     "id": "urn:demo:trade:award-2026",
     "type": "epo:AwardDecision",
     "elig:decisionID": "AWD-2026-012",
-    "elig:issueDate": "2026-10-08",
+    "epo:hasAwardDecisionDate": "2026-10-08T00:00:00Z",
     "elig:appliesToLot": "urn:demo:procurement:lot-1",
     "elig:decisionFor": "https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/offer.vc.json",
     "elig:decisionOutcome": "AWARDED"

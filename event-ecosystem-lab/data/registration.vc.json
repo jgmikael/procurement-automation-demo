@@ -45,10 +45,7 @@
   },
   "credentialSubject": {
     "id": "urn:demo:operator:aalto-timber",
-    "type": [
-      "ebwv:LimitedLiabilityCompany",
-      "elig:CompanyRegistration"
-    ],
+    "type": "ebwv:LimitedLiabilityCompany",
     "ebwv:legalName": "Aalto Timber Services Oy",
     "ebwv:legalIdentifier": "FI-PRH-3141592-6",
     "ebwv:legalForm": "Oy",
