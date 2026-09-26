@@ -32,3 +32,5 @@ The 12-step browser simulation links each process stage to its relevant W3C VC e
 4. Add a second event type using the same service catalogue and orchestration contract.
 
 Sources are linked on the page, including the Commission's 9 September 2026 proposal and Digital Dubai's 2026 integrated-services and data-governance announcements.
+
+The generated VCs use compact, per-credential JSON-LD contexts; unused semantic prefixes and coercions are omitted while keeping the W3C base context and issuer, type, subject, identifier and validity metadata.

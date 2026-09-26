@@ -10,13 +10,18 @@ ROOT = Path(__file__).resolve().parent
 OUT = ROOT / 'data'
 OUT.mkdir(exist_ok=True)
 BASE = 'https://jgmikael.github.io/procurement-automation-demo/event-ecosystem-lab/data/'
-CONTEXT = ['https://www.w3.org/ns/credentials/v2', {
+# Keep the required W3C context first. Add only terms used by the particular
+# credential; duplicating every profile term in all 19 files obscures the subject.
+VC_CONTEXT = 'https://www.w3.org/ns/credentials/v2'
+NAMESPACES = {
     'ebwv': 'https://w3id.org/ebwv#',
     'epo': 'http://data.europa.eu/a4g/ontology#',
     'elig': BASE + 'eligibility.ttl#',
     'trade': BASE + 'trade.ttl#',
     'busdoc': 'https://iri.suomi.fi/model/busdoc/',
     'xsd': 'http://www.w3.org/2001/XMLSchema#',
+}
+COERCIONS = {
     'elig:asOf': {'@type': 'xsd:date'},
     'elig:periodStart': {'@type': 'xsd:date'},
     'elig:periodEnd': {'@type': 'xsd:date'},
@@ -40,7 +45,28 @@ CONTEXT = ['https://www.w3.org/ns/credentials/v2', {
     'ebwv:attestationLegalCategory': {'@type': '@id'},
     'elig:jointSignatureCount': {'@type': 'xsd:integer'},
     'elig:signatoryGroup': {'@type': '@id'},
-}]
+}
+
+def credential_context(credential):
+    keys, values = set(), set()
+    def collect(node):
+        if isinstance(node, dict):
+            for key, value in node.items():
+                keys.add(key)
+                collect(value)
+        elif isinstance(node, list):
+            for value in node: collect(value)
+        elif isinstance(node, str):
+            values.add(node)
+    collect(credential)
+    terms = {term: definition for term, definition in COERCIONS.items() if term in keys}
+    # Include namespace dependencies from identifiers and datatype declarations.
+    for definition in terms.values(): collect(definition)
+    used = {token.split(':',1)[0] for token in keys | values if ':' in token}
+    local = {prefix: iri for prefix, iri in NAMESPACES.items() if prefix in used}
+    local.update(terms)
+    return [VC_CONTEXT, local]
+
 LOT = 'urn:demo:procurement:lot-1'
 CO = 'urn:demo:operator:aalto-timber'
 BUYER = 'urn:demo:buyer:harbour-city'
@@ -181,8 +207,9 @@ def credential(name, category, cls, issuer, fields):
                'urn:demo:carrier:baltic-logistics' if name=='waybill' else
                CO if category=='trade' else f'urn:demo:issuer:{name}')
     start=fields.get('busdoc:issueDate') or fields.get('elig:issueDate') or fields.get('elig:asOf') or '2026-09-26'
-    vc={'@context':CONTEXT,'id':BASE+name+'.vc.json','type':['VerifiableCredential',f'{"elig" if category == "eligibility" or name == "award" else "trade"}:{cls}Credential'],
-        'issuer':issuer_id,'validFrom':start+'T00:00:00Z','credentialSubject':subject}
+    vc={'@context':None,'type':['VerifiableCredential',f'{"elig" if category == "eligibility" or name == "award" else "trade"}:{cls}Credential'],
+        'issuer':issuer_id,'credentialSubject':subject,
+        'id':BASE+name+'.vc.json','validFrom':start+'T00:00:00Z'}
     if name=='registration':
         vc['type'].append('ebwv:ElectronicAttestationOfAttributes')
         vc['issuer']={'id':issuer_id,'type':'ebwv:PublicSectorBody',
@@ -190,6 +217,7 @@ def credential(name, category, cls, issuer, fields):
         vc['ebwv:attestationLegalCategory']='ebwv:Pub-EAA'
         # Short illustrative lifetime avoids inventing a non-working revocation service.
         vc['validUntil']='2026-09-26T23:00:00Z'
+    vc['@context']=credential_context(vc)
     return vc
 
 MANIFEST=[]
