@@ -31,3 +31,18 @@
 .rule-result summary{cursor:pointer;font-weight:700;color:#17675f}
 .rule-result pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#15363c;color:#d9efe3;padding:14px;max-height:320px;overflow:auto;font:10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
 @media(max-width:740px){.rule-head{align-items:flex-start;flex-direction:column}.rule-head button{width:100%}}
+[hidden]{display:none!important}
+.tender-agent-panel{margin-top:15px;padding:19px;border:1px solid #8bbdb1;background:#eaf5ef}
+.agent-header{display:flex;justify-content:space-between;gap:15px;align-items:flex-start}
+.agent-header h4{font:800 17px Manrope,sans-serif;margin:7px 0}
+.agent-header p{font-size:11px;color:#53716d;max-width:500px;margin:0}
+.agent-live{font:800 9px Manrope,sans-serif;letter-spacing:.1em;background:#d4e2dd;color:#425d56;padding:7px 9px;white-space:nowrap}
+.agent-live.watching{background:#a8e9d2;color:#14594a;box-shadow:0 0 0 5px #a8e9d255}
+.agent-actions{display:flex;gap:8px;margin:17px 0;flex-wrap:wrap}
+.agent-events{padding-left:22px;margin:0;color:#3c6258;font-size:11px}
+.agent-events li{margin:7px 0}
+.agent-draft{margin-top:13px;padding-top:12px;border-top:1px solid #bbd7c7;font-size:11px;color:#466c60}
+.agent-draft strong{display:block;font:800 13px Manrope,sans-serif;color:#155b4c}
+.agent-draft p{margin:7px 0}
+.agent-draft summary{cursor:pointer;color:#176b59;font-weight:800}
+.agent-draft pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#15363c;color:#d9efe3;padding:14px;max-height:300px;overflow:auto;font:10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}

@@ -53,12 +53,13 @@ const FAULTS = {
 };
 const RULE_AT_STEP={3:'credential-integrity',4:'representation',5:'semantic-profile',6:'tax-eligibility',11:'invoice-reconciliation'};
 const RULE_FILES={'credential-integrity':['tax'],'representation':['representation'],'semantic-profile':['tax'],'tax-eligibility':['tax','social'],'invoice-reconciliation':['order','receipt','invoice']};
-let state={step:0,completed:false,trace:[],run:1,ruleResults:{}};
+let state={step:0,completed:false,trace:[],run:1,ruleResults:{},agentEvents:[],bidDraft:null,watcherActive:false};
+let watcherTimer=null;
 const currentCountry=()=>COUNTRIES[$('country').value];
 const currentFault=()=>FAULTS[$('fault').value];
 const mode=()=>document.querySelector('input[name="mode"]:checked').value;
 const record=(owner,action,kind='ok')=>state.trace.push({seq:state.trace.length+1,owner,action,kind,step:state.step});
-function reset(){state={step:0,completed:false,trace:[],run:state.run+1,ruleResults:{}};record('System',`New synthetic ${currentCountry().name} scenario · ${mode()==='adaptive'?'agent proposed plan':'defined service portfolio'}`);render();}
+function reset(){clearTimeout(watcherTimer);watcherTimer=null;state={step:0,completed:false,trace:[],run:state.run+1,ruleResults:{},agentEvents:[],bidDraft:null,watcherActive:false};record('System',`New synthetic ${currentCountry().name} scenario · ${mode()==='adaptive'?'agent proposed plan':'defined service portfolio'}`);render();}
 function resultStatus(key,step){let f=currentFault();if(f&&f.at===step&&((key==='Tax status'&&['expired','unknown','untrusted'].includes($('fault').value))||(key==='Mandate'&&$('fault').value==='revoked')||(key==='Profile mapping'&&$('fault').value==='unmapped')))return 'Issue';return step<=state.step?'Sample OK':'Pending';}
 function render(){let n=state.step,s=STEPS[n],f=currentFault(),blocked=f&&f.at===n;
   $('run-number').textContent='#'+String(state.run).padStart(3,'0');$('step-title').textContent=s.title;$('step-description').textContent=s.description;
@@ -86,20 +87,48 @@ function render(){let n=state.step,s=STEPS[n],f=currentFault(),blocked=f&&f.at==
     const details=document.createElement('details');const summary=document.createElement('summary');summary.textContent='Inspect request and response JSON';const pre=document.createElement('pre');pre.textContent=JSON.stringify({request:run.request,response:run.response},null,2);details.append(summary,pre);
     $('rule-result').append(status,checks,details);
   } else if(ruleId){$('rule-result').textContent='Rule not run yet. The next transition waits for its result.';}
+  $('tender-agent-panel').hidden=n!==2;
+  if(n===2){$('agent-live').textContent=state.watcherActive?'WATCHING':state.bidDraft?'DRAFT READY':'IDLE';$('agent-live').classList.toggle('watching',state.watcherActive);$('watch-agent').disabled=state.watcherActive||!!state.bidDraft;$('watch-agent').textContent=state.bidDraft?'Draft prepared ✓':'Start tender watcher →';$('stop-agent').hidden=!state.watcherActive;
+    const events=$('agent-events');events.replaceChildren();for(const event of state.agentEvents){const li=document.createElement('li');li.textContent=event;events.append(li)}
+    const draft=$('agent-draft');draft.replaceChildren();if(state.bidDraft){const title=document.createElement('strong');title.textContent=`Bid draft for ${state.bidDraft.noticeId} · suitability ${state.bidDraft.score}/100`;const list=document.createElement('p');list.textContent=`Autonomously gathered ${state.bidDraft.evidence.filter(x=>x.available).length} sample documents: ${state.bidDraft.evidence.map(x=>x.name).join(', ')}.`;const next=document.createElement('p');next.textContent='DRAFT ONLY · Supplier reviews capacity, price, evidence disclosure and tender conditions before any submission.';const details=document.createElement('details');const summary=document.createElement('summary');summary.textContent='Inspect prepared bid JSON';const pre=document.createElement('pre');pre.textContent=JSON.stringify(state.bidDraft,null,2);details.append(summary,pre);draft.append(title,list,next,details)}
+  }
   $('issue-box').textContent=blocked?`${f.title}. ${f.detail} Select a healthy evidence chain or reset to run another case.`:'';
-  $('advance').disabled=!!blocked||state.completed||!!ruleId&&run?.response.decision!=='PASS';$('advance').textContent=state.completed?'Completed ✓':n===7?'Record buyer decision →':n===STEPS.length-1?'Finish process →':n===1?'Buyer approves & continues →':n===4?'Approve disclosure →':n===5?'Submit tender →':'Run next step →';$('back').disabled=n===0;
+  $('advance').disabled=!!blocked||state.completed||n===2&&!state.bidDraft||!!ruleId&&run?.response.decision!=='PASS';$('advance').textContent=state.completed?'Completed ✓':n===7?'Record buyer decision →':n===STEPS.length-1?'Finish process →':n===1?'Buyer approves & continues →':n===4?'Approve disclosure →':n===5?'Submit tender →':'Run next step →';$('back').disabled=n===0;
   $('agent-text').textContent=mode()==='adaptive'?s.agent:`A predefined service portfolio fixes this task's position: ${s.short}. Conditions, authority and checks remain the same.`;$('control-text').textContent=s.control;
   $('evidence-list').innerHTML=[['Company identity',2],['Tax status',3],['Social contributions',3],['Mandate',4],['Profile mapping',5]].map(([key,at])=>{let v=resultStatus(key,at);return `<div class="evidence-item"><span>${key}</span><b class="${v==='Issue'?'bad':''}">${n>=at?v:'Pending'}</b></div>`}).join('');
   $('trace').innerHTML=state.trace.map(e=>`<li><time>T+${String(e.seq-1).padStart(2,'0')}</time><span><strong>${e.owner}</strong> · ${e.action}</span></li>`).join('');
   renderSemantics();
 }
-function advance(){let n=state.step,f=currentFault();if(state.completed||f&&f.at===n||RULE_AT_STEP[n]&&state.ruleResults[n]?.response.decision!=='PASS')return;
+function advance(){let n=state.step,f=currentFault();if(state.completed||f&&f.at===n||n===2&&!state.bidDraft||RULE_AT_STEP[n]&&state.ruleResults[n]?.response.decision!=='PASS')return;
+  if(n===2){clearTimeout(watcherTimer);watcherTimer=null;state.watcherActive=false;}
   if(n===STEPS.length-1){record('Supplier','Synthetic invoice recorded; simulation ended (no payment).','gate');state.completed=true;render();return;}
   const actions=['Event registered; scoped service catalogue loaded.','Procurement expert approved synthetic criteria.','Supplier agent suggested participation; supplier remained in control.','Synthetic records checked: source, issuer, status and profile are distinct.','Representative approved procedure-specific evidence disclosure.','Tender presentation authorised; labels aligned via the approved semantic profile.','Rule check returned an explained, procedure-specific result.','Public buyer recorded a synthetic award decision after human review.','Buyer recorded a synthetic purchase order.','Supplier recorded a synthetic order response.','Supplier, carrier and buyer recorded dispatch, waybill and receipt.'];
   record(STEPS[n].actor,actions[n],[1,4,5,7,8,9].includes(n)?'gate':'ok');state.step=n+1;
   let issue=currentFault();if(issue&&issue.at===state.step)record('Exception control',`${issue.title}: ${issue.detail}`,'issue');
   render();
 }
+function agentLog(message){state.agentEvents.push(message);record('SME tender agent',message);if(state.step===2)render();}
+function startTenderWatcher(){if(state.step!==2||state.watcherActive||state.bidDraft)return;
+  state.watcherActive=true;agentLog('Connected to two simulated tender feeds. Awaiting a new announcement…');
+  const run=state.run;
+  watcherTimer=setTimeout(async()=>{if(!state.watcherActive||state.run!==run)return;
+    const notice={id:'DEMO-TENDER-2026-041',source:'Synthetic public buyer feed',announcedOn:'2026-09-26',deadline:'2026-10-15',buyerCountry:$('country').value,itemId:'urn:demo:item:birch-desk',quantity:200};
+    agentLog(`New notice ${notice.id} arrived from ${notice.source}: ${notice.quantity} modular birch desks.`);
+    try{const catalogueResponse=await fetch('./data/catalogue.vc.json?v=7');if(!catalogueResponse.ok)throw Error('Catalogue unavailable');const catalogue=await catalogueResponse.json();const item=catalogue.credentialSubject['busdoc:catalogueLine_']['busdoc:item_'];
+      const profile={itemId:item.id,maxQuantity:500,supportedCountries:['FI','SE','NL']};const assessment=DemoTenderAgent.assess(notice,profile);
+      agentLog(`Suitability score ${assessment.score}/100 · ${assessment.suitable?'candidate selected':'below threshold'}. ${assessment.checks.map(x=>x.name+': '+(x.pass?'yes':'no')).join('; ')}.`);
+      if(!assessment.suitable){state.watcherActive=false;render();return}
+      agentLog('Preparing bid: requesting sample registration, tax, social, financial, technical, licence and mandate records…');
+      const names=['registration','tax','social','financial','technical','licence','representation'];const documents={catalogue};
+      await Promise.all(names.map(async name=>{const response=await fetch(`./data/${name}.vc.json?v=7`);if(response.ok)documents[name]=await response.json()}));
+      if(state.run!==run||!state.watcherActive)return;
+      state.bidDraft=DemoTenderAgent.prepareDraft(notice,assessment,documents);state.watcherActive=false;
+      agentLog(`Draft assembled with ${state.bidDraft.evidence.filter(x=>x.available).length} sample documents; ${state.bidDraft.missing.length} missing. Supplier review required before tender submission.`);
+    }catch(error){state.watcherActive=false;agentLog(`Draft preparation stopped: ${error.message}`)}
+  },1200);
+}
+function stopTenderWatcher(){clearTimeout(watcherTimer);watcherTimer=null;state.watcherActive=false;agentLog('Watcher paused by the supplier.');}
+$('watch-agent').addEventListener('click',startTenderWatcher);$('stop-agent').addEventListener('click',stopTenderWatcher);
 async function runRule(){const step=state.step,ruleId=RULE_AT_STEP[step];if(!ruleId)return;
   const button=$('run-rule');button.disabled=true;$('rule-result').textContent='Loading sample credentials…';
   try{
@@ -126,6 +155,6 @@ function renderSemantics(){let c=currentCountry(),fault=$('fault').value,concept
 document.addEventListener('click',e=>{let tab=e.target.closest('[data-step]');if(tab){let n=Number(tab.dataset.step);if(n<=state.step){state.step=n;state.completed=false;record('Presenter',`Returned to ${STEPS[n].short} for inspection.`);render();}}});
 $('advance').addEventListener('click',advance);$('back').addEventListener('click',()=>{if(state.step>0){state.step--;state.completed=false;record('Presenter',`Returned to ${STEPS[state.step].short} for inspection.`);render();}});
 ['country','fault'].forEach(id=>$(id).addEventListener('change',reset));document.querySelectorAll('input[name="mode"]').forEach(x=>x.addEventListener('change',reset));$('reset').addEventListener('click',reset);
-$('download').addEventListener('click',()=>{let out={disclaimer:'Synthetic browser simulation; local rule examples, no live credentials or legal decision',country:$('country').value,mode:mode(),fault:$('fault').value,completed:state.completed,ruleCalls:state.ruleResults,entries:state.trace};let url=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:'application/json'}));let a=document.createElement('a');a.href=url;a.download='event-ecosystem-trace.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
+$('download').addEventListener('click',()=>{let out={disclaimer:'Synthetic browser simulation; local rule and agent examples, no live credentials or legal decision',country:$('country').value,mode:mode(),fault:$('fault').value,completed:state.completed,bidDraft:state.bidDraft,agentEvents:state.agentEvents,ruleCalls:state.ruleResults,entries:state.trace};let url=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:'application/json'}));let a=document.createElement('a');a.href=url;a.download='event-ecosystem-trace.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
 $('copy-json').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('json-preview').textContent);$('copy-json').textContent='Copied ✓';setTimeout(()=>$('copy-json').textContent='Copy JSON',1800)}catch{$('copy-json').textContent='Select text to copy';}});
 state.run=0;reset();
